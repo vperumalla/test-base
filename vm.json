@@ -56,8 +56,8 @@
       }
     },
     "diskSize": {
-      "type": "string",
-      "defaultValue": "128",
+      "type": "int",
+      "defaultValue": 128,
       "metadata": {
         "description": "Disk size for the data node VMs"
       }
