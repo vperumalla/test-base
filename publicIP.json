@@ -54,10 +54,6 @@
       "metadata": {
         "description": "Public IP DNS Prefix"
       }
-    },
-    "publicIPAllocationType":{
-        "type":"string",
-        "defaultValue":"Dynamic"
     }
   },
   "variables": {},
@@ -71,7 +67,7 @@
         "[parameters('tag').key1]": "[parameters('tag').value1]"
       },
       "properties": {
-        "publicIPAllocationMethod":  "[parameters('publicIPAllocationType')]",
+        "publicIPAllocationMethod":  "Dynamic",
         "dnsSettings": {
           "domainNameLabel": "[parameters('publicIPdnsPrefix')]"
         }
