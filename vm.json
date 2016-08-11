@@ -174,7 +174,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/','/',parameters('vmNamePrefix'),'-db',copyIndex(1),'vhds/osdisk.vhd')]"
+              "uri": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/','/',parameters('vmNamePrefix'),'-db',copyIndex(1),'/vhds/osdisk.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -185,7 +185,7 @@
               "diskSizeGB": "[parameters('diskSize')]",
               "lun": 0,
               "vhd": {
-                "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',parameters('vmNamePrefix'),'-db',copyIndex(1),'vhds/','dataDisk1.vhd')]"
+                "uri": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',parameters('vmNamePrefix'),'-db',copyIndex(1),'/vhds/','dataDisk1.vhd')]"
               },
               "createOption": "Empty"
             }
@@ -249,7 +249,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-               "uri": "[concat('http://',variables( 'maxscaleStorageAccountName'),'.blob.core.windows.net/',parameters('vmNamePrefix'),'-max',copyIndex(1),'vhds/','osdisk.vhd')]"
+               "uri": "[concat('http://',variables( 'maxscaleStorageAccountName'),'.blob.core.windows.net/',parameters('vmNamePrefix'),'-max',copyIndex(1),'/vhds/','osdisk.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -258,7 +258,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('vmNamePrefix'), '-maxscale', copyIndex(1)))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(parameters('vmNamePrefix'), 'max', copyIndex(1)))]"
             }
           ]
         }
