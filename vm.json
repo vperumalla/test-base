@@ -126,7 +126,7 @@
     "vmName1": "[concat(parameters('vmNamePrefix'), '-db1')]",
     "vhdContainer1": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmNamePrefix'),'-db1')]",
     "dataDisk1VhdName1": "[concat(variables('vhdContainer1'),variables('vmName1'),'dataDisk1.vhd')]"
-    },
+  },
   "resources": [
     {
       "name": "[variables('vmName1')]",
@@ -203,7 +203,7 @@
       "location": "[parameters('location')]",
       "copy": {
         "name": "vmLoop",
-        "count": "[sub(variables('nodeCount'),1)]"
+        "count": "[sub(parameters('nodeCount'),1)]"
       },
      "plan":{
         "publisher": "[parameters('imagePublisher')]",
