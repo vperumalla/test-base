@@ -39,8 +39,8 @@
                 "b0a334d9-51db-4946-b570-13af44b1f91b",
                 "8b03303c-3ecf-485f-b401-237e0a8a3278",
                 "3e5a4a0e-d026-41bc-a314-beed6dc01d1d",
-                "1a255907-9f5e-43da-abf8-84b44ac9e14c",
-                "08dae61f-3bbe-4779-8e5d-f4ba4e49871e"
+                "45037ca6-a6fd-45dd-8b1d-86384ec4f0d0",
+                "ba2a6678-57bf-4a43-88a1-3765c41c6f6c"
             ],
             "metadata": {
                 "description": "Job ID "
@@ -48,14 +48,14 @@
         },
         "Id": {
             "type": "string",
-            "defaultValue": "23451",
+            "defaultValue": "13145",
             "metadata": {
                 "description": "Any 5 digit number"
             }
         },
         "location": {
             "type": "string",
-            "defaultValue": "West US",
+            "defaultValue": "Japan East",
             "allowedValues": [
                 "Brazil South",
                 "East Asia",
@@ -75,6 +75,9 @@
                 "description": "Automation Service Location"
             }
         },
+        "resourceGroupName":{
+             "type": "string"
+        },
         "tag": {
             "type": "object",
             "defaultValue": {
@@ -90,7 +93,6 @@
         "runbookDescription": "Automation Account runbook",
         "scriptUri": "https://raw.githubusercontent.com/ooha-m/test-base/master/storageacc-automation/BlobCopy.ps1",
         "jobId": "[concat(parameters('jobid'),parameters('id'))]",
-        "rgrpn":"",
         "dfp":"https://raw.githubusercontent.com/ooha-m/test-base/master/storageacc-automation/copyblobdetails.json",
         "st":"StartBlobCopy"
     },
@@ -141,8 +143,8 @@
                         "[parameters('tag').key1]": "[parameters('tag').value1]"
                     },
                     "properties": {
-                        "userName": "[parameters('credentialUsername')]",
-                        "password": "[parameters('credentialPassword')]"
+                        "userName": "[parameters('credUsername')]",
+                        "password": "[parameters('credPassword')]"
                     }
                 },
                 {
@@ -177,7 +179,7 @@
                             "automationAccountName":"[parameters('automationAccountName')]",
                             "variablesName":"[parameters('variableName')]",
                             "credentialName": "[parameters('credentialName')]",
-                            "ResourcegroupName":"[variables('rgrpn')]",
+                            "ResourcegroupName":"[parameters('resourceGroupName')]",
                             "DetailsFilePath":"[variables('dfp')]",
                             "StartType":"[variables('st')]"
                         }
