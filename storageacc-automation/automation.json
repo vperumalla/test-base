@@ -1,0 +1,193 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "automationAccountName": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string",
+            "defaultValue": "Free",
+            "allowedValues": [
+                "Free",
+                "Basic"
+            ]
+        },
+        "runbookName": {
+            "type": "string"
+        },
+        "credentialName": {
+            "type": "string"
+        },
+        "credUsername": {
+            "type": "string"
+        },
+        "credPassword": {
+            "type": "string"
+        },
+        "variableName": {
+            "defaultValue": "licenseBlobVar",
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Variable to deploy to"
+            }
+        },
+        "jobid":{
+            "type": "string",
+            "defaultValue": "1b17bcb6-b321-4c72-b3a5-6ffad75f5a3e",
+            "allowedValues": [
+                "b0a334d9-51db-4946-b570-13af44b1f91b",
+                "8b03303c-3ecf-485f-b401-237e0a8a3278",
+                "3e5a4a0e-d026-41bc-a314-beed6dc01d1d",
+                "45037ca6-a6fd-45dd-8b1d-86384ec4f0d0",
+                "ba2a6678-57bf-4a43-88a1-3765c41c6f6c"
+            ],
+            "metadata": {
+                "description": "Job ID "
+            }
+        },
+        "Id": {
+            "type": "string",
+            "defaultValue": "13145",
+            "metadata": {
+                "description": "Any 5 digit number"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "West US",
+            "allowedValues": [
+                "Brazil South",
+                "East Asia",
+                "East US",
+                "Japan East",
+                "Japan West",
+                "North Central US",
+                "North Europe",
+                "South Central US",
+                "West Europe",
+                "West US",
+                "Southeast Asia",
+                "Central US",
+                "East US 2"
+            ],
+            "metadata": {
+                "description": "Automation Service Location"
+            }
+        },
+        "tag": {
+            "type": "object",
+            "defaultValue": {
+                "key1": "key",
+                "value1": "value"
+            },
+            "metadata": {
+                "description": "Tag Values"
+            }
+        }
+    },
+    "variables": {
+        "runbookDescription": "Automation Account runbook",
+        "scriptUri": "https://raw.githubusercontent.com/ashwinse/test-base/auto-acc/auto/BlobCopy.ps1",
+        "jobId": "[concat(parameters('jobid'),parameters('id'))]",
+        "rgn":"",
+        "dfp":"https://raw.githubusercontent.com/ashwinse/test-base/auto-acc/auto/copyblobdetails.json",
+        "st":"StartBlobCopy"
+    },
+    "resources": [
+        {
+            "name": "[parameters('automationAccountName')]",
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2015-01-01-preview",
+            "location": "[parameters('location')]",
+            "tags": {
+                "[parameters('tag').key1]": "[parameters('tag').value1]"
+            },
+            "properties": {
+                "sku": {
+                    "name": "[parameters('sku')]"
+                }
+            },
+            "resources": [
+                {
+                    "name": "[parameters('runbookName')]",
+                    "type": "runbooks",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                    ],
+                    "tags": {},
+                    "properties": {
+                        "runbookType": "Script",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[variables('runbookDescription')]",
+                        "publishContentLink": {
+                            "uri": "[variables('scriptUri')]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "name": "[parameters('credentialName')]",
+                    "type": "credentials",
+                    "apiVersion": "2015-01-01-preview",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                    ],
+                    "tags": {
+                        "[parameters('tag').key1]": "[parameters('tag').value1]"
+                    },
+                    "properties": {
+                        "userName": "[parameters('credUsername')]",
+                        "password": "[parameters('credPassword')]"
+                    }
+                },
+                {
+                    "name": "[concat(parameters('automationAccountName'), '/', parameters('variableName'))]",
+                    "type": "Microsoft.Automation/automationAccounts/variables",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                    ],
+                    "properties": {
+                        "variable": {
+                            "name": "[parameters('variableName')]",
+                            "type": "string",
+                            "value": "storageacc",
+                            "Encrypted": false
+                        }
+                    }
+                },
+                {
+                    "name": "[concat(parameters('automationAccountName'), '/', variables('jobId'))]",
+                    "type": "Microsoft.Automation/automationAccounts/jobs",
+                    "apiVersion": "2015-10-31",
+                    "location": "[parameters('location')]",
+                    "tags": {
+                        "[parameters('tag').key1]": "[parameters('tag').value1]"
+                    },
+                    "properties": {
+                        "runbook": {
+                            "name": "[parameters('runbookName')]"
+                        },
+                        "parameters": {
+                            "automationAccountName":"[parameters('automationAccountName')]",
+                            "variablesName":"[parameters('variableName')]",
+                            "credentialName": "[parameters('credentialName')]",
+                            "ResourcegroupName":"[variables('rgn')]",
+                            "DetailsFilePath":"[variables('dfp')]",
+                            "StartType":"[variables('st')]"
+                        }
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/variables', parameters('automationAccountName'), parameters('variableName'))]"
+                    ]
+                }
+            ]
+        }
+    ]
+}
