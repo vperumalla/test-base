@@ -39,8 +39,8 @@
                 "b0a334d9-51db-4946-b570-13af44b1f91b",
                 "8b03303c-3ecf-485f-b401-237e0a8a3278",
                 "3e5a4a0e-d026-41bc-a314-beed6dc01d1d",
-                "45037ca6-a6fd-45dd-8b1d-86384ec4f0d0",
-                "ba2a6678-57bf-4a43-88a1-3765c41c6f6c"
+                "1a255907-9f5e-43da-abf8-84b44ac9e14c",
+                "08dae61f-3bbe-4779-8e5d-f4ba4e49871e"
             ],
             "metadata": {
                 "description": "Job ID "
@@ -48,7 +48,7 @@
         },
         "Id": {
             "type": "string",
-            "defaultValue": "13145",
+            "defaultValue": "23451",
             "metadata": {
                 "description": "Any 5 digit number"
             }
@@ -141,8 +141,8 @@
                         "[parameters('tag').key1]": "[parameters('tag').value1]"
                     },
                     "properties": {
-                        "userName": "[parameters('credUsername')]",
-                        "password": "[parameters('credPassword')]"
+                        "userName": "[parameters('credentialUsername')]",
+                        "password": "[parameters('credentialPassword')]"
                     }
                 },
                 {
