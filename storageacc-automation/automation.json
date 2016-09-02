@@ -90,7 +90,7 @@
         "runbookDescription": "Automation Account runbook",
         "scriptUri": "https://raw.githubusercontent.com/ooha-m/test-base/master/storageacc-automation/BlobCopy.ps1",
         "jobId": "[concat(parameters('jobid'),parameters('id'))]",
-        "rgn":"",
+        "rgrpn":"",
         "dfp":"https://raw.githubusercontent.com/ooha-m/test-base/master/storageacc-automation/copyblobdetails.json",
         "st":"StartBlobCopy"
     },
@@ -177,7 +177,7 @@
                             "automationAccountName":"[parameters('automationAccountName')]",
                             "variablesName":"[parameters('variableName')]",
                             "credentialName": "[parameters('credentialName')]",
-                            "ResourcegroupName":"[variables('rgn')]",
+                            "ResourcegroupName":"[variables('rgrpn')]",
                             "DetailsFilePath":"[variables('dfp')]",
                             "StartType":"[variables('st')]"
                         }
