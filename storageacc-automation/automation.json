@@ -91,7 +91,7 @@
         "scriptUri": "https://github.com/ooha-m/test-base/blob/master/storageacc-automation/BlobCopy.ps1",
         "jobId": "[concat(parameters('jobid'),parameters('id'))]",
         "rgn":"",
-        "dfp":"https://raw.githubusercontent.com/ashwinse/test-base/auto-acc/auto/copyblobdetails.json",
+        "dfp":"https://raw.githubusercontent.com/ooha-m/test-base/master/storageacc-automation/copyblobdetails.json",
         "st":"StartBlobCopy"
     },
     "resources": [
