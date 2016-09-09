@@ -90,7 +90,7 @@
         "storageAccountUrl": "[concat(variables('armBaseUrl'),'staging/storage/storage.json?token=AT3nUEjT-VNiIS-ObcQgPcswwK9B6e8Xks5XxbdxwA%3D%3D')]",
         "virtualNetworkUrl": "[concat(variables('armBaseUrl'),'staging/vnet-subnet/vnet-subnet.json?token=AT3nUPCEo-jo-oAL2tXuZ73tENcLiEBRks5XxbluwA%3D%3D')]",
         "networkInterfaceUrl": "[concat(variables('armBaseUrl'),'staging/network-interface/network-interface.json?token=AT3nUH8rGHHa2RQVVTXNrmwDysoU9_Ovks5XxbvkwA%3D%3D')]",
-        "networkSecurityGroupUrl": "[concat(variables('armComponentsUrl'),'')]",
+        "networkSecurityGroupUrl": "https://raw.githubusercontent.com/ooha-m/test-base/master/informatica/info-nsg.json",
         "virtualMachineUrl": "[concat(variables('armBaseUrl'),'staging/virtual-machine/virtual-machine-with-plan.json?token=AT3nUAQHHwaBh-Xc4I-OQpdfdJwMLdt4ks5Xxb7bwA%3D%3D')]"
     },
     "resources": [
