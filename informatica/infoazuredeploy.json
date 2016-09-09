@@ -1,0 +1,335 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "West US",
+            "allowedValues": [
+                "Brazil South",
+                "East Asia",
+                "East US",
+                "Japan East",
+                "Japan West",
+                "North Central US",
+                "North Europe",
+                "South Central US",
+                "West Europe",
+                "West US",
+                "Southeast Asia",
+                "Central US",
+                "East US 2"
+            ],
+            "metadata": {
+                "description": "Deployments Location"
+            }
+        },
+        "tag": {
+            "type": "object",
+            "defaultValue": {
+                "value1": "informatica"
+            }
+        },
+        "vmName": {
+            "type": "string",
+            "defaultValue": "informatica-windows",
+            "metadata": {
+                "description": " Virtual machine name"
+            }
+        },
+        "adminUsername": {
+            "defaultValue": "sysgain",
+            "type": "string",
+            "metadata": {
+                "description": "admin username"
+            }
+        },
+        "adminPassword": {
+            "defaultValue": null,
+            "type": "securestring",
+            "metadata": {
+                "description": " admin password"
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "storageinformatica",
+            "metadata": {
+                "description": "Storage Account name"
+            }
+        },
+        "publicIPdnsPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": " public IP dns prefix"
+            }
+        }
+    },
+    "variables": {
+        "pubicIPAddressName": "[concat(parameters('vmName'),'-publicIp')]",
+        "vnetName": "[concat(parameters('vmName'),'-vnet')]",
+        "networkInterfaceName": "[concat(parameters('vmName'),'-nic')]",
+        "networkSecurityGroupsName": "[concat(parameters('vmName'),'-nsg')]",
+        "subnet1Name": "subnet1",
+        "vnetAddressPrefix": "10.2.0.0/16",
+        "subnet1Prefix": "10.2.0.0/24",
+        "storageAccountType": "Standard_LRS",
+        "vmSize": "Standard_A2",
+        "storageContainer": "vhds",
+        "imagePublisher": "informatica-cloud",
+        "imageOffer": "informatica-cloud",
+        "imageVersion": "latest",
+        "imageSKU": "informatica_cloud_secure_agent_32_bit",
+        "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')), '/subnets/',variables('subnet1Name'))]",
+        "storageApiVersion": "2015-06-15",
+        "networkApiVersion": "2015-06-15",
+        "computeApiVersion": "2015-06-15",
+        "armComponentsUrl": "https://raw.githubusercontent.com/sysgain/arm-components/<branch name>/<folder name>/",
+        "armBaseUrl": "https://raw.githubusercontent.com/sysgain/arm-base/",
+        "publicIpAddressUrl": "[concat(variables('armBaseUrl'),'staging/public-ip/public-ip.json?token=AT3nUC50ZVPlOSGkkzPAqAhxEVyDBS2Jks5XxbPlwA%3D%3D')]",
+        "storageAccountUrl": "[concat(variables('armBaseUrl'),'staging/storage/storage.json?token=AT3nUEjT-VNiIS-ObcQgPcswwK9B6e8Xks5XxbdxwA%3D%3D')]",
+        "virtualNetworkUrl": "[concat(variables('armBaseUrl'),'staging/vnet-subnet/vnet-subnet.json?token=AT3nUPCEo-jo-oAL2tXuZ73tENcLiEBRks5XxbluwA%3D%3D')]",
+        "networkInterfaceUrl": "[concat(variables('armBaseUrl'),'staging/network-interface/network-interface.json?token=AT3nUH8rGHHa2RQVVTXNrmwDysoU9_Ovks5XxbvkwA%3D%3D')]",
+        "networkSecurityGroupUrl": "[concat(variables('armComponentsUrl'),'')]",
+        "virtualMachineUrl": "[concat(variables('armBaseUrl'),'staging/virtual-machine/virtual-machine-with-plan.json?token=AT3nUAQHHwaBh-Xc4I-OQpdfdJwMLdt4ks5Xxb7bwA%3D%3D')]"
+    },
+    "resources": [
+        {
+            "name": "publicIpAddressDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('publicIpAddressUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "networkApiVersion": {
+                        "value": "[variables('networkApiVersion')]"
+                    },
+                    "publicIPAddressName": {
+                        "value": "[variables('pubicIPAddressName')]"
+                    },
+                    "publicIPdnsPrefix": {
+                        "value": "[parameters('publicIPdnsPrefix')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Public IP Address",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "storageAccountDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('storageAccountUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "storageApiVersion": {
+                        "value": "[variables('storageApiVersion')]"
+                    },
+                    "storageAccountType": {
+                        "value": "[variables('storageAccountType')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Storage Account",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "virtualNetworkDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('virtualNetworkUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "networkApiVersion": {
+                        "value": "[variables('networkApiVersion')]"
+                    },
+                    "vnetName": {
+                        "value": "[variables('vnetName')]"
+                    },
+                    "subnet1Name": {
+                        "value": "[variables('subnet1Name')]"
+                    },
+                    "vnetAddressPrefix": {
+                        "value": "[variables('vnetAddressPrefix')]"
+                    },
+                    "subnet1Prefix": {
+                        "value": "[variables('subnet1Prefix')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Virtual Network",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "networkInterfaceDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "virtualNetworkDeploy",
+                "networkSecurityGroupDeploy",
+                "publicIpAddressDeploy"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('networkInterfaceUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "networkApiVersion": {
+                        "value": "[variables('networkApiVersion')]"
+                    },
+                    "networkInterfaceName": {
+                        "value": "[variables('networkInterfaceName')]"
+                    },
+                    "networkSecurityGroupsName": {
+                        "value": "[variables('networkSecurityGroupsName')]"
+                    },
+                    "publicIPAddressName": {
+                        "value": "[variables('pubicIPAddressName')]"
+                    },
+                    "subnetRef": {
+                        "value": "[variables('subnetRef')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Network Interface",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "networkSecurityGroupDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('networkSecurityGroupUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "networkApiVersion": {
+                        "value": "[variables('networkApiVersion')]"
+                    },
+                    "networkSecurityGroupsName": {
+                        "value": "[variables('networkSecurityGroupsName')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Network Security Group",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "virtualMachineDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "storageAccountDeploy",
+                "networkInterfaceDeploy"
+            ],
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[variables('virtualMachineUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "computeApiVersion": {
+                        "value": "[variables('computeApiVersion')]"
+                    },
+                    "vmName": {
+                        "value": "[parameters('vmName')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "vmStorageAccountContainerName": {
+                        "value": "[variables('storageContainer')]"
+                    },
+                    "vmSize": {
+                        "value": "[variables('vmSize')]"
+                    },
+                    "imagePublisher": {
+                        "value": "[variables('imagePublisher')]"
+                    },
+                    "imageOffer": {
+                        "value": "[variables('imageOffer')]"
+                    },
+                    "imageVersion": {
+                        "value": "[variables('imageVersion')]"
+                    },
+                    "imageSKU": {
+                        "value": "[variables('imageSKU')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "networkInterfaceName": {
+                        "value": "[variables('networkInterfaceName')]"
+                    },
+                    "tag": {
+                        "value": {
+                            "key1": "Virtual Machine",
+                            "value1": "[parameters('tag').value1]"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
