@@ -63,19 +63,19 @@
                 "description": "Tag Values"
             }
         },
-        "MediaServices_Name": {
+        "mediaServicesName": {
             "type": "string",
             "defaultValue": "mediag5xazoq27rv36"
         },
-        "MediaServices_Keys": {
+        "mediaServicesKeys": {
             "type": "string",
             "defaultValue": "8DJCaLikWortVYQUkPTdo84aT0bkxJdon3e6ukWrcCY="
         },
-        "Input_StorageAccounts_Name": {
+        "inputStorageAccountsName": {
             "type": "string",
             "defaultValue": "inputg5xazoq27rv36"
         },
-        "Input_StorageAccounts_Keys": {
+        "inputStorageAccountsKeys": {
             "type": "string",
             "defaultValue": "Nxq9CDg5fvMnpYE180/fIrhRazVNn7zHlRjbeqRDf0FaHPgwt/6dvf7ZMEv17tu1fBYX43hf0XBaj15RrZW6Hw=="
         },
@@ -204,10 +204,10 @@
                             "name": "[parameters('runbookName')]"
                         },
                         "parameters": {
-                            "MediaServices_Name": "[parameters('MediaServices_Name')]",
-                            "MediaServices_Keys": "[parameters('MediaServices_Keys')]",
-                            "Input_StorageAccounts_Name": "[parameters('Input_StorageAccounts_Name')]",
-                            "Input_StorageAccounts_Keys": "[parameters('Input_StorageAccounts_Keys')]",
+                            "MediaServices_Name": "[parameters('mediaServicesName')]",
+                            "MediaServices_Keys": "[parameters('mediaServicesKeys')]",
+                            "Input_StorageAccounts_Name": "[parameters('inputStorageAccountsName')]",
+                            "Input_StorageAccounts_Keys": "[parameters('inputStorageAccountsKeys')]",
                             "Ouput_StorageAccounts_Name": "[parameters('Ouput_StorageAccounts_Name')]",
                             "Output_StorageAccounts_Keys": "[parameters('Output_StorageAccounts_Keys')]",
                             "MediaService_StorageAccounts_Name": "[parameters('MediaService_StorageAccounts_Name')]",

@@ -10,7 +10,7 @@
             "defaultValue": "input",
             "type": "string"
         },
-        "outputStorageAccountsName": {
+        "ouputStorageAccountsName": {
             "defaultValue": "output",
             "type": "string"
         },
@@ -32,7 +32,7 @@
     "variables": {
         "uniqueString": "[uniquestring(resourceGroup().id)]",
         "inputStorageAccountsName": "[concat(parameters('inputStorageAccountsName'),uniqueString(resourceGroup().id))]",
-        "outputStorageAccountsName": "[concat(parameters('outputStorageAccountsName'),uniqueString(resourceGroup().id))]",
+        "ouputStorageAccountsName": "[concat(parameters('ouputStorageAccountsName'),uniqueString(resourceGroup().id))]",
         "mediaServiceStorageAccountsName": "[concat(parameters('mediaServiceStorageAccountsName'),uniqueString(resourceGroup().id))]",
         "mediaServicesName": "[concat(parameters('mediaServicesName'),uniqueString(resourceGroup().id))]",
         "storageApiVersion": "2015-06-15",
@@ -55,7 +55,7 @@
         {
             "comments": "Storage Account Resource",
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('outputStorageAccountsName')]",
+            "name": "[variables('ouputStorageAccountsName')]",
             "apiVersion": "[variables('storageApiVersion')]",
             "location": "[resourceGroup().location]",
             "tags": {
@@ -107,11 +107,11 @@
         },
         "Ouput_StorageAccounts_Name": {
             "type": "string",
-            "value": "[variables('outputStorageAccountsName')]"
+            "value": "[variables('ouputStorageAccountsName')]"
         },
         "Output_StorageAccounts_Keys": {
             "type": "string",
-            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('outputStorageAccountsName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('ouputStorageAccountsName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
         },
         "MediaService_StorageAccounts_Name": {
             "type": "string",
