@@ -52,6 +52,7 @@
                 "description": "Automation Service Location"
             }
         },
+     
         "tag": {
             "type": "object",
             "defaultValue": {
@@ -62,47 +63,48 @@
                 "description": "Tag Values"
             }
         },
-        "mediaServicesName": {
+        "MediaServices_Name": {
             "type": "string",
             "defaultValue": "mediag5xazoq27rv36"
         },
-        "mediaServicesKeys": {
+        "MediaServices_Keys": {
             "type": "string",
             "defaultValue": "8DJCaLikWortVYQUkPTdo84aT0bkxJdon3e6ukWrcCY="
         },
-        "inputStorageAccountsName": {
+        "Input_StorageAccounts_Name": {
             "type": "string",
             "defaultValue": "inputg5xazoq27rv36"
         },
-        "inputStorageAccountsKeys": {
+        "Input_StorageAccounts_Keys": {
             "type": "string",
             "defaultValue": "Nxq9CDg5fvMnpYE180/fIrhRazVNn7zHlRjbeqRDf0FaHPgwt/6dvf7ZMEv17tu1fBYX43hf0XBaj15RrZW6Hw=="
         },
-        "outputStorageAccountsName": {
+        "Ouput_StorageAccounts_Name": {
             "type": "string",
             "defaultValue": "outputg5xazoq27rv36"
         },
-        "outputStorageAccountsKeys": {
+        "Output_StorageAccounts_Keys": {
             "type": "string",
             "defaultValue": "yJFJN+jes2yrfIpwl8sqo2Xjj97ep9BA11ffcuARe1iMbg0fXT38uTvSOHH7/ykuWziP61skr4NZ90lWcrLuIA=="
         },
-        "mediaServiceStorageAccountsName": {
+        "MediaService_StorageAccounts_Name": {
             "type": "string",
             "defaultValue": "mediabg5xazoq27rv36"
         },
-        "mediaServiceStorageAccountsKeys": {
+        "MediaService_StorageAccounts_Keys": {
             "type": "string",
             "defaultValue": "NBwzPQb3UAw23FT4aVzHKn2ywYetjQDkYSg2ekgZwx57T4wcJAQh/EkOD63rUQynW4eu1FgZTRiq2w8Ok3/mzA=="
         },
         "baseUri": {
-            "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/sysgain/azurequickstarts/vcherukuri-patch-3/VOD-Aspera-Wowza-AzureMediaServices/"
-        }
+			"type": "string",
+			"defaultValue":"https://raw.githubusercontent.com/sysgain/azurequickstarts/vcherukuri-patch-3/VOD-Aspera-Wowza-AzureMediaServices/"
+	}
     },
     "variables": {
         "variable1Name": "variable1",
         "variable2Name": "variable2",
         "runbookUrl": "[concat(parameters('baseUri'), 'ams/MediaservicesRestapi1.ps1')]"
+        
     },
     "resources": [
         {
@@ -202,14 +204,14 @@
                             "name": "[parameters('runbookName')]"
                         },
                         "parameters": {
-                            "mediaServicesName": "[parameters('mediaServicesName')]",
-                            "mediaServicesKeys": "[parameters('mediaServicesKeys')]",
-                            "inputStorageAccountsName": "[parameters('inputStorageAccountsName')]",
-                            "inputStorageAccountsKeys": "[parameters('inputStorageAccountsKeys')]",
-                            "outputStorageAccountsName": "[parameters('outputStorageAccountsName')]",
-                            "outputStorageAccountsKeys": "[parameters('outputStorageAccountsKeys')]",
-                            "mediaServiceStorageAccountsName": "[parameters('mediaServiceStorageAccountsName')]",
-                            "mediaServiceStorageAccountsKeys": "[parameters('mediaServiceStorageAccountsKeys')]"
+                            "MediaServices_Name": "[parameters('MediaServices_Name')]",
+                            "MediaServices_Keys": "[parameters('MediaServices_Keys')]",
+                            "Input_StorageAccounts_Name": "[parameters('Input_StorageAccounts_Name')]",
+                            "Input_StorageAccounts_Keys": "[parameters('Input_StorageAccounts_Keys')]",
+                            "Ouput_StorageAccounts_Name": "[parameters('Ouput_StorageAccounts_Name')]",
+                            "Output_StorageAccounts_Keys": "[parameters('Output_StorageAccounts_Keys')]",
+                            "MediaService_StorageAccounts_Name": "[parameters('MediaService_StorageAccounts_Name')]",
+                            "MediaService_StorageAccounts_Keys": "[parameters('MediaService_StorageAccounts_Keys')]"
                         }
                     },
                     "dependsOn": [
