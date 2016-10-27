@@ -73,7 +73,7 @@
             "name": "ams",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[concat(parameters('baseUri'), 'ams/ams.json')]",
                     "contentVersion": "1.0.0.0"
@@ -86,10 +86,10 @@
             "name": "automationjob",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "['Microsoft.Resources/deployments/ams']"
+                "ams"
             ],
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[concat(parameters('baseUri'), 'ams/automationjob.json')]",
                     "contentVersion": "1.0.0.0"
@@ -136,10 +136,10 @@
             "name": "desktop",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "['Microsoft.Resources/deployments/ams']"
+                "ams"
             ],
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[concat(parameters('baseUri'), 'desktop/desktop.json')]",
                     "contentVersion": "1.0.0.0"
@@ -171,10 +171,10 @@
             "name": "aspera",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "['Microsoft.Resources/deployments/ams']"
+                "ams"
             ],
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[concat(parameters('baseUri'), 'aspera/aspera.json')]",
                     "contentVersion": "1.0.0.0"
@@ -200,10 +200,10 @@
             "name": "wowza",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "['Microsoft.Resources/deployments/ams']"
+                "ams"
             ],
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[concat(parameters('baseUri'), 'wowza/wowza.json')]",
                     "contentVersion": "1.0.0.0"
@@ -252,39 +252,39 @@
             "value": "[reference('ams').outputs.Output_StorageAccounts_Keys.value]"
         },
         "desktopURL": {
-            "type": "String",
+            "type": "string",
             "value": "[reference('desktop').outputs.desktopURL.value]"
         },
         "desktopUsername": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('desktopUsername')]"
         },
         "desktopAdminPassword": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('desktopAdminPassword')]"
         },
         "asperaURL": {
-            "type": "String",
+            "type": "string",
             "value": "[reference('aspera').outputs.asperaURL.value]"
         },
         "asperaUsername": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('asperaUsername')]"
         },
         "asperaAdminPassword": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('asperaAdminPassword')]"
         },
         "wowzaURL": {
-            "type": "String",
+            "type": "string",
             "value": "[reference('wowza').outputs.wowzaURL.value]"
         },
         "wowzaUsername": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('wowzaUsername')]"
         },
         "wowzaAdminPassword": {
-            "type": "String",
+            "type": "string",
             "value": "[parameters('wowzaAdminPassword')]"
         }
     }
