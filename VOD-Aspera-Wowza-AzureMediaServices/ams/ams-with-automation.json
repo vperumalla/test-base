@@ -203,25 +203,25 @@
                     "mediaServicesName": {
                         "value": "[variables('mediaServicesName')]"
                     },
-                    "MediaServices_Keys": {
+                    "mediaServicesKeys": {
                         "value": "[listKeys(resourceId('Microsoft.Media/mediaservices', variables('mediaServicesName')), '2015-10-01').primaryKey]"
                     },
                     "inputStorageAccountsName": {
                         "value": "[variables('inputStorageAccountsName')]"
                     },
-                    "Input_StorageAccounts_Keys": {
+                    "inputStorageAccountsKeys": {
                         "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('inputStorageAccountsName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
                     },
-                    "Ouput_StorageAccounts_Name": {
+                    "outputStorageAccountsName": {
                         "value": "[variables('outputStorageAccountsName')]"
                     },
-                    "Output_StorageAccounts_Keys": {
+                    "outputStorageAccountsKeys": {
                         "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('outputStorageAccountsName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
                     },
                     "mediaServiceStorageAccountsName": {
                         "value": "[variables('mediaServiceStorageAccountsName')]"
                     },
-                    "MediaService_StorageAccounts_Keys": {
+                    "mediaServiceStorageAccountsKeys": {
                         "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('mediaServiceStorageAccountsName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
                     },
                     "jobId": {
