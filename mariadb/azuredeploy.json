@@ -75,14 +75,8 @@
                 "value1": "MariaDB Enterprise Cluster & Maxscale"
             }
         },
-        "armBaseURL": {
-            "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/sysgain/arm-base/"
-        },
-        "armComponentURL": {
-            "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/sysgain/arm-components/staging/mariadb/"
-        },
+    
+       
         "sshKey": {
             "defaultValue": "",
             "type": "string"
@@ -92,6 +86,7 @@
         }
     },
     "variables": {
+        "armBaseURL":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
         "singleQuote": "'",
         "availabilitySetName": "[concat(parameters('vmNamePrefix'), '-avset')]",
         "networkSecurityGroupName": "[concat(parameters('vmNamePrefix'),'-nsg')]",
@@ -131,22 +126,22 @@
         "ipDb3": "10.0.1.6",
         "ipMax1": "10.0.1.11",
         "ipMax2": "10.0.1.12",
-        "availabilitySetUrl": "[concat(parameters('armBaseURL'),'staging/availability-sets/availability-set-copy-loop.json?token=AT3nZlA3feostBrlVrpsHqpjm3mhT8wWks5Xv8-VwA%3D%3D')]",
-        "storageAccountUrl": "[concat(parameters('armBaseURL'),'staging/storage/multiple-storage.json?token=AT3nZnDxR0CGh5A53AeD5Tt1EvLU0EqOks5Xv98QwA%3D%3D')]",
-        "publicIPUrl": "[concat(parameters('armBaseURL'),'staging/public-ip/public-ip.json?token=AT3nZtpzwrEunoNel0bjSIbzyCV0xz2sks5Xv-ApwA%3D%3D')]",
-        "networkSecurityGroupUrl": "[concat(parameters('armComponentURL'),'nested/mariadb-network-security-group.json?token=AT3nZujK3RSQFp5RbNSVyK7Jgnfcylcaks5XyQEywA%3D%3D')]",
-        "virtualNetworkUrl": "[concat(parameters('armBaseURL'),'staging/multiple-subnets/vnet-2subnets.json?token=AT3nZhy0TRPoflTljLpJnRiPadePKISCks5Xv-G2wA%3D%3D')]",
-        "loadBalancerUrl": "[concat(parameters('armComponentURL'),'nested/mariadb-loadbalancer.json?token=AT3nZgnxHxGkbTETa4vI-qu753y8EoVRks5XyQENwA%3D%3D')]",
-        "dbNetworkInterfaceUrl": "[concat(parameters('armBaseURL'),'staging/network-interface/nic-without-nsg-static.json?token=AT3nZhsOGnXo01klgzTP0bn94a7ucl-0ks5XxXXYwA%3D%3D')]",
-        "maxNetworkInterfaceUrl": "[concat(parameters('armBaseURL'),'staging/network-interface/nic-with-loadbalancer-static.json?token=AT3nZo8-gu_QYceSxf1C9fNZ3LI8giPSks5XwCA6wA%3D%3D')]",
-        "maxVirtualMachineUrl": "[concat(parameters('armBaseURL'),'staging/virtual-machine/vm-plan-sshkey-without-disk.json?token=AT3nZgal36tZ9d2YtRUqH26ZzmTNkc2eks5XxXbnwA%3D%3D')]",
-        "dbVirtualMachineUrl": "[concat(parameters('armBaseURL'),'staging/virtual-machine/vm-plan-sshkey-1disk.json?token=AT3nZpKGKcPwSrSgEmZJ6ptZT73gTUINks5XxXaXwA%3D%3D')]",
-        "virtualMachineExtensionsUrl": "[concat(parameters('armBaseURL'),'publicip-nic-loop/extension/extension-array.json?token=AT3nZqq-7gnpUpRvPCzS6Iw47BasJBc4ks5Xw0KZwA%3D%3D')]",
-        "dbCustomSciptUrl": "[concat(parameters('armComponentURL'),'scripts/azuremdbec.sh?token=AT3nZut5K9IBn_kNl3R-k0DINwumZ18aks5XxowpwA%3D%3D')]",
-        "maxCustomSciptUrl": "[concat(parameters('armComponentURL'),'scripts/azuremaxscale.sh?token=AT3nZkHXpl7M3elAy_8vcpWOOA5X9Bk0ks5Xxov7wA%3D%3D')]",
-        "maxscaleConfigFilePath": "[concat(parameters('armComponentURL'),'scripts/maxscale.cnf.template?token=AT3nZpze4aSWNVG0jmYKPUQBqLnYz3G3ks5XxoxQwA%3D%3D')]",
+        "availabilitySetUrl": "[concat(variables('armBaseURL'),'nested/availability-set-copy-loop.json')]",
+        "storageAccountUrl": "[concat(variables('armBaseURL'),'nested/storage/multiple-storage.json')]",
+        "publicIPUrl": "[concat(variables('armBaseURL'),'nested/public-ip/public-ip.json')]",
+        "networkSecurityGroupUrl": "[concat(variables('armBaseURL'),'nested/mariadb-network-security-group.json')]",
+        "virtualNetworkUrl": "[concat(variables('armBaseURL'),'nested/multiple-subnets/vnet-2subnets.json')]",
+        "loadBalancerUrl": "[concat(variables('armBaseURL'),'nested/mariadb-loadbalancer.json')]",
+        "dbNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/network-interface/nic-without-nsg-static.json')]",
+        "maxNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/network-interface/nic-with-loadbalancer-static.json')]",
+        "maxVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/virtual-machine/vm-plan-sshkey-without-disk.json')]",
+        "dbVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/virtual-machine/vm-plan-sshkey-1disk.json')]",
+        "virtualMachineExtensionsUrl": "[concat(variables('armBaseURL'),'publicip-nic-loop/extension/extension-array.json')]",
+        "dbCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremdbec.sh')]",
+        "maxCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremaxscale.sh')]",
+        "maxscaleConfigFilePath": "[concat(variables('armBaseURL'),'scripts/maxscale.cnf.template')]",
         "mysqlBackEndPort": 3306,
-        "mariadbConfigFilePath": "[concat(parameters('armComponentURL'),'scripts/my.cnf.template?token=AT3nZnuB2ioeDJpBwpONm1AQuO3H-3p9ks5XxoyWwA%3D%3D')]",
+        "mariadbConfigFilePath": "[concat(variables('armBaseURL'),'scripts/my.cnf.template')]",
         "mdbecClusterAddress": "[concat(variables('ipDb1'), ',', variables('ipDb2'), ',', variables('ipDb3'))]",
        "customScriptCommandCommon": "[concat('bash azuremdbec.sh', ' --clusteraddress ', variables('mdbecClusterAddress'), ' --cluster-name ', parameters('clusterName') ,' --token ', parameters('mdbeToken'),' --mycnftemplate ', variables('mariadbConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --storagetype=', variables('storageAccountType'))]",
         "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]",
