@@ -91,14 +91,12 @@
             "defaultValue": {
                 "value1": "MariaDB Enterprise Cluster & Maxscale"
             }
-        },
-        "publicIPdnsPrefix": {
-            "type": "string"
         }
     },
     "variables": {
         "armBaseURL":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
         "singleQuote": "'",
+        "publicIPdnsPrefix":"maria",
         "availabilitySetName": "[concat(parameters('vmNamePrefix'), '-avset')]",
         "networkSecurityGroupName": "[concat(parameters('vmNamePrefix'),'-nsg')]",
         "storageAccountName": "[concat(parameters('vmNamePrefix'),'sa',uniqueString(resourceGroup().id))]",
@@ -128,7 +126,7 @@
         "imageOffer": "mdbec-ha-node",
         "imageSKU": "mdbec-data-node",
         "imageVersion": "latest",
-        "publicIpDns": "[concat(parameters('publicIPdnsPrefix'),uniqueString(resourceGroup().id))]",
+        "publicIpDns": "[concat(variables('publicIPdnsPrefix'),uniqueString(resourceGroup().id))]",
         "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),'/subnets/',variables('subnet1Name'))]",
         "loadBalancerBkpoolRef": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')),'/backendAddressPools/mdbec-lbBackendPool')]",
         "loadBalancerInboundNatRef": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancersName')),'/inboundNatRules/',parameters('vmNamePrefix'),'-natRule-max')]",
