@@ -23,10 +23,7 @@
                 "description": "Admin Username of Virtual Machine to SSH or RDP"
             }
         },
-         "adminPassword": {
-            "defaultValue": "",
-            "type": "securestring"
-        },
+        
         "appUserName": {
             "type": "string",
             "defaultValue": "myapp"
@@ -86,6 +83,10 @@
                 "description": "Deployment Location Hint: Use lowercase for creating ipaddress"
             }
         },
+         "sshkey": {
+            "defaultValue": "",
+            "type": "string"
+        },
         "tag": {
             "type": "object",
             "defaultValue": {
@@ -143,8 +144,8 @@
         "loadBalancerUrl": "[concat(variables('armBaseURL'),'nested/mariadb-loadbalancer.json')]",
         "dbNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/nic-without-nsg-static.json')]",
         "maxNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/nic-with-loadbalancer-static.json')]",
-        "maxVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/virtual-machine-with-plan.json')]",
-        "dbVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/vm-plan-1disk.json')]",
+        "maxVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/vm-plan-sshkey-without-disk.json')]",
+        "dbVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/vm-plan-sshkey-1disk.json')]",
         "virtualMachineExtensionsUrl": "[concat(variables('armBaseURL'),'nested/extension-array.json')]",
         "dbCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremdbec.sh')]",
         "maxCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremaxscale.sh')]",
@@ -480,8 +481,8 @@
                     "computeApiVersion": {
                         "value": "[variables('computeApiVersion')]"
                     },
-                    "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
+                    "sshkey": {
+                        "value": "[parameters('sshkey')]"
                     },
                     "vmName": {
                         "value": "[concat(parameters('vmNamePrefix'),'-max',copyIndex(1))]"
@@ -548,8 +549,8 @@
                     "computeApiVersion": {
                         "value": "[variables('computeApiVersion')]"
                     },
-                    "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
+                    "sshkey": {
+                        "value": "[parameters('sshkey')]"
                     },
                     "vmName": {
                         "value": "[concat(parameters('vmNamePrefix'),'-db',copyIndex(1))]"
