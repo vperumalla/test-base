@@ -2,20 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vmNamePrefix": {
-            "type": "string",
-            "defaultValue": "mdbec",
-            "allowedValues": [
-                "mdbec"
-            ]
-        },
-        "clusterName": {
-            "type": "string",
-            "defaultValue": "aocluster",
-            "metadata": {
-                "description": "Name of the cluster"
-            }
-        },
         "adminUsername": {
             "type": "string",
             "defaultValue": "",
@@ -23,7 +9,10 @@
                 "description": "Admin Username of Virtual Machine to SSH or RDP"
             }
         },
-        
+        "sshkey": {
+            "defaultValue": "",
+            "type": "string"
+        },
         "appUserName": {
             "type": "string",
             "defaultValue": "myapp"
@@ -39,13 +28,6 @@
             "defaultValue": "mydb",
             "metadata": {
                 "description": "Database name for application to use"
-            }
-        },
-        "mdbeToken": {
-            "type": "string",
-            "defaultValue": "h76a-d33s",
-            "metadata": {
-                "description": "MariaDB Enterprise Download Token"
             }
         },
         "location": {
@@ -83,10 +65,6 @@
                 "description": "Deployment Location Hint: Use lowercase for creating ipaddress"
             }
         },
-         "sshkey": {
-            "defaultValue": "",
-            "type": "string"
-        },
         "tag": {
             "type": "object",
             "defaultValue": {
@@ -95,18 +73,21 @@
         }
     },
     "variables": {
-        "armBaseURL":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
+        "mdbeToken":"h76a-d33s",
+        "armBaseURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
         "singleQuote": "'",
-        "publicIPdnsPrefix":"maria",
-        "availabilitySetName": "[concat(parameters('vmNamePrefix'), '-avset')]",
-        "networkSecurityGroupName": "[concat(parameters('vmNamePrefix'),'-nsg')]",
-        "storageAccountName": "[concat(parameters('vmNamePrefix'),'sa',uniqueString(resourceGroup().id))]",
-        "loadBalancersName": "[concat(parameters('vmNamePrefix'),'-lb')]",
-        "publicIPAddressName": "[concat(parameters('vmNamePrefix'),'-pip')]",
-        "maxNetworkInterfaceName": "[concat(parameters('vmNamePrefix'),'-max-nic')]",
-        "dbNetworkInterfaceName": "[concat(parameters('vmNamePrefix'),'-db-nic')]",
-        "vmExtensionName": "[concat(parameters('vmNamePrefix'), '-ext')]",
-        "vnetName": "[concat(parameters('vmNamePrefix'), '-vnet')]",
+        "vmNamePrefix": "mdbec",
+        "clusterName": "aocluster",
+        "publicIPdnsPrefix": "maria",
+        "availabilitySetName": "[concat(variables('vmNamePrefix'), '-avset')]",
+        "networkSecurityGroupName": "[concat(variables('vmNamePrefix'),'-nsg')]",
+        "storageAccountName": "[concat(variables('vmNamePrefix'),'sa',uniqueString(resourceGroup().id))]",
+        "loadBalancersName": "[concat(variables('vmNamePrefix'),'-lb')]",
+        "publicIPAddressName": "[concat(variables('vmNamePrefix'),'-pip')]",
+        "maxNetworkInterfaceName": "[concat(variables('vmNamePrefix'),'-max-nic')]",
+        "dbNetworkInterfaceName": "[concat(variables('vmNamePrefix'),'-db-nic')]",
+        "vmExtensionName": "[concat(variables('vmNamePrefix'), '-ext')]",
+        "vnetName": "[concat(variables('vmNamePrefix'), '-vnet')]",
         "subnet1Name": "subnet1",
         "vnetAddressPrefix": "10.0.0.0/16",
         "subnet1Prefix": "10.0.1.0/24",
@@ -130,7 +111,7 @@
         "publicIpDns": "[concat(variables('publicIPdnsPrefix'),uniqueString(resourceGroup().id))]",
         "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),'/subnets/',variables('subnet1Name'))]",
         "loadBalancerBkpoolRef": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')),'/backendAddressPools/mdbec-lbBackendPool')]",
-        "loadBalancerInboundNatRef": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancersName')),'/inboundNatRules/',parameters('vmNamePrefix'),'-natRule-max')]",
+        "loadBalancerInboundNatRef": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancersName')),'/inboundNatRules/',variables('vmNamePrefix'),'-natRule-max')]",
         "ipDb1": "10.0.1.4",
         "ipDb2": "10.0.1.5",
         "ipDb3": "10.0.1.6",
@@ -153,7 +134,7 @@
         "mysqlBackEndPort": 3306,
         "mariadbConfigFilePath": "[concat(variables('armBaseURL'),'scripts/my.cnf.template')]",
         "mdbecClusterAddress": "[concat(variables('ipDb1'), ',', variables('ipDb2'), ',', variables('ipDb3'))]",
-       "customScriptCommandCommon": "[concat('bash azuremdbec.sh', ' --clusteraddress ', variables('mdbecClusterAddress'), ' --cluster-name ', parameters('clusterName') ,' --token ', parameters('mdbeToken'),' --mycnftemplate ', variables('mariadbConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --storagetype=', variables('storageAccountType'))]",
+        "customScriptCommandCommon": "[concat('bash azuremdbec.sh', ' --clusteraddress ', variables('mdbecClusterAddress'), ' --cluster-name ', variables('clusterName') ,' --token ', variables('mdbeToken'),' --mycnftemplate ', variables('mariadbConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --storagetype=', variables('storageAccountType'))]",
         "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]",
         "db1CommandToExecute": "[concat(variables('customScriptCommandCommon'), variables('customScriptParamVm1'))]",
         "serverList": "[concat(' --db ', variables('ipDb1'), ':', variables('mysqlBackEndPort'), ' --db ', variables('ipDb2'), ':', variables('mysqlBackEndPort'), ' --db ', variables('ipDb3'), ':', variables('mysqlBackEndPort' ))]"
@@ -485,7 +466,7 @@
                         "value": "[parameters('sshkey')]"
                     },
                     "vmName": {
-                        "value": "[concat(parameters('vmNamePrefix'),'-max',copyIndex(1))]"
+                        "value": "[concat(variables('vmNamePrefix'),'-max',copyIndex(1))]"
                     },
                     "vmSize": {
                         "value": "[variables('maxscaleVmSize')]"
@@ -553,7 +534,7 @@
                         "value": "[parameters('sshkey')]"
                     },
                     "vmName": {
-                        "value": "[concat(parameters('vmNamePrefix'),'-db',copyIndex(1))]"
+                        "value": "[concat(variables('vmNamePrefix'),'-db',copyIndex(1))]"
                     },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
@@ -615,7 +596,7 @@
                         "value": "[parameters('location')]"
                     },
                     "vmName": {
-                        "value": "[concat(parameters('vmNamePrefix'),'-db1')]"
+                        "value": "[concat(variables('vmNamePrefix'),'-db1')]"
                     },
                     "typeHandlerVersion": {
                         "value": "1.5"
@@ -666,7 +647,7 @@
                         "value": "[parameters('location')]"
                     },
                     "vmName": {
-                        "value": "[concat(parameters('vmNamePrefix'),'-db',copyIndex(2))]"
+                        "value": "[concat(variables('vmNamePrefix'),'-db',copyIndex(2))]"
                     },
                     "typeHandlerVersion": {
                         "value": "1.5"
@@ -717,7 +698,7 @@
                         "value": "[parameters('location')]"
                     },
                     "vmName": {
-                        "value": "[concat(parameters('vmNamePrefix'),'-max',copyIndex(1))]"
+                        "value": "[concat(variables('vmNamePrefix'),'-max',copyIndex(1))]"
                     },
                     "typeHandlerVersion": {
                         "value": "1.5"
@@ -734,7 +715,7 @@
                         ]
                     },
                     "commandToExecute": {
-                        "value": "[concat('bash azuremaxscale.sh', variables('serverList'), ' --cnftemplate ', variables('maxscaleConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --token ', parameters('mdbeToken'), ' --maxscaleip ', variables('ipMax1'), ' --maxscaleip ', variables('ipMax2'), ' --mynodeid ', copyIndex(1))]"
+                        "value": "[concat('bash azuremaxscale.sh', variables('serverList'), ' --cnftemplate ', variables('maxscaleConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --token ',variables('mdbeToken'), ' --maxscaleip ', variables('ipMax1'), ' --maxscaleip ', variables('ipMax2'), ' --mynodeid ', copyIndex(1))]"
                     },
                     "tag": {
                         "value": {
