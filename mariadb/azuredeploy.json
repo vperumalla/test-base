@@ -33,13 +33,13 @@
         },
         "lbvisibility": {
             "type": "string",
-            "defaultValue": "public",
+            "defaultValue": "internal",
             "allowedValues": [
                 "public",
                 "internal"
             ],
             "metadata": {
-                "description": "Enter 'public' or 'internal'"
+                "description": "Load balancer visibility. Enter 'public' or 'internal'"
             }
         },
         "location": {
