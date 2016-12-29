@@ -2,18 +2,27 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "location": { "type": "string" },
-        "dnsName": { "type": "string" },
-        "vmNamePrefix": { "type": "string" },
-        "lbPublicIPName": { "type": "string" },
-        "dbSubnetRef": { "type": "string" }
+        "location": {
+            "type": "string"
+        },
+        "dnsName": {
+            "type": "string"
+        },
+        "vmNamePrefix": {
+            "type": "string"
+        },
+        "lbPublicIPName": {
+            "type": "string"
+        },
+        "dbSubnetRef": {
+            "type": "string"
+        }
     },
     "variables": {
         "apiVer": "2015-06-15",
         "lbPublicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('lbPublicIPName'))]",
         "lbName": "[concat(parameters('vmNamePrefix'),'-lb')]",
         "lbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbName'))]",
-
         "ilbName": "[concat(parameters('vmNamePrefix'),'-ilb')]",
         "ilbID": "[resourceId('Microsoft.Network/loadBalancers',variables('ilbName'))]",
         "ilbPrivateIPAddress": "10.0.1.10",
@@ -21,10 +30,8 @@
         "ilbBackendAddressPoolID": "[concat(variables('ilbID'),'/backendAddressPools/', variables('ilbBackendAddressPoolName'))]",
         "ilbIPConfigName": "[concat(parameters('vmNamePrefix'), '-ilbIPCfg')]",
         "ilbIPConfig": "[concat(variables('ilbID'),'/frontendIPConfigurations/InternalLoadBalancerFrontend')]",
-
         "sshIPConfigName": "[concat(parameters('vmNamePrefix'), '-sshIPCfg')]",
         "sshIPConfig": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('sshIPConfigName'))]",
-
         "probeName": "[concat(parameters('vmNamePrefix'), '-probe')]",
         "probeID": "[concat(variables('ilbID'),'/probes/',variables('probeName'))]",
         "probePort": "9200"
@@ -49,19 +56,19 @@
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', parameters('lbPublicIPName'))]"
-                ],
+            ],
             "properties": {
                 "frontendIPConfigurations": [
-                {
-                    "name": "[variables('sshIPConfigName')]",
-                    "properties": {
-                        "publicIPAddress": {
-                            "id": "[variables('lbPublicIPRef')]"
+                    {
+                        "name": "[variables('sshIPConfigName')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[variables('lbPublicIPRef')]"
+                            }
                         }
                     }
-                }
                 ],
-                    "inboundNatRules": [
+                "inboundNatRules": [
                     {
                         "name": "[concat(parameters('vmNamePrefix'), '-natRule-max1')]",
                         "properties": {
@@ -96,18 +103,18 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "frontendIPConfigurations": [
-                {
-                    "name": "InternalLoadBalancerFrontend",
-                    "properties": {
-                        "subnet": {
-                            "id": "[parameters('dbSubnetRef')]"
-                        },
-                        "privateIPAddress": "[variables('ilbPrivateIPAddress')]",
-                        "privateIPAllocationMethod": "Static"
+                    {
+                        "name": "InternalLoadBalancerFrontend",
+                        "properties": {
+                            "subnet": {
+                                "id": "[parameters('dbSubnetRef')]"
+                            },
+                            "privateIPAddress": "[variables('ilbPrivateIPAddress')]",
+                            "privateIPAllocationMethod": "Static"
+                        }
                     }
-                }
                 ],
-                    "backendAddressPools": [
+                "backendAddressPools": [
                     {
                         "name": "[variables('ilbBackendAddressPoolName')]"
                     }
@@ -174,7 +181,7 @@
                         }
                     }
                 ],
-                    "probes": [
+                "probes": [
                     {
                         "name": "[variables('probeName')]",
                         "properties": {
@@ -199,13 +206,12 @@
             "type": "string"
         },
         "publicIpId": {
-          "value": "[variables('lbPublicIPRef')]",
-          "type": "string"
+            "value": "[variables('lbPublicIPRef')]",
+            "type": "string"
         },
         "fqdn": {
-          "value": "[reference(variables('lbPublicIPRef')).dnsSettings.fqdn]",
-          "type": "string"
+            "value": "[reference(variables('lbPublicIPRef')).dnsSettings.fqdn]",
+            "type": "string"
         }
-
     }
 }
