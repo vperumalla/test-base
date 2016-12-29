@@ -123,8 +123,7 @@
         "imageVersion": "latest",
         "publicIpDns": "[concat(variables('publicIPdnsPrefix'),uniqueString(resourceGroup().id))]",
         "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),'/subnets/',variables('subnet1Name'))]",
-        "loadBalancerBkpoolRef": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancersName')),'/backendAddressPools/mdbec-lbBackendPool')]",
-        "loadBalancerInboundNatRef": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancersName')),'/inboundNatRules/',variables('vmNamePrefix'),'-natRule-max')]",
+       
         "ipDb1": "10.0.1.4",
         "ipDb2": "10.0.1.5",
         "ipDb3": "10.0.1.6",
