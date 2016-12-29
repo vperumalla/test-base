@@ -18,6 +18,7 @@
             "defaultValue": "myapp"
         },
         "appPassword": {
+            "defaultValue":"mypassword",
             "type": "securestring",
             "metadata": {
                 "description": "Password for application to use"
