@@ -18,7 +18,7 @@
             "defaultValue": "myapp"
         },
         "appPassword": {
-            "defaultValue":"mypassword",
+            "defaultValue": "mypassword",
             "type": "securestring",
             "metadata": {
                 "description": "Password for application to use"
@@ -29,6 +29,17 @@
             "defaultValue": "mydb",
             "metadata": {
                 "description": "Database name for application to use"
+            }
+        },
+        "lbvisibility": {
+            "type": "string",
+            "defaultValue": "public",
+            "allowedValues": [
+                "public",
+                "internal"
+            ],
+            "metadata": {
+                "description": "Enter 'public' or 'internal'"
             }
         },
         "location": {
@@ -74,8 +85,8 @@
         }
     },
     "variables": {
-        "mdbeToken":"h76a-d33s",
-        "armBaseURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
+        "mdbeToken": "h76a-d33s",
+        "armBaseURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb",
         "singleQuote": "'",
         "vmNamePrefix": "mdbec",
         "clusterName": "aocluster",
@@ -96,7 +107,7 @@
         "availabilitySets-api-version": "2015-06-15",
         "storageApiVersion": "2015-06-15",
         "networkApiVersion": "2015-06-15",
-        "loadBalancersApiVersion": "2015-06-15",
+        
         "computeApiVersion": "2015-06-15",
         "storageAccountType": "Standard_LRS",
         "countRes": 2,
@@ -119,21 +130,21 @@
         "ipDb3": "10.0.1.6",
         "ipMax1": "10.0.1.11",
         "ipMax2": "10.0.1.12",
-        "availabilitySetUrl": "[concat(variables('armBaseURL'),'nested/availability-set-copy-loop.json')]",
-        "storageAccountUrl": "[concat(variables('armBaseURL'),'nested/multiple-storage.json')]",
-        "publicIPUrl": "[concat(variables('armBaseURL'),'nested/public-ip.json')]",
-        "networkSecurityGroupUrl": "[concat(variables('armBaseURL'),'nested/mariadb-network-security-group.json')]",
-        "virtualNetworkUrl": "[concat(variables('armBaseURL'),'nested/vnet-2subnets.json')]",
-        "loadBalancerUrl": "[concat(variables('armBaseURL'),'nested/mariadb-loadbalancer.json')]",
-        "dbNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/nic-without-nsg-static.json')]",
-        "maxNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'nested/nic-with-loadbalancer-static.json')]",
-        "maxVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/vm-plan-sshkey-without-disk.json')]",
-        "dbVirtualMachineUrl": "[concat(variables('armBaseURL'),'nested/vm-plan-sshkey-1disk.json')]",
-        "virtualMachineExtensionsUrl": "[concat(variables('armBaseURL'),'nested/extension-array.json')]",
-        "dbCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremdbec.sh')]",
-        "maxCustomSciptUrl": "[concat(variables('armBaseURL'),'scripts/azuremaxscale.sh')]",
-        "maxscaleConfigFilePath": "[concat(variables('armBaseURL'),'scripts/maxscale.cnf.template')]",
-        "mariadbConfigFilePath": "[concat(variables('armBaseURL'),'scripts/my.cnf.template')]",
+        "availabilitySetUrl": "[concat(variables('armBaseURL'),'/nested/availability-set-copy-loop.json')]",
+        "storageAccountUrl": "[concat(variables('armBaseURL'),'/nested/multiple-storage.json')]",
+        
+        "networkSecurityGroupUrl": "[concat(variables('armBaseURL'),'/nested/mariadb-network-security-group.json')]",
+        "virtualNetworkUrl": "[concat(variables('armBaseURL'),'/nested/vnet-2subnets.json')]",
+        "loadBalancerUrl": "[concat(variables('armBaseURL'),'/nested/lb-',parameters('lbvisibility'),'.json')]",
+        "dbNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'/nested/nic-without-nsg-static.json')]",
+        "maxNetworkInterfaceUrl": "[concat(variables('armBaseURL'),'/nested/nic-with-loadbalancer-static.json')]",
+        "maxVirtualMachineUrl": "[concat(variables('armBaseURL'),'/nested/vm-plan-sshkey-without-disk.json')]",
+        "dbVirtualMachineUrl": "[concat(variables('armBaseURL'),'/nested/vm-plan-sshkey-1disk.json')]",
+        "virtualMachineExtensionsUrl": "[concat(variables('armBaseURL'),'/nested/extension-array.json')]",
+        "dbCustomSciptUrl": "[concat(variables('armBaseURL'),'/scripts/azuremdbec.sh')]",
+        "maxCustomSciptUrl": "[concat(variables('armBaseURL'),'/scripts/azuremaxscale.sh')]",
+        "maxscaleConfigFilePath": "[concat(variables('armBaseURL'),'/scripts/maxscale.cnf.template')]",
+        "mariadbConfigFilePath": "[concat(variables('armBaseURL'),'/scripts/my.cnf.template')]",
         "mdbecClusterAddress": "[concat(variables('ipDb1'), ',', variables('ipDb2'), ',', variables('ipDb3'))]",
         "customScriptCommandCommon": "[concat('bash azuremdbec.sh', ' --clusteraddress ', variables('mdbecClusterAddress'), ' --cluster-name ', variables('clusterName') ,' --token ', variables('mdbeToken'),' --mycnftemplate ', variables('mariadbConfigFilePath'), ' --osuser ', parameters('adminUserName'), ' --storagetype=', variables('storageAccountType'))]",
         "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]",
@@ -142,11 +153,43 @@
     },
     "resources": [
         {
+            "name": "loadBalancerDeploy",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "virtualNetworkDeploy"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('loadBalancerUrl')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "dnsName": {
+                        "value": "[variables('publicIpDns')]"
+                    },
+                    "vmNamePrefix": {
+                        "value": "[variables('vmNamePrefix')]"
+                    },
+                    "lbPublicIPName": {
+                        "value": "[variables('publicIPAddressName')]"
+                    },
+                    "dbSubnetRef": {
+                        "value": "[variables('subnetRef')]"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "2015-01-01",
             "name": "availabiltySetDeploy",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('availabilitySetUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -178,7 +221,7 @@
             "name": "storageAccountDeploy",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('storageAccountUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -207,45 +250,13 @@
                     }
                 }
             }
-        },
-        {
-            "apiVersion": "2015-01-01",
-            "name": "publicIPDeploy",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[variables('publicIPUrl')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "publicIPAddressName": {
-                        "value": "[variables('publicIPAddressName')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    },
-                    "networkApiVersion": {
-                        "value": "[variables('networkApiVersion')]"
-                    },
-                    "publicIPdnsPrefix": {
-                        "value": "[variables('publicIPdns')]"
-                    },
-                    "tag": {
-                        "value": {
-                            "key1": "Public IP",
-                            "value1": "[parameters('tag').value1]"
-                        }
-                    }
-                }
-            }
-        },
+        },  
         {
             "apiVersion": "2015-01-01",
             "name": "networkSecurityGroupDeploy",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('networkSecurityGroupUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -274,7 +285,7 @@
             "name": "virtualNetworkDeploy",
             "type": "Microsoft.Resources/deployments",
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('virtualNetworkUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -309,41 +320,6 @@
         },
         {
             "apiVersion": "2015-01-01",
-            "name": "loadBalancerDeploy",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "publicIPDeploy"
-            ],
-            "properties": {
-                "mode": "incremental",
-                "templateLink": {
-                    "uri": "[variables('loadBalancerUrl')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "loadBalancersApiVersion": {
-                        "value": "[variables('loadBalancersApiVersion')]"
-                    },
-                    "loadBalancersName": {
-                        "value": "[variables('loadBalancersName')]"
-                    },
-                    "location": {
-                        "value": "[parameters('location')]"
-                    },
-                    "publicIPAddressName": {
-                        "value": "[variables('publicIPAddressName')]"
-                    },
-                    "tag": {
-                        "value": {
-                            "key1": "Load Balancer",
-                            "value1": "[parameters('tag').value1]"
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2015-01-01",
             "name": "[concat('maxNetworkInterfaceDeploy',copyindex(1))]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
@@ -355,7 +331,7 @@
                 "count": "[variables('maxscaleCount')]"
             },
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('maxNetworkInterfaceUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -371,10 +347,10 @@
                         "value": "[parameters('location')]"
                     },
                     "loadBalancerBkpoolRef": {
-                        "value": "[variables('loadBalancerBkpoolRef')]"
+                        "value": "[reference('loadBalancerDeploy').outputs.lbBackendAddressPoolID.value]"
                     },
                     "loadBalancerInboundNatRef": {
-                        "value": "[concat(variables('loadBalancerInboundNatRef'),copyIndex(1))]"
+                        "value": "[concat(reference('loadBalancerDeploy').outputs.lbID.value,'/inboundNatRules/',variables('vmNamePrefix'),'-natRule-max',copyIndex(1))]"
                     },
                     "subnetRef": {
                         "value": "[variables('subnetRef')]"
@@ -407,7 +383,7 @@
                 "count": "[variables('nodeCount')]"
             },
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('dbNetworkInterfaceUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -454,7 +430,7 @@
                 "count": "[variables('maxscaleCount')]"
             },
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('maxVirtualMachineUrl')]",
                     "contentVersion": "1.0.0.0"
@@ -522,7 +498,7 @@
                 "count": "[variables('nodeCount')]"
             },
             "properties": {
-                "mode": "incremental",
+                "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('dbVirtualMachineUrl')]",
                     "contentVersion": "1.0.0.0"

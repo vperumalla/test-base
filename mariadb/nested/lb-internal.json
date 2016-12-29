@@ -75,9 +75,9 @@
                             "frontendIPConfiguration": {
                                 "id": "[variables('sshIPConfig')]"
                             },
-                            "protocol": "tcp",
-                            "frontendPort": "2201",
-                            "backendPort": "22",
+                            "protocol": "Tcp",
+                            "frontendPort": 2201,
+                            "backendPort": 22,
                             "enableFloatingIP": false
                         }
                     },
@@ -87,9 +87,9 @@
                             "frontendIPConfiguration": {
                                 "id": "[variables('sshIPConfig')]"
                             },
-                            "protocol": "tcp",
-                            "frontendPort": "2202",
-                            "backendPort": "22",
+                            "protocol": "Tcp",
+                            "frontendPort": 2202,
+                            "backendPort": 22,
                             "enableFloatingIP": false
                         }
                     }
@@ -129,12 +129,12 @@
                             "backendAddressPool": {
                                 "id": "[variables('ilbBackendAddressPoolID')]"
                             },
-                            "protocol": "tcp",
-                            "frontendPort": "4006",
-                            "backendPort": "4006",
+                            "protocol": "Tcp",
+                            "frontendPort": 4006,
+                            "backendPort": 4006,
                             "enableFloatingIP": false,
                             "loadDistribution": "SourceIP",
-                            "idleTimeoutInMinutes": "10",
+                            "idleTimeoutInMinutes": 10,
                             "probe": {
                                 "id": "[variables('probeID')]"
                             }
@@ -149,12 +149,12 @@
                             "backendAddressPool": {
                                 "id": "[variables('ilbBackendAddressPoolID')]"
                             },
-                            "protocol": "tcp",
-                            "frontendPort": "4007",
-                            "backendPort": "4007",
+                            "protocol": "Tcp",
+                            "frontendPort": 4007,
+                            "backendPort": 4007,
                             "enableFloatingIP": false,
                             "loadDistribution": "SourceIP",
-                            "idleTimeoutInMinutes": "10",
+                            "idleTimeoutInMinutes": 10,
                             "probe": {
                                 "id": "[variables('probeID')]"
                             }
@@ -169,12 +169,12 @@
                             "backendAddressPool": {
                                 "id": "[variables('ilbBackendAddressPoolID')]"
                             },
-                            "protocol": "tcp",
-                            "frontendPort": "4008",
-                            "backendPort": "4008",
+                            "protocol": "Tcp",
+                            "frontendPort": 4008,
+                            "backendPort": 4008,
                             "enableFloatingIP": false,
                             "loadDistribution": "SourceIP",
-                            "idleTimeoutInMinutes": "10",
+                            "idleTimeoutInMinutes": 10,
                             "probe": {
                                 "id": "[variables('probeID')]"
                             }
@@ -185,11 +185,11 @@
                     {
                         "name": "[variables('probeName')]",
                         "properties": {
-                            "protocol": "http",
+                            "protocol": "Http",
                             "port": "[variables('probePort')]",
                             "requestPath": "/",
-                            "intervalInSeconds": "5",
-                            "numberOfProbes": "4"
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 4
                         }
                     }
                 ]
