@@ -94,7 +94,6 @@
         "availabilitySetName": "[concat(variables('vmNamePrefix'), '-avset')]",
         "networkSecurityGroupName": "[concat(variables('vmNamePrefix'),'-nsg')]",
         "storageAccountName": "[concat(variables('vmNamePrefix'),'sa',uniqueString(resourceGroup().id))]",
-       
         "publicIPAddressName": "[concat(variables('vmNamePrefix'),'-pip')]",
         "maxNetworkInterfaceName": "[concat(variables('vmNamePrefix'),'-max-nic')]",
         "dbNetworkInterfaceName": "[concat(variables('vmNamePrefix'),'-db-nic')]",
@@ -107,7 +106,6 @@
         "availabilitySets-api-version": "2015-06-15",
         "storageApiVersion": "2015-06-15",
         "networkApiVersion": "2015-06-15",
-        
         "computeApiVersion": "2015-06-15",
         "storageAccountType": "Standard_LRS",
         "countRes": 2,
@@ -122,8 +120,7 @@
         "imageSKU": "mdbec-data-node",
         "imageVersion": "latest",
         "publicIpDns": "[concat(variables('publicIPdnsPrefix'),uniqueString(resourceGroup().id))]",
-        "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),'/subnets/',variables('subnet1Name'))]",
-       
+        "subnetRef": "[concat(resourceId('Microsoft.Network/virtualNetworks', variables('vnetName')),'/subnets/',variables('subnet1Name'))]",  
         "ipDb1": "10.0.1.4",
         "ipDb2": "10.0.1.5",
         "ipDb3": "10.0.1.6",
@@ -131,7 +128,6 @@
         "ipMax2": "10.0.1.12",
         "availabilitySetUrl": "[concat(variables('armBaseURL'),'/nested/availability-set-copy-loop.json')]",
         "storageAccountUrl": "[concat(variables('armBaseURL'),'/nested/multiple-storage.json')]",
-        
         "networkSecurityGroupUrl": "[concat(variables('armBaseURL'),'/nested/mariadb-network-security-group.json')]",
         "virtualNetworkUrl": "[concat(variables('armBaseURL'),'/nested/vnet-2subnets.json')]",
         "loadBalancerUrl": "[concat(variables('armBaseURL'),'/nested/lb-',parameters('lbvisibility'),'.json')]",
