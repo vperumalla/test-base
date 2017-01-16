@@ -19,7 +19,7 @@
         }
     },
     "variables": {
-        "virtualMachineName": "desktop",
+        "virtualMachineName": "wordpress",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageAccountName": "[concat(variables('virtualMachineName'),variables('suffix'))]",
         "networkInterfaceName": "[concat(variables('virtualMachineName'),'-nic')]",
