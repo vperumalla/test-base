@@ -13,13 +13,10 @@
         },
         "subnetRef": {
             "type": "string"
-        },
-        "vnetID":{
-            "type": "string"
         }
     },
     "variables": {
-        "virtualMachineName": "wordpress",
+        "virtualMachineName": "wp",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageAccountName": "[concat(variables('virtualMachineName'),variables('suffix'))]",
         "networkInterfaceName": "[concat(variables('virtualMachineName'),'-nic')]",
@@ -91,7 +88,6 @@
             "apiVersion": "2016-09-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[parameters('vnetID')]",
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]",
                 "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
             ],
