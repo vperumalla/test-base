@@ -91,7 +91,7 @@
         "appIPRange": "*",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "lbVisibility": "public",
-        "baseUrl": "https://raw.githubusercontent.com/ashwinse/test-base/master/mariadb",
+        "baseUrl": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
         "mdbeToken": "h76a-d33s",
         "clusterName": "maria",
         "VmSize": "Standard_DS2",
@@ -240,29 +240,16 @@
             "location": "[parameters('location')]",
             "properties": {
                 "securityRules": [
-                    {
-                        "name": "allow-ssh",
+                     {
+                        "name": "default-allow-ssh",
                         "properties": {
-                            "protocol": "Tcp",
+                            "protocol": "TCP",
                             "sourcePortRange": "*",
                             "destinationPortRange": "22",
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 1000,
-                            "direction": "Inbound"
-                        }
-                    },
-                    {
-                        "name": "allow-maxscale",
-                        "properties": {
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "4000-4010",
-                            "sourceAddressPrefix": "[variables('appIPRange')]",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 1001,
                             "direction": "Inbound"
                         }
                     }
