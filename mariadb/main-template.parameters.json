@@ -1,32 +1,30 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "adminUsername": {
-            "value": "testdriveuser"
+        "adminUserName": {
+            "value": "mdbe"
+        },
+        "location": {
+            "value": "westus"
+        },
+        "sshKey": {
+           "value": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAheEUCYH618f7DWa7Hjxivxshj3nejArm0HRMlb1Gx+/DRtufFq5zCiEyKlG6CC15eVmsluqUzNVJdy79fdagEar1zBchNJip0Qq92HYRYA2+r1ctk/hjrURFTe4md3z2j2bM/a8XGqr4+HFByeD8573+w1yokHQlW8N0UoAKy1tcZgN8iL/yxCaVysNHAqP7OJY4MR0b+A7I+r8Msof2d9EETfKL+J6p7wGlwW+/G0fvMK+ZGbCUxrRPdhkDVDabqpQg61etlcXRNSq5bXtHGTQEcOCZn+CVSJy7CiUj9qHSicZa4s5afx+20Ogj3d1BV1+MSwd88QzV9fk7J2CHtw== rsa-key-20170110"
+        },
+        "appDatabase": {
+            "value": "mydb"
         },
         "appUserName": {
             "value": "myapp"
         },
         "appPassword": {
-            "value": "mypassword"
+            "value": "Mpassword123"
         },
-        "appDatabase": {
-            "value": "mydb"
+        "clientVmUsername": {
+            "value": "wpuser"
         },
-        "location": {
-            "value": "westus"
-        },
-        "tag": {
-            "value": {
-                "value1": "MariaDB Enterprise Cluster & Maxscale"
-            }
-        },
-        "sshKey": {
-            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAq0ETnUia5TybBNkJZUwo1R1DRSPTqRtdZIG00130ZFdIOOZWln9rXdvICQlH19ZDp1GsJf0YPIyHYXZcA6M2iqewUsZ797hxybPgiO5J5dAIF7kbQ5UxYKp9Sy+DO5gvJc+bRBYOndl4QCMXmIw9eNFHr5pftblLxtPx/D72KOrDsCx0RJg5pAmzpe1eKkpm7ZFiT4XhTxqrkDN0XGuDDze126Vvvk9yw+V/c3MJUier6Z/1hj8xW3rYoyPdoZRau0+/B2Ju6PfWoajeZGEMTmW66yee+xLnWLtZPqQwFHRW5F6tO4JUPp4CZnpAO+C2siUJKiEWw75aOMIEZHSr8Q== rsa-key-20161229"
-        },
-        "lbvisibility": {
-            "value": "private"
+        "clientVmPassword": {
+            "value": "Wpassword123"
         }
     }
 }
