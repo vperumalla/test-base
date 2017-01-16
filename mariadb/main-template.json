@@ -66,7 +66,7 @@
             }
         },
         "appPassword": {
-            "defaultValue": "Mariadb123",
+            "defaultValue": "TestDriveUser123",
             "type": "securestring",
             "metadata": {
                 "description": "Password for application to use"
@@ -74,7 +74,7 @@
         },
         "clientVmUsername": {
             "defaultValue": "wpuser",
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "Username for password"
             }
@@ -91,7 +91,7 @@
         "appIPRange": "*",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "lbVisibility": "public",
-        "baseUrl": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb/",
+        "baseUrl": "https://raw.githubusercontent.com/ashwinse/test-base/master/mariadb",
         "mdbeToken": "h76a-d33s",
         "clusterName": "maria",
         "VmSize": "Standard_DS2",
@@ -680,7 +680,7 @@
             "type": "string",
             "value": "[concat('mysql -h ',reference('mdbec-loadbalancerDeploy').outputs.fqdn.value,' -P 4006 -u ',parameters('appUserName'),' -p',parameters('appPassword'),' ',parameters('appDatabase'))]"
         },
-        "ssh_to_clientVmFqdn":{
+        "ssh_to_clientVmFqdn": {
             "type": "string",
             "value": "[reference('clientVmSetup').outputs.clientVmFqdn.value]"
         }
