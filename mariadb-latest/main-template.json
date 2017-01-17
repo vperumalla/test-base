@@ -74,7 +74,7 @@
         },
         "clientVmUsername": {
             "defaultValue": "wpuser",
-            "type": "securestring",
+            "type": "string",
             "metadata": {
                 "description": "Username for password"
             }
