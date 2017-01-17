@@ -132,29 +132,16 @@
             "properties": {
                 "securityRules": [
                     {
-                        "name": "custom",
+                        "name": "default-allow-ssh",
                         "properties": {
-                            "priority": 1001,
-                            "sourceAddressPrefix": "*",
-                            "protocol": "*",
-                            "destinationPortRange": "8000",
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    },
-                    {
-                        "name": "default-allow-rdp",
-                        "properties": {
-                            "priority": 1000,
-                            "sourceAddressPrefix": "*",
                             "protocol": "Tcp",
-                            "destinationPortRange": "3389",
-                            "access": "Allow",
-                            "direction": "Inbound",
                             "sourcePortRange": "*",
-                            "destinationAddressPrefix": "*"
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 1000,
+                            "direction": "Inbound"
                         }
                     }
                 ]
