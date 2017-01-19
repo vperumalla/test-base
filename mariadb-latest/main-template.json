@@ -166,7 +166,9 @@
         "vhdContainer1": "[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmNamePrefix'),'-db1vhds/')]",
         "dataDisk1VhdName1": "[concat(variables('vhdContainer1'),variables('vmName1'),'dataDisk1.vhd')]",
         "vmExtensionName1": "[concat(variables('vmName1'),'/', variables('vmExtensionName'))]",
-        "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]"
+        "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]",
+        "clientVm":"clientVmSetup",
+        "clientVm-CommandToExecute":"sh wp-script.sh"
     },
     "resources": [
         {
@@ -634,7 +636,7 @@
             }
         },
         {
-            "name": "clientVmSetup",
+            "name": "[variables('clientVm')]",
             "apiVersion": "2016-02-01",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
@@ -658,6 +660,9 @@
                     },
                     "subnetRef": {
                         "value": "[variables('publicSubnetRef')]"
+                    },
+                    "clientVm-CommandToExecute":{
+                        "value":"[variables('clientVm-CommandToExecute')]"
                     }
                 }
             }

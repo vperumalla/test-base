@@ -13,7 +13,10 @@
         },
         "subnetRef": {
             "type": "string"
-        }
+        },
+         "clientVm-CommandToExecute":{
+             "type": "string"
+         }
     },
     "variables": {
         "virtualMachineName": "wp",
@@ -24,7 +27,8 @@
         "storageAccountType": "Standard_LRS",
         "publicIpAddressName": "[concat(variables('virtualMachineName'),'-pip')]",
         "publicIPdnsPrefix": "[concat('dedns',variables('suffix'))]",
-        "virtualMachineSize": "Standard_D1_V2"
+        "virtualMachineSize": "Standard_D1_V2",
+        "scripturl":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb-latest/scripts/wp-script.sh"
     },
     "resources": [
         {
@@ -70,6 +74,30 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
                         }
                     ]
+                }
+            }
+        },
+         {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('virtualMachineName'),'/CustomScriptExtension')]",
+            "apiVersion": "2016-03-30",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+            ],
+        
+            "properties": {
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.5",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('scripturl')]"
+                    ]
+                },
+                "protectedSettings":{
+                      "commandToExecute":"[parameters('clientVm-CommandToExecute')]"
                 }
             }
         },
