@@ -28,7 +28,7 @@
         "publicIpAddressName": "[concat(variables('virtualMachineName'),'-pip')]",
         "publicIPdnsPrefix": "[concat('dedns',variables('suffix'))]",
         "virtualMachineSize": "Standard_D1_V2",
-        "scripturl":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb-latest/scripts/wp-script.sh"
+        "scripturl":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb-latest/scripts/Mariadb_wp.sh"
     },
     "resources": [
         {
