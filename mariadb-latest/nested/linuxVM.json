@@ -14,11 +14,34 @@
         "subnetRef": {
             "type": "string"
         },
-         "clientVm-CommandToExecute":{
-             "type": "string"
+         "appDatabase": {
+            "type": "string",
+            "defaultValue": "mydb",
+            "metadata": {
+                "description": "Database name for application to use"
+            }
+        },
+        "appUserName": {
+            "type": "string",
+            "defaultValue": "myapp",
+            "metadata": {
+                "description": "Username for application to use"
+            }
+        },
+        "appPassword": {
+            "defaultValue": "Mariadb123",
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for application to use"
+            }
+        },
+         "dbEndPoint":{
+            "type": "string"
          }
+
     },
     "variables": {
+        "clientVm-CommandToExecute":"[concat('bash Mariadb_wp.sh',parameters('appDatabase'), ' ',parameters('appUsername'), ' ',parameters('appPassword'), ' ',parameters('dbEndPoint'))]",
         "virtualMachineName": "wp",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageAccountName": "[concat(variables('virtualMachineName'),variables('suffix'))]",
@@ -97,7 +120,7 @@
                     ]
                 },
                 "protectedSettings":{
-                      "commandToExecute":"[parameters('clientVm-CommandToExecute')]"
+                      "commandToExecute":"[variables('clientVm-CommandToExecute')]"
                 }
             }
         },
