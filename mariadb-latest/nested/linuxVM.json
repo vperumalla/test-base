@@ -40,7 +40,7 @@
         }
     },
     "variables": {
-        "clientVm-CommandToExecute": "[concat('bash Mariadb_wp.sh',parameters('appDatabase'), ' ',parameters('appUsername'), ' ',parameters('appPassword'), ' ',parameters('dbEndPoint'))]",
+        "clientVm-CommandToExecute": "[concat('bash Mariadb_wp.sh ',parameters('appDatabase'), ' ',parameters('appUsername'), ' ',parameters('appPassword'), ' ',parameters('dbEndPoint'))]",
         "virtualMachineName": "wp",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageAccountName": "[concat(variables('virtualMachineName'),variables('suffix'))]",
