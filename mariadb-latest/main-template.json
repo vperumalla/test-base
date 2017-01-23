@@ -669,8 +669,8 @@
                     "appPassword": {
                         "value": "[parameters('appPassword')]"
                     },
-                    "dbEndPoint":{
-                        "value":"[reference('mdbec-loadbalancerDeploy').outputs.fqdn.value]"
+                    "dbEndPoint": {
+                        "value": "[reference('mdbec-loadbalancerDeploy').outputs.fqdn.value]"
                     }
                 }
             }
