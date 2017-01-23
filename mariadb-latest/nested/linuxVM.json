@@ -14,7 +14,7 @@
         "subnetRef": {
             "type": "string"
         },
-         "appDatabase": {
+        "appDatabase": {
             "type": "string",
             "defaultValue": "mydb",
             "metadata": {
@@ -35,13 +35,12 @@
                 "description": "Password for application to use"
             }
         },
-         "dbEndPoint":{
+        "dbEndPoint": {
             "type": "string"
-         }
-
+        }
     },
     "variables": {
-        "clientVm-CommandToExecute":"[concat('bash Mariadb_wp.sh',parameters('appDatabase'), ' ',parameters('appUsername'), ' ',parameters('appPassword'), ' ',parameters('dbEndPoint'))]",
+        "clientVm-CommandToExecute": "[concat('bash Mariadb_wp.sh',parameters('appDatabase'), ' ',parameters('appUsername'), ' ',parameters('appPassword'), ' ',parameters('dbEndPoint'))]",
         "virtualMachineName": "wp",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageAccountName": "[concat(variables('virtualMachineName'),variables('suffix'))]",
@@ -51,7 +50,7 @@
         "publicIpAddressName": "[concat(variables('virtualMachineName'),'-pip')]",
         "publicIPdnsPrefix": "[concat('dedns',variables('suffix'))]",
         "virtualMachineSize": "Standard_D1_V2",
-        "scripturl":"https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb-latest/scripts/Mariadb_wp.sh"
+        "scripturl": "https://raw.githubusercontent.com/ooha-m/test-base/master/mariadb-latest/scripts/Mariadb_wp.sh"
     },
     "resources": [
         {
@@ -76,7 +75,7 @@
                     "vmSize": "[variables('virtualMachineSize')]"
                 },
                 "storageProfile": {
-                     "imageReference": {
+                    "imageReference": {
                         "publisher": "Canonical",
                         "offer": "UbuntuServer",
                         "sku": "12.04.5-LTS",
@@ -100,7 +99,7 @@
                 }
             }
         },
-         {
+        {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('virtualMachineName'),'/CustomScriptExtension')]",
             "apiVersion": "2016-03-30",
@@ -108,7 +107,6 @@
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
             ],
-        
             "properties": {
                 "publisher": "Microsoft.OSTCExtensions",
                 "type": "CustomScriptForLinux",
@@ -119,8 +117,8 @@
                         "[variables('scripturl')]"
                     ]
                 },
-                "protectedSettings":{
-                      "commandToExecute":"[variables('clientVm-CommandToExecute')]"
+                "protectedSettings": {
+                    "commandToExecute": "[variables('clientVm-CommandToExecute')]"
                 }
             }
         },
@@ -139,7 +137,6 @@
             "apiVersion": "2016-09-01",
             "location": "[parameters('location')]",
             "dependsOn": [
-                
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]",
                 "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
             ],
@@ -182,7 +179,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "securityRules": [
-                     {
+                    {
                         "name": "http",
                         "properties": {
                             "protocol": "*",
