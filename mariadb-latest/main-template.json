@@ -167,8 +167,7 @@
         "dataDisk1VhdName1": "[concat(variables('vhdContainer1'),variables('vmName1'),'dataDisk1.vhd')]",
         "vmExtensionName1": "[concat(variables('vmName1'),'/', variables('vmExtensionName'))]",
         "customScriptParamVm1": "[concat(' --nodeaddress ', variables('ipDb1'), ' --startupcmd bootstrap --appuser=', parameters('appUserName'), ' --apppassword=', variables('singleQuote'), parameters('appPassword'), variables('singleQuote'), ' --appdatabase=', parameters('appDatabase'), ' ')]",
-        "clientVm":"clientVmSetup",
-        "clientVm-CommandToExecute":"sh mariadb_wp.sh "
+        "clientVm": "clientVmSetup"
     },
     "resources": [
         {
@@ -661,8 +660,14 @@
                     "subnetRef": {
                         "value": "[variables('publicSubnetRef')]"
                     },
-                    "clientVm-CommandToExecute":{
-                        "value":"[variables('clientVm-CommandToExecute')]"
+                    "appDatabase": {
+                        "value": "[parameters('appDatabase')]"
+                    },
+                    "appUserName": {
+                        "value": "[parameters('appUserName')]"
+                    },
+                    "appPassword": {
+                        "value": "[parameters('appPassword')]"
                     }
                 }
             }
