@@ -696,6 +696,10 @@
         "ssh_to_clientVmFqdn": {
             "type": "string",
             "value": "[reference('clientVmSetup').outputs.clientVmFqdn.value]"
+        },
+        "wordpressUrl":{
+            "type": "string",
+            "value": "[concat(reference('clientVmSetup').outputs.clientVmFqdn.value,'/wordpress')]"
         }
     }
 }
