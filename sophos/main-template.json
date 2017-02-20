@@ -129,9 +129,8 @@
         "clientPipName": "clientVmPip",
         "clientVmDnsPrefix":"[concat(parameters('clientIpDNS'),variables('suffix'))]",
         "clientNsgName":"clientVmNsg",
-        "clientSaName":"[concat(uniquestring(resourceGroup().id), 'clientsa')]",
-        
-    },
+        "clientSaName":"[concat(uniquestring(resourceGroup().id), 'clientsa')]"
+       },
     "resources": [
         {
             "type": "Microsoft.Compute/availabilitySets",
