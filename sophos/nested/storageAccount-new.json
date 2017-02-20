@@ -23,8 +23,7 @@
       }
     },
     "location":{
-    "type": "string",
-      "defaultValue": "",
+    "type": "string"
     }
   },
   "resources": [
