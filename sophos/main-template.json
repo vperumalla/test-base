@@ -22,10 +22,30 @@
                 "description": "Password for the Virtual Machine."
             }
         },
+        "clientVmUsername": {
+            "defaultValue": "clientuser",
+            "type": "securestring",
+            "metadata": {
+                "description": "Username for password"
+            }
+        },
+        "clientVmPassword": {
+            "defaultValue": "clientpass123",
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for Wordpress"
+            }
+        },
         "publicIpDNS": {
             "type": "string",
             "metadata": {
                 "description": "Unique DNS name prefix for your XG Firewall."
+            }
+        },
+        "clientIpDNS":{
+            "type": "string",
+            "metadata": {
+                "description": "Unique DNS name prefix for your Client Machine"
             }
         },
         "location": {
@@ -67,7 +87,9 @@
     "variables": {
         "imageSku": "payg",
         "vmName": "XG-Firewall",
+        "clientVmName":"clientVM",
         "vmSize": "Standard_A3",
+         "clientVmSize": "Standard_D1_V2",
         "netNewOrExisting": "new",
         "netName": "XGVNET",
         "netPrefix": "10.0.0.0/16",
@@ -102,7 +124,13 @@
         "imagePublisher": "sophos",
         "imageOffer": "sophos-xg",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 7)]",
-        "pipdns": "[concat(parameters('publicIpDNS'),variables('suffix'))]"
+        "pipdns": "[concat(parameters('publicIpDNS'),variables('suffix'))]",
+        "clientNicName": "clientVMNic",
+        "clientPipName": "clientVmPip",
+        "clientVmDnsPrefix":"[concat(parameters('clientIpDNS'),variables('suffix'))]",
+        "clientNsgName":"clientVmNsg",
+        "clientSaName":"clientVmSa"
+        
     },
     "resources": [
         {
@@ -362,6 +390,126 @@
                         "storageUri": "[concat('http://',variables('storageName'),'.', variables('storageEndpoint'))]"
                     }
                 }
+            }
+        },
+        {
+            "name": "[variables('clientVmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "[variables('apiVersion').compute]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('clientNicName'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', variables('clientSaName'))]"
+            ],
+            "properties": {
+                "osProfile": {
+                    "computerName": "[variables('clientVmName')]",
+                    "adminUsername": "[parameters('clientVmUsername')]",
+                    "adminPassword": "[parameters('clientVmPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVmAgent": "true"
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[variables('clientVmSize')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[variables('clientVMName')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat(concat(reference(resourceId('Microsoft.Storage/storageAccounts', variables('clientSaName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), variables('clientVMName'), '20170106133023.vhd')]"
+                        }
+                    },
+                    "dataDisks": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('clientNicName'))]"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[variables('clientNicName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "[variables('apiVersion').network]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+               "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('clientPipName'))]",
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[reference('SettingUpVirtualNetwork','2015-01-01').outputs.subnet2Ref.value]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('clientPipName'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                }
+            }
+        },
+         {
+            "name": "[variables('clientPipName')]",
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2016-09-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('clientVmDnsPrefix')]"
+                }
+            }
+        },
+        {
+            "name": "[variables('clientNsgName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "[variables('apiVersion').network]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "default-allow-rdp",
+                        "properties": {
+                            "priority": 1000,
+                            "sourceAddressPrefix": "*",
+                            "protocol": "Tcp",
+                            "destinationPortRange": "3389",
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "sourcePortRange": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "[variables('clientSaName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-06-15",
+            "location": "[parameters('location')]",
+            "properties": {
+                "accountType": "[variables('storageType')]"
             }
         }
     ],
