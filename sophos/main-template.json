@@ -132,7 +132,7 @@
                         "value": "[variables('storageType')]"
                     },
                     "storageAccountExistingRG": {
-                        "vcationalue": "[variables('storageRG')]"
+                        "value": "[variables('storageRG')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
