@@ -65,9 +65,6 @@
         }
     },
     "variables": {
-        "netRG": "",
-        "publicIpRG": "",
-        "storageRG": "",
         "imageSku": "payg",
         "vmName": "XG-Firewall",
         "vmSize": "Standard_A3",
@@ -131,9 +128,6 @@
                     "storageAccountType": {
                         "value": "[variables('storageType')]"
                     },
-                    "storageAccountExistingRG": {
-                        "value": "[variables('storageRG')]"
-                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -196,9 +190,6 @@
                     "dnsPrefix": {
                         "value": "[variables('pipdns')]"
                     },
-                    "publicIpRGName": {
-                        "value": "[variables('publicIpRG')]"
-                    },
                     "location": {
                         "value": "[parameters('location')]"
                     }
@@ -233,9 +224,6 @@
                     },
                     "Subnet2Prefix": {
                         "value": "[variables('lanPrefix')]"
-                    },
-                    "vnetExistingRGName": {
-                        "value": "[variables('netRG')]"
                     },
                     "location": {
                         "value": "[parameters('location')]"
