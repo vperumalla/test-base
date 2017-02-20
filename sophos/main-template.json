@@ -85,9 +85,9 @@
         "nicLan": "XGLAN",
         "networkSecurityGroupName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
-        "publicIpTemplate": "[concat(parameters('baseUrl'),'/nested/publicip-',variables('publicIpNewOrExisting'),'.json')]",
-        "netTemplate": "[concat(parameters('baseUrl'),'/nested/vnet-',variables('netNewOrExisting'),'.json')]",
-        "storageTemplate": "[concat(parameters('baseUrl'),'/nested/storageAccount-',variables('storageNewOrExisting'),'.json')]",
+        "publicIpTemplate": "[concat(parameters('baseUrl'),'/nested/publicip-new.json')]",
+        "netTemplate": "[concat(parameters('baseUrl'),'/nested/vnet-new.json')]",
+        "storageTemplate": "[concat(parameters('baseUrl'),'/nested/storageAccount-new.json')]",
         "vhdContainer": "vhds",
         "publicIpType": "Dynamic",
         "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
@@ -101,7 +101,8 @@
         },
         "imagePublisher": "sophos",
         "imageOffer": "sophos-xg",
-        "pipdns": "[concat(uniquestring(resourceGroup().id),parameters('publicIpDNS'))]"
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 7)]",
+        "pipdns": "[concat(parameters('publicIpDNS'),variables('suffix'))]"
     },
     "resources": [
         {
