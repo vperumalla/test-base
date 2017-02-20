@@ -129,7 +129,7 @@
         "clientPipName": "clientVmPip",
         "clientVmDnsPrefix":"[concat(parameters('clientIpDNS'),variables('suffix'))]",
         "clientNsgName":"clientVmNsg",
-        "clientSaName":"clientVmSa"
+        "clientSaName":"[concat(uniquestring(resourceGroup().id), 'clientsa')]",
         
     },
     "resources": [
