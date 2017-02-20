@@ -15,13 +15,6 @@
       },
       "defaultValue": "Standard_LRS"
     },
-    "storageAccountExistingRG": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "Description": "Resource Group Name of the existing Storage Account"
-      }
-    },
     "location":{
     "type": "string"
     }
