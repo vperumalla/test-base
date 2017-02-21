@@ -33,10 +33,10 @@
     },
     "variables": {
         "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/sophos",
-        "vmusername":"[parameters('adminUsername')]",
-        "vmpassword":"[parameters('adminPassword')]",
-        "clientuser":"[parameters('clientVmUsername')]",
-        "clientpassword":"[parameters('clientVmPassword')]",
+        "vmusername":"azureuser",
+        "vmpassword":"Opassword@123",
+        "clientuser":"clientuser",
+        "clientpassword":"clientpassword@123",
          "location":"westus",
          "publicIpDNS":"xgdns",
           "clientIpDNS":"cxg",
@@ -133,7 +133,7 @@
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
-                            "priority": 101,
+                            "priority": 1005,
                             "direction": "Inbound"
                         }
                     },
@@ -146,7 +146,7 @@
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
-                            "priority": 102,
+                            "priority": 1003,
                             "direction": "Inbound"
                         }
                     }
