@@ -136,7 +136,7 @@
         {
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[variables('availabilitySetName')]",
-            "apiVersion": "2016-03-30",
+            "apiVersion": "[variables('apiVersion').compute]",
             "location": "[parameters('location')]",
             "properties": {}
         },
