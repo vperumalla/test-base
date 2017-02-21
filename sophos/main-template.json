@@ -18,6 +18,7 @@
         },
         "adminPassword": {
             "type": "securestring",
+              "defaultValue": "Opassword@123",
             "metadata": {
                 "description": "Password for the Virtual Machine."
             }
@@ -31,6 +32,7 @@
         },
         "clientVmPassword": {
             "type": "securestring",
+              "defaultValue": "clientpassword@123",
             "metadata": {
                 "description": "Password for client vm access"
             }
