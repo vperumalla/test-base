@@ -13,7 +13,7 @@
             "type": "string",
             "defaultValue": "azureuser",
             "metadata": {
-                "description": "Resource Group of existing Virtual Network."
+                "description": "username to access vm"
             }
         },
         "adminPassword": {
