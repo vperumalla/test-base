@@ -173,7 +173,7 @@
                     {
                         "name": "allow_webui",
                         "properties": {
-                            "protocol": "tcp",
+                            "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "4444",
                             "sourceAddressPrefix": "*",
@@ -186,7 +186,7 @@
                     {
                         "name": "allow_ssh",
                         "properties": {
-                            "protocol": "tcp",
+                            "protocol": "Tcp",
                             "sourcePortRange": "*",
                             "destinationPortRange": "22",
                             "sourceAddressPrefix": "*",
