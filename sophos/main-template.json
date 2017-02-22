@@ -11,7 +11,7 @@
         },
         "adminPassword": {
             "type": "securestring",
-              "defaultValue": "Opassword@123",
+              "defaultValue": "Azurepassword@123",
             "metadata": {
                 "description": "Password for the Virtual Machine."
             }
@@ -33,10 +33,10 @@
     },
     "variables": {
         "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/sophos",
-        "vmusername":"azureuser",
-        "vmpassword":"Opassword@123",
-        "clientuser":"clientuser",
-        "clientpassword":"clientpassword@123",
+        "vmusername":"[parameters('adminUsername')]",
+        "vmpassword":"[parameters('adminPassword')]",
+        "clientuser":"[parameters('clientVmUsername')]",
+        "clientpassword":"[parameters('clientVmPassword')]",
          "location":"westus",
          "publicIpDNS":"xgdns",
           "clientIpDNS":"cxg",
@@ -62,12 +62,11 @@
         "nicLan": "XGLAN",
         "networkSecurityGroupName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
-        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/publicip-new.json')]",
-        "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-new.json')]",
-        "storageTemplate": "[concat(variables('baseUrl'),'/nested/storageAccount-new.json')]",
+        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/publicip-',variables('publicIpNewOrExisting'),'.json')]",
+        "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-',variables('netNewOrExisting'),'.json')]",
+        "storageTemplate": "[concat(variables('baseUrl'),'/nested/storageAccount-',variables('storageNewOrExisting'),'.json')]",
         "vhdContainer": "vhds",
         "publicIpType": "Dynamic",
-        "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
         "apiVersion": {
             "resources": {
                 "deployments": "2016-02-01"
@@ -349,7 +348,7 @@
         {
             "name": "[variables('clientVmName')]",
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "[variables('apiVersion').compute]",
+            "apiVersion": "2015-06-15",
             "location": "[variables('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', variables('clientNicName'))]",
@@ -395,7 +394,7 @@
         {
             "name": "[variables('clientNicName')]",
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "[variables('apiVersion').network]",
+            "apiVersion": "2016-09-01",
             "location": "[variables('location')]",
             "dependsOn": [
                "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
@@ -437,7 +436,7 @@
         {
             "name": "[variables('clientNsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[variables('apiVersion').network]",
+            "apiVersion": "2016-09-01",
             "location": "[variables('location')]",
             "properties": {
                 "securityRules": [
@@ -460,7 +459,7 @@
         {
             "name": "[variables('clientSaName')]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2015-06-15",
+            "apiVersion":"2015-06-15",
             "location": "[variables('location')]",
             "properties": {
                 "accountType": "[variables('storageType')]"
