@@ -331,7 +331,7 @@
         {
             "name": "clientVmName",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-06-15",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "dependsOn": [
                 "clientNicName",
                 "clientSaName"
@@ -385,7 +385,7 @@
         {
             "name": "clientNicName",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2016-09-01",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "dependsOn": [
                 "SettingUpVirtualNetwork",
                 "clientPipName",
@@ -419,7 +419,7 @@
         {
             "name": "clientPipName",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2016-09-01",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -465,7 +465,7 @@
         {
             "name": "clientSaName",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2015-06-15",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
