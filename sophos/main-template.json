@@ -210,7 +210,7 @@
             "dependsOn": [
                 "SettingUpPublicIP",
                 "SettingUpVirtualNetwork",
-                "nsgName"
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('nsgName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
