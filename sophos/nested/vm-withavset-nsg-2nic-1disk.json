@@ -173,10 +173,7 @@
                 "osProfile": {
                     "computerName": "[parameters('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "provisionVmAgent": "true"
-                    }
+                    "adminPassword": "[parameters('adminPassword')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -192,8 +189,7 @@
                             "vhd": {
                                 "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/',parameters('vmStorageAccountContainerName'),'/',parameters('vmName'),uniquestring(resourceGroup().id),'-datadisk.vhd')]"
                             },
-                            "createOption": "Empty",
-                            "caching": "ReadOnly"
+                            "createOption": "FromImage"
                         }
                     ],
                     "osDisk": {
