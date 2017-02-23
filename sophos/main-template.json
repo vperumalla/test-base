@@ -16,6 +16,7 @@
         "publicIpDNS": "xgdns",
         "clientIpDNS": "cxg",
         "imageSku": "payg",
+        "imageVersion":"latest",
         "vmName": "XG-Firewall",
         "clientVmName": "clientVM",
         "vmSize": "Standard_A3",
@@ -248,15 +249,10 @@
             }
         },
         {
-            "name": "[variables('vmName')]",
-            "type": "Microsoft.Resources/deployments",  
+            "name": "virtualMachine",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion').compute]",
             "location": "[variables('location')]",
-            "plan": {
-                "publisher": "[variables('imagePublisher')]",
-                "product": "[variables('imageOffer')]",
-                "name": "[variables('imageSku')]"
-            },
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicWan'))]",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicLan'))]",
@@ -268,28 +264,46 @@
                 "templateLink": {
                     "uri": "[variables('nic2Template')]",
                     "contentVersion": "1.0.0.0"
-                }
                 },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicWan'))]",
-                            "properties": {
-                                "primary": true
-                            }
-                        },
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicLan'))]",
-                            "properties": {
-                                "primary": false
-                            }
-                        }
-                    ]
-                },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": "true",
-                        "storageUri": "[concat('http://',variables('storageName'),'.', variables('storageEndpoint'))]"
+                "parameters": {
+                    "vmName": {
+                        "value": "[variables('vmName')]"
+                    },
+                    "vmSize": {
+                        "value": "[variables('vmSize')]"
+                    },
+                    "adminUsername": {
+                        "value": "[variables('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[variables('adminPassword')]"
+                    },
+                    "imagePublisher": {
+                        "value":"[variables('imagePublisher')]"
+                    },
+                    "imageOffer": {
+                        "value": "[variables('imageOffer')]"
+                    },
+                    "imageSKU": {
+                        "value": "[variables('imageSku')]"
+                    },
+                    "imageVersion": {
+                        "value": "[variables('imageVersion')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[variables('storageName')]"
+                    },
+                    " vmStorageAccountContainerName": {
+                        "value":"[variables('vhdContainer')]"
+                    },
+                    "networkInterfaceName1": {
+                        "value": "[variables('nicWan')]"
+                    },
+                    "networkInterfaceName2": {
+                        "value": "[variables('nicLan')]"
+                    },
+                    "availabilitySetName": {
+                        "value": "[variables('availabilitySetName')]"
                     }
                 }
             }
