@@ -30,7 +30,7 @@
         "nicLan": "XGLAN",
         "networkSecurityGroupName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
-        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/publicip-ip.json')]",
+        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/public-ip.json')]",
         "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
         "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
         "vhdContainer": "vhds",
