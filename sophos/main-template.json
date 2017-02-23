@@ -36,7 +36,7 @@
         "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/public-ip.json')]",
         "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
         "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
-        "nicTemplate":"[concat(variables('baseUrl'),'/nested/storage.json')]",
+        "nicTemplate":"[concat(variables('baseUrl'),'/nested/network-interface.json')]",
         "vhdContainer": "vhds",
         "apiVersion": {
             "resources": {
@@ -193,7 +193,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('netTemplate')]",
+                    "uri": "[variables('nicTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
