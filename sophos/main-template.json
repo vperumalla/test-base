@@ -9,6 +9,9 @@
         "adminPassword": "Azurepassword@123",
         "clientVmUsername": "clientuser",
         "clientVmPassword": "clientpassword@123",
+        "vnetID" : "[resourceId('Microsoft.Network/virtualNetworks',variables('netName'))]",
+    "subnet1" : "[concat(variables('vnetID'),'/subnets/',variables('wanName'))]",
+    "subnet2" : "[concat(variables('vnetID'),'/subnets/',variables('lanName'))]",
         "publicIpDNS": "xgdns",
         "clientIpDNS": "cxg",
         "imageSku": "payg",
@@ -28,11 +31,12 @@
         "storageName": "[concat(uniquestring(resourceGroup().id), 'xgfwsa')]",
         "nicWan": "XGWAN",
         "nicLan": "XGLAN",
-        "networkSecurityGroupName": "XGWANSecurityGroup",
+        "nsgName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
         "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/public-ip.json')]",
         "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
         "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
+        "nicTemplate":"[concat(variables('baseUrl'),'/nested/storage.json')]",
         "vhdContainer": "vhds",
         "apiVersion": {
             "resources": {
@@ -84,7 +88,7 @@
             }
         },
         {
-            "name": "[variables('networkSecurityGroupName')]",
+            "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "location": "[variables('location')]",
             "apiVersion": "[variables('apiVersion').network]",
@@ -153,7 +157,7 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                     "vnetName": {
+                    "vnetName": {
                         "value": "[variables('netName')]"
                     },
                     "vnetAddressPrefix": {
@@ -178,34 +182,36 @@
             }
         },
         {
-            "name": "[variables('nicWan')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "location": "[variables('location')]",
+            "name": "Network Interface Resource1",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion').network]",
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpPublicIP')]",
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
             ],
             "properties": {
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('netTemplate')]",
+                    "contentVersion": "1.0.0.0"
                 },
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[reference('SettingUpPublicIP').outputs.publicIpId.value]"
-                            },
-                            "subnet": {
-                                "id": "[reference('SettingUpVirtualNetwork','2015-01-01').outputs.subnet1Ref.value]"
-                            }
-                        }
+                "parameters": {
+                    "parameters": {
+                        "networkInterfaceName": {
+                            "value":"[variables('nicWan')]"
+                        },
+                        "networkSecurityGroupName": {
+                            "value":"[variables('nsgName')]"
+                        },
+                          "publicIPAddressName": {
+                              "value":"[variables('publicIpName')]"
+                          },
+                           "subnetRef": {
+                               "value":"[variables('subnet1')]"                             
+                           }
                     }
-                ],
-                "enableIPForwarding": true
+                }
             }
         },
         {
@@ -363,7 +369,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('clientPipName'))]",
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('nsgName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -381,7 +387,7 @@
                     }
                 ],
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
                 }
             }
         },
