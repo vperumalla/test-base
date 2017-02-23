@@ -69,7 +69,7 @@
         {
             "name": "avset",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[variables('apiVersion').compute]",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -110,7 +110,7 @@
             }
         },
         {
-            "name": "nsgName",
+            "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "location": "[variables('location')]",
             "apiVersion": "[variables('apiVersion').network]",
@@ -206,7 +206,7 @@
         {
             "name": "nic1",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[variables('apiVersion').network]",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "dependsOn": [
                 "SettingUpPublicIP",
                 "SettingUpVirtualNetwork",
@@ -240,7 +240,7 @@
         {
             "name": "nic2",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[variables('apiVersion').network]",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "location": "[variables('location')]",
             "dependsOn": [
                 "SettingUpVirtualNetwork"
@@ -270,7 +270,7 @@
         {
             "name": "virtualMachine",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "[variables('apiVersion').compute]",
+            "apiVersion": "[variables('apiVersion').resources.deployments]",
             "location": "[variables('location')]",
             "dependsOn": [
                 "nic1",
@@ -391,7 +391,7 @@
             "dependsOn": [
                 "SettingUpVirtualNetwork",
                 "clientPipName",
-                "clientNsgName"
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('clientNsgName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -442,7 +442,7 @@
             }
         },
         {
-            "name": "clientNsgName",
+            "name": "[variables('clientNsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2016-09-01",
             "location": "[variables('location')]",

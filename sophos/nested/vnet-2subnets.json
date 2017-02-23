@@ -102,7 +102,6 @@
             }
         }
     },
-    "variables": {},
     "resources": [
         {
             "comments": "Virtual Network and Subnet Resource",
