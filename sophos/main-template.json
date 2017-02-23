@@ -1,84 +1,21 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "type": "string",
-            "defaultValue": "westus",
-            "allowedValues": [
-                "Brazil South",
-                "brazilsouth",
-                "East Asia",
-                "eastasia",
-                "East US",
-                "eastus",
-                "Japan East",
-                "japaneast",
-                "Japan West",
-                "japanwest",
-                "North Central US",
-                "northcentralus",
-                "North Europe",
-                "northeurope",
-                "South Central US",
-                "southcentralus",
-                "West Europe",
-                "westeurope",
-                "West US",
-                "westus",
-                "Southeast Asia",
-                "southeastasia",
-                "Central US",
-                "centralus",
-                "East US 2",
-                "eastus2"
-            ],
-            "metadata": {
-                "description": "Deployment Location Hint: Use lowercase for creating ipaddress"
-            }
-        },
-        "adminUsername": {
-            "type": "string",
-            "defaultValue": "azureuser",
-            "metadata": {
-                "description": "username to access vm"
-            }
-        },
-        "adminPassword": {
-            "type": "securestring",
-              "defaultValue": "Azurepassword@123",
-            "metadata": {
-                "description": "Password for the Virtual Machine."
-            }
-        },
-        "clientVmUsername": {
-            "defaultValue": "clientuser",
-            "type": "string",
-            "metadata": {
-                "description": "Username for  clientvm"
-            }
-        },
-        "clientVmPassword": {
-            "type": "securestring",
-              "defaultValue": "clientpassword@123",
-            "metadata": {
-                "description": "Password for client vm access"
-            }
-        }
-    },
+    "parameters": {},
     "variables": {
-        "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/sophos",
-        "vmusername":"[parameters('adminUsername')]",
-        "vmpassword":"[parameters('adminPassword')]",
-        "clientuser":"[parameters('clientVmUsername')]",
-        "clientpassword":"[parameters('clientVmPassword')]",
-         "publicIpDNS":"xgdns",
-          "clientIpDNS":"cxg",
+        "baseUrl": "https://raw.githubusercontent.com/ooha-m/test-base/master/sophos",
+        "location": "westus",
+        "adminUsername": "azureuser",
+        "adminPassword": "Azurepassword@123",
+        "clientVmUsername": "clientuser",
+        "clientVmPassword": "clientpassword@123",
+        "publicIpDNS": "xgdns",
+        "clientIpDNS": "cxg",
         "imageSku": "payg",
         "vmName": "XG-Firewall",
-        "clientVmName":"clientVM",
+        "clientVmName": "clientVM",
         "vmSize": "Standard_A3",
-         "clientVmSize": "Standard_D1_V2",
+        "clientVmSize": "Standard_D1_V2",
         "netNewOrExisting": "new",
         "netName": "XGVNET",
         "netPrefix": "10.0.0.0/16",
@@ -115,16 +52,16 @@
         "pipdns": "[concat(variables('publicIpDNS'),variables('suffix'))]",
         "clientNicName": "clientVMNic",
         "clientPipName": "clientVmPip",
-        "clientVmDnsPrefix":"[concat(variables('clientIpDNS'),variables('suffix'))]",
-        "clientNsgName":"clientVmNsg",
-        "clientSaName":"[concat(uniquestring(resourceGroup().id), 'clientsa')]"
-       },
+        "clientVmDnsPrefix": "[concat(variables('clientIpDNS'),variables('suffix'))]",
+        "clientNsgName": "clientVmNsg",
+        "clientSaName": "[concat(uniquestring(resourceGroup().id), 'clientsa')]"
+    },
     "resources": [
         {
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[variables('availabilitySetName')]",
             "apiVersion": "[variables('apiVersion').compute]",
-            "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "properties": {}
         },
         {
@@ -145,7 +82,7 @@
                         "value": "[variables('storageType')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     }
                 }
             }
@@ -153,7 +90,7 @@
         {
             "name": "[variables('networkSecurityGroupName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
-             "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "apiVersion": "[variables('apiVersion').network]",
             "properties": {
                 "securityRules": [
@@ -207,7 +144,7 @@
                         "value": "[variables('pipdns')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     }
                 }
             }
@@ -223,26 +160,26 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "virtualNetworkName": {
+                     "vnetName": {
                         "value": "[variables('netName')]"
                     },
-                    "virtualNetworkAddressPrefix": {
+                    "vnetAddressPrefix": {
                         "value": "[variables('netPrefix')]"
                     },
-                    "Subnet1Name": {
+                    "subnet1Name": {
                         "value": "[variables('wanName')]"
                     },
-                    "Subnet1Prefix": {
+                    "subnet1Prefix": {
                         "value": "[variables('wanPrefix')]"
                     },
-                    "Subnet2Name": {
+                    "subnet2Name": {
                         "value": "[variables('lanName')]"
                     },
-                    "Subnet2Prefix": {
+                    "subnet2Prefix": {
                         "value": "[variables('lanPrefix')]"
                     },
                     "location": {
-                        "value": "[parameters('location')]"
+                        "value": "[variables('location')]"
                     }
                 }
             }
@@ -250,7 +187,7 @@
         {
             "name": "[variables('nicWan')]",
             "type": "Microsoft.Network/networkInterfaces",
-             "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "apiVersion": "[variables('apiVersion').network]",
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpPublicIP')]",
@@ -282,7 +219,7 @@
             "name": "[variables('nicLan')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[variables('apiVersion').network]",
-             "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]"
             ],
@@ -305,7 +242,7 @@
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[variables('apiVersion').compute]",
-           "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "plan": {
                 "publisher": "[variables('imagePublisher')]",
                 "product": "[variables('imageOffer')]",
@@ -326,8 +263,8 @@
                 },
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
-                    "adminUsername": "[variables('vmusername')]",
-                    "adminPassword": "[variables('vmpassword')]"
+                    "adminUsername": "[variables('adminUsername')]",
+                    "adminPassword": "[variables('adminPassword')]"
                 },
                 "storageProfile": {
                     "imageReference": {
@@ -383,7 +320,7 @@
             "name": "[variables('clientVmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2015-06-15",
-             "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', variables('clientNicName'))]",
                 "[concat('Microsoft.Storage/storageAccounts/', variables('clientSaName'))]"
@@ -391,8 +328,8 @@
             "properties": {
                 "osProfile": {
                     "computerName": "[variables('clientVmName')]",
-                    "adminUsername": "[variables('clientuser')]",
-                    "adminPassword": "[variables('clientpassword')]",
+                    "adminUsername": "[variables('clientVmUsername')]",
+                    "adminPassword": "[variables('clientVmPassword')]",
                     "windowsConfiguration": {
                         "provisionVmAgent": "true"
                     }
@@ -429,9 +366,9 @@
             "name": "[variables('clientNicName')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2016-09-01",
-             "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "dependsOn": [
-               "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
+                "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('clientPipName'))]",
                 "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
             ],
@@ -455,11 +392,11 @@
                 }
             }
         },
-         {
+        {
             "name": "[variables('clientPipName')]",
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "2016-09-01",
-          "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "properties": {
                 "publicIPAllocationMethod": "Dynamic",
                 "dnsSettings": {
@@ -471,7 +408,7 @@
             "name": "[variables('clientNsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2016-09-01",
-              "location": "[parameters('location')]",
+            "location": "[variables('location')]",
             "properties": {
                 "securityRules": [
                     {
@@ -493,8 +430,8 @@
         {
             "name": "[variables('clientSaName')]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion":"2015-06-15",
-           "location": "[parameters('location')]",
+            "apiVersion": "2015-06-15",
+            "location": "[variables('location')]",
             "properties": {
                 "accountType": "[variables('storageType')]"
             }
