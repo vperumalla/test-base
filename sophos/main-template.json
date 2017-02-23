@@ -38,6 +38,7 @@
         "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
         "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
         "nicTemplate": "[concat(variables('baseUrl'),'/nested/network-interface.json')]",
+        "nic2Template": "[concat(variables('baseUrl'),'nested/nic-without-nsg-dynamic.json')]",
         "vhdContainer": "vhds",
         "apiVersion": {
             "resources": {
@@ -183,7 +184,7 @@
             }
         },
         {
-            "name": "Network Interface Resource1",
+            "name": "nic1",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion').network]",
             "dependsOn": [
@@ -217,8 +218,8 @@
             }
         },
         {
-            "name": "[variables('nicLan')]",
-            "type": "Microsoft.Network/networkInterfaces",
+            "name": "nic2",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion').network]",
             "location": "[variables('location')]",
             "dependsOn": [
@@ -227,7 +228,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('nicTemplate')]",
+                    "uri": "[variables('nic2Template')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
