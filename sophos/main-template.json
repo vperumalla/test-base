@@ -4,7 +4,7 @@
     "parameters": {},
     "variables": {
         "baseUrl": "https://raw.githubusercontent.com/ooha-m/test-base/master/sophos",
-        "location": "westus",
+        "location": "[resourcegroup().location]",
         "adminUsername": "azureuser",
         "adminPassword": "Azurepassword@123",
         "clientVmUsername": "clientuser",
@@ -16,16 +16,13 @@
         "clientVmName": "clientVM",
         "vmSize": "Standard_A3",
         "clientVmSize": "Standard_D1_V2",
-        "netNewOrExisting": "new",
         "netName": "XGVNET",
         "netPrefix": "10.0.0.0/16",
         "wanName": "WAN",
         "wanPrefix": "10.0.0.0/24",
         "lanName": "LAN",
         "lanPrefix": "10.0.1.0/24",
-        "publicIpNewOrExisting": "new",
         "publicIpName": "XGPubIP",
-        "storageNewOrExisting": "new",
         "storageType": "Standard_LRS",
         "storageEndpoint": "blob.core.windows.net",
         "storageName": "[concat(uniquestring(resourceGroup().id), 'xgfwsa')]",
@@ -33,11 +30,10 @@
         "nicLan": "XGLAN",
         "networkSecurityGroupName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
-        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/publicip-',variables('publicIpNewOrExisting'),'.json')]",
-        "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-',variables('netNewOrExisting'),'.json')]",
-        "storageTemplate": "[concat(variables('baseUrl'),'/nested/storageAccount-',variables('storageNewOrExisting'),'.json')]",
+        "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/publicip-ip.json')]",
+        "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
+        "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
         "vhdContainer": "vhds",
-        "publicIpType": "Dynamic",
         "apiVersion": {
             "resources": {
                 "deployments": "2016-02-01"
@@ -136,9 +132,6 @@
                 "parameters": {
                     "publicIPAddressName": {
                         "value": "[variables('publicIpName')]"
-                    },
-                    "publicIPAddressType": {
-                        "value": "[variables('publicIpType')]"
                     },
                     "publicIPdnsPrefix": {
                         "value": "[variables('pipdns')]"
