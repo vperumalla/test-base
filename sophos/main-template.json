@@ -16,7 +16,7 @@
         "publicIpDNS": "xgdns",
         "clientIpDNS": "cxg",
         "imageSku": "payg",
-        "imageVersion":"latest",
+        "imageVersion": "latest",
         "vmName": "XG-Firewall",
         "clientVmName": "clientVM",
         "vmSize": "Standard_A3",
@@ -35,14 +35,14 @@
         "nicLan": "XGLAN",
         "nsgName": "XGWANSecurityGroup",
         "availabilitySetName": "xgAvailabilitySet",
-        "avsetTemplate":"[concat(variables('baseUrl'),'/nested/availability-set.json')]",
+        "avsetTemplate": "[concat(variables('baseUrl'),'/nested/availability-set.json')]",
         "publicIpTemplate": "[concat(variables('baseUrl'),'/nested/public-ip.json')]",
         "netTemplate": "[concat(variables('baseUrl'),'/nested/vnet-2subnets.json')]",
         "storageTemplate": "[concat(variables('baseUrl'),'/nested/storage.json')]",
         "nicTemplate": "[concat(variables('baseUrl'),'/nested/network-interface.json')]",
         "nic2Template": "[concat(variables('baseUrl'),'/nested/nic-without-nsg-dynamic.json')]",
-        "vmTemplate":"[concat(variables('baseUrl'),'/nested/vm-withavset-nsg-2nic-1disk.json')]",
-        "clientVmTemplate":"[concat(variables('baseUrl'),'/nested/vm-withoutplan-nodatadisk.json')]",
+        "vmTemplate": "[concat(variables('baseUrl'),'/nested/vm-withavset-nsg-2nic-1disk.json')]",
+        "clientVmTemplate": "[concat(variables('baseUrl'),'/nested/vm-withoutplan-nodatadisk.json')]",
         "vhdContainer": "vhds",
         "apiVersion": {
             "resources": {
@@ -62,16 +62,15 @@
         "clientNsgName": "clientVmNsg",
         "clientSaName": "[concat(uniquestring(resourceGroup().id), 'clientsa')]",
         "clientPublisher": "MicrosoftWindowsServer",
-        "clientOffer":"WindowsServer",
+        "clientOffer": "WindowsServer",
         "clientSku": "2012-R2-Datacenter"
     },
     "resources": [
         {
-           
             "name": "avset",
-             "type": "Microsoft.Resources/deployments",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion').compute]",
-               "properties": {
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('avsetTemplate')]",
@@ -299,7 +298,7 @@
                         "value": "[variables('adminPassword')]"
                     },
                     "imagePublisher": {
-                        "value":"[variables('imagePublisher')]"
+                        "value": "[variables('imagePublisher')]"
                     },
                     "imageOffer": {
                         "value": "[variables('imageOffer')]"
@@ -314,7 +313,7 @@
                         "value": "[variables('storageName')]"
                     },
                     " vmStorageAccountContainerName": {
-                        "value":"[variables('vhdContainer')]"
+                        "value": "[variables('vhdContainer')]"
                     },
                     "networkInterfaceName1": {
                         "value": "[variables('nicWan')]"
@@ -333,13 +332,13 @@
         },
         {
             "name": "clientVmName",
-             "type": "Microsoft.Resources/deployments",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "2015-06-15",
             "dependsOn": [
                 "clientNicName",
                 "clientSaName"
             ],
-             "properties": {
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('clientVmTemplate')]",
@@ -359,7 +358,7 @@
                         "value": "[variables('clientVmPassword')]"
                     },
                     "imagePublisher": {
-                        "value":"[variables('clientPublisher')]"
+                        "value": "[variables('clientPublisher')]"
                     },
                     "imageOffer": {
                         "value": "[variables('clientOffer')]"
@@ -374,7 +373,7 @@
                         "value": "[variables('clientSaName')]"
                     },
                     " vmStorageAccountContainerName": {
-                        "value":"[variables('vhdContainer')]"
+                        "value": "[variables('vhdContainer')]"
                     },
                     "networkInterfaceName": {
                         "value": "[variables('clientNicName')]"
@@ -382,19 +381,19 @@
                     "location": {
                         "value": "[variables('location')]"
                     }
-               }
-            } 
+                }
+            }
         },
         {
             "name": "clientNicName",
-          "type": "Microsoft.Resources/deployments",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-09-01",
             "dependsOn": [
                 "SettingUpVirtualNetwork",
                 "clientPipName",
                 "clientNsgName"
             ],
-             "properties": {
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('nicTemplate')]",
@@ -421,9 +420,9 @@
         },
         {
             "name": "clientPipName",
-           "type": "Microsoft.Resources/deployments",
+            "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-09-01",
-           "properties": {
+            "properties": {
                 "mode": "Incremental",
                 "templateLink": {
                     "uri": "[variables('publicIpTemplate')]",
@@ -490,9 +489,9 @@
         }
     ],
     "outputs": {
-         "Vm Access URL": {
-           "value": "[concat(variables('pipdns'), '.', tolower(replace(variables('location'),' ','')), '.cloudapp.azure.com',':4444')]",
-           "type": "string"
-       }
+        "Vm Access URL": {
+            "value": "[concat(variables('pipdns'), '.', tolower(replace(variables('location'),' ','')), '.cloudapp.azure.com',':4444')]",
+            "type": "string"
+        }
     }
 }
