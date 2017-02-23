@@ -249,7 +249,7 @@
         },
         {
             "name": "[variables('vmName')]",
-            "type": "Microsoft.Compute/virtualMachines",
+            "type": "Microsoft.Resources/deployments",  
             "apiVersion": "[variables('apiVersion').compute]",
             "location": "[variables('location')]",
             "plan": {
@@ -264,42 +264,11 @@
                 "[concat('Microsoft.Compute/availabilitySets/',variables('availabilitySetName'))]"
             ],
             "properties": {
-                "availabilitySet": {
-                    "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySetName'))]"
-                },
-                "hardwareProfile": {
-                    "vmSize": "[variables('vmSize')]"
-                },
-                "osProfile": {
-                    "computerName": "[variables('vmName')]",
-                    "adminUsername": "[variables('adminUsername')]",
-                    "adminPassword": "[variables('adminPassword')]"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "[variables('imagePublisher')]",
-                        "offer": "[variables('imageOffer')]",
-                        "sku": "[variables('imageSku')]",
-                        "version": "latest"
-                    },
-                    "dataDisks": [
-                        {
-                            "name": "[concat(variables('vmName'),'-dataDisk')]",
-                            "lun": 0,
-                            "createOption": "FromImage",
-                            "vhd": {
-                                "uri": "[concat('http://',variables('storageName'),'.', variables('storageEndpoint'), '/', variables('vhdContainer'),'/',variables('vmName'),'-aux.vhd')]"
-                            }
-                        }
-                    ],
-                    "osDisk": {
-                        "name": "[concat(variables('vmName'),'-osDisk')]",
-                        "caching": "ReadWrite",
-                        "createOption": "FromImage",
-                        "vhd": {
-                            "uri": "[concat('http://',variables('storageName'),'.', variables('storageEndpoint'), '/', variables('vhdContainer'),'/',variables('vmName'),'-prim.vhd')]"
-                        }
-                    }
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('nic2Template')]",
+                    "contentVersion": "1.0.0.0"
+                }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
