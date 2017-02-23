@@ -2,6 +2,41 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "westus",
+            "allowedValues": [
+                "Brazil South",
+                "brazilsouth",
+                "East Asia",
+                "eastasia",
+                "East US",
+                "eastus",
+                "Japan East",
+                "japaneast",
+                "Japan West",
+                "japanwest",
+                "North Central US",
+                "northcentralus",
+                "North Europe",
+                "northeurope",
+                "South Central US",
+                "southcentralus",
+                "West Europe",
+                "westeurope",
+                "West US",
+                "westus",
+                "Southeast Asia",
+                "southeastasia",
+                "Central US",
+                "centralus",
+                "East US 2",
+                "eastus2"
+            ],
+            "metadata": {
+                "description": "Deployment Location Hint: Use lowercase for creating ipaddress"
+            }
+        },
         "adminUsername": {
             "type": "string",
             "defaultValue": "azureuser",
@@ -37,7 +72,6 @@
         "vmpassword":"[parameters('adminPassword')]",
         "clientuser":"[parameters('clientVmUsername')]",
         "clientpassword":"[parameters('clientVmPassword')]",
-         "location":"westus",
          "publicIpDNS":"xgdns",
           "clientIpDNS":"cxg",
         "imageSku": "payg",
@@ -90,7 +124,7 @@
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[variables('availabilitySetName')]",
             "apiVersion": "[variables('apiVersion').compute]",
-            "location": "[variables('location')]",
+            "location": "[parameters('location')]",
             "properties": {}
         },
         {
@@ -111,7 +145,7 @@
                         "value": "[variables('storageType')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     }
                 }
             }
@@ -119,7 +153,7 @@
         {
             "name": "[variables('networkSecurityGroupName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "location": "[variables('location')]",
+             "location": "[parameters('location')]",
             "apiVersion": "[variables('apiVersion').network]",
             "properties": {
                 "securityRules": [
@@ -169,11 +203,11 @@
                     "publicIPAddressType": {
                         "value": "[variables('publicIpType')]"
                     },
-                    "dnsPrefix": {
+                    "publicIPdnsPrefix": {
                         "value": "[variables('pipdns')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     }
                 }
             }
@@ -208,7 +242,7 @@
                         "value": "[variables('lanPrefix')]"
                     },
                     "location": {
-                        "value": "[variables('location')]"
+                        "value": "[parameters('location')]"
                     }
                 }
             }
@@ -216,7 +250,7 @@
         {
             "name": "[variables('nicWan')]",
             "type": "Microsoft.Network/networkInterfaces",
-            "location": "[variables('location')]",
+             "location": "[parameters('location')]",
             "apiVersion": "[variables('apiVersion').network]",
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpPublicIP')]",
@@ -248,7 +282,7 @@
             "name": "[variables('nicLan')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "[variables('apiVersion').network]",
-            "location": "[variables('location')]",
+             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]"
             ],
@@ -271,7 +305,7 @@
             "name": "[variables('vmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "[variables('apiVersion').compute]",
-            "location": "[variables('location')]",
+           "location": "[parameters('location')]",
             "plan": {
                 "publisher": "[variables('imagePublisher')]",
                 "product": "[variables('imageOffer')]",
@@ -349,7 +383,7 @@
             "name": "[variables('clientVmName')]",
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2015-06-15",
-            "location": "[variables('location')]",
+             "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/networkInterfaces/', variables('clientNicName'))]",
                 "[concat('Microsoft.Storage/storageAccounts/', variables('clientSaName'))]"
@@ -395,7 +429,7 @@
             "name": "[variables('clientNicName')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2016-09-01",
-            "location": "[variables('location')]",
+             "location": "[parameters('location')]",
             "dependsOn": [
                "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]",
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('clientPipName'))]",
@@ -425,7 +459,7 @@
             "name": "[variables('clientPipName')]",
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "2016-09-01",
-            "location": "[variables('location')]",
+          "location": "[parameters('location')]",
             "properties": {
                 "publicIPAllocationMethod": "Dynamic",
                 "dnsSettings": {
@@ -437,7 +471,7 @@
             "name": "[variables('clientNsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2016-09-01",
-            "location": "[variables('location')]",
+              "location": "[parameters('location')]",
             "properties": {
                 "securityRules": [
                     {
@@ -460,7 +494,7 @@
             "name": "[variables('clientSaName')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion":"2015-06-15",
-            "location": "[variables('location')]",
+           "location": "[parameters('location')]",
             "properties": {
                 "accountType": "[variables('storageType')]"
             }
