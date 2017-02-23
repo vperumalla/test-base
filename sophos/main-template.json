@@ -487,7 +487,7 @@
         }
     ],
     "outputs": {
-        "Vm Access URL": {
+        "Vm_Access_URL": {
             "value": "[concat(variables('pipdns'), '.', tolower(replace(variables('location'),' ','')), '.cloudapp.azure.com',':4444')]",
             "type": "string"
         }
