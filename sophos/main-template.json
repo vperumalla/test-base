@@ -312,7 +312,7 @@
                     "storageAccountName": {
                         "value": "[variables('storageName')]"
                     },
-                    " vmStorageAccountContainerName": {
+                    "vmStorageAccountContainerName": {
                         "value": "[variables('vhdContainer')]"
                     },
                     "networkInterfaceName1": {
@@ -372,7 +372,7 @@
                     "storageAccountName": {
                         "value": "[variables('clientSaName')]"
                     },
-                    " vmStorageAccountContainerName": {
+                    "vmStorageAccountContainerName": {
                         "value": "[variables('vhdContainer')]"
                     },
                     "networkInterfaceName": {
