@@ -189,7 +189,6 @@
                         {
                             "name": "[concat(parameters('vmName'),'-dataDisk')]",
                             "lun": 0,
-                            "createOption": "FromImage",
                             "vhd": {
                                 "uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/',parameters('vmStorageAccountContainerName'),'/',parameters('vmName'),uniquestring(resourceGroup().id),'-datadisk.vhd')]"
                             },
