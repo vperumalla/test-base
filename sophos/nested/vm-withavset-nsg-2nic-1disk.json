@@ -88,21 +88,18 @@
         },
         "imagePublisher": {
             "type": "string",
-            "defaultValue": " ",
             "metadata": {
                 "description": "Virtual Machine Image Publisher"
             }
         },
         "imageOffer": {
             "type": "string",
-            "defaultValue": " ",
             "metadata": {
                 "description": "Virtual Machine Image Offer"
             }
         },
         "imageSKU": {
             "type": "string",
-            "defaultValue": " ",
             "metadata": {
                 "description": "Virtual Machine Image SKU"
             }
@@ -185,7 +182,7 @@
                         "sku": "[parameters('imageSKU')]",
                         "version": "[parameters('imageVersion')]"
                     },
-                     "dataDisks": [
+                    "dataDisks": [
                         {
                             "name": "[concat(parameters('vmName'),'-dataDisk')]",
                             "lun": 0,
@@ -215,7 +212,7 @@
                         }
                     ]
                 },
-                 "diagnosticsProfile": {
+                "diagnosticsProfile": {
                     "bootDiagnostics": {
                         "enabled": "true",
                         "storageUri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net')]"
