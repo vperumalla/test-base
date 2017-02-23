@@ -12,6 +12,7 @@
         "vnetID" : "[resourceId('Microsoft.Network/virtualNetworks',variables('netName'))]",
     "subnet1" : "[concat(variables('vnetID'),'/subnets/',variables('wanName'))]",
     "subnet2" : "[concat(variables('vnetID'),'/subnets/',variables('lanName'))]",
+    "ipConfigName":"ipconfig",
         "publicIpDNS": "xgdns",
         "clientIpDNS": "cxg",
         "imageSku": "payg",
@@ -196,8 +197,7 @@
                     "uri": "[variables('nicTemplate')]",
                     "contentVersion": "1.0.0.0"
                 },
-                "parameters": {
-                    "parameters": {
+                                    "parameters": {
                         "networkInterfaceName": {
                             "value":"[variables('nicWan')]"
                         },
@@ -209,10 +209,13 @@
                           },
                            "subnetRef": {
                                "value":"[variables('subnet1')]"                             
+                           },
+                           "location":{
+                               "value":"[variables('location')]"
                            }
                     }
                 }
-            }
+            
         },
         {
             "name": "[variables('nicLan')]",
@@ -223,19 +226,28 @@
                 "[concat('Microsoft.Resources/deployments/', 'SettingUpVirtualNetwork')]"
             ],
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[reference('SettingUpVirtualNetwork','2015-01-01').outputs.subnet2Ref.value]"
-                            }
-                        }
-                    }
-                ],
-                "enableIPForwarding": true
+                 "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('nicTemplate')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters":{
+                    "networkInterfaceName": {
+                        "value":"[variables('nicLan')]"    
+                },
+                 "ipConfigName": {
+                      "value":"[variables('ipConfigName')]"    
+                 },
+                 "subnetRef": {
+                     "value":"[variables('subnet2')]"  
+                 },
+                  "location":{
+                               "value":"[variables('location')]"
+                           }
+
+                }
             }
+            
         },
         {
             "name": "[variables('vmName')]",
