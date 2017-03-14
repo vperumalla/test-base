@@ -52,6 +52,10 @@
         "routeHopType": {
             "defaultValue": "VirtualAppliance",
             "type": "string"
+        },
+        "routeHopIpAddress": {
+            "defaultValue": "172.18.1.4",
+            "type": "string"
         }
     },
     "variables": {},
@@ -68,7 +72,8 @@
                         "name": "[parameters('routeName')]",
                         "properties": {
                             "addressPrefix": "[parameters('routeAddressPrefix')]",
-                            "nextHopType": "[parameters('routeHopType')]"
+                            "nextHopType": "[parameters('routeHopType')]",
+                            "nextHopIpAddress": "[parameters('routeHopIpAddress')]"
                         }
                     }
                 ]
