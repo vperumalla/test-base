@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "nic_Port_Name": {
-            "defaultValue": "PortA",
+            "defaultValue": "PortB",
             "type": "string"
         },
         "location": {
