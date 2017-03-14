@@ -65,7 +65,7 @@
             "type": "Microsoft.Network/routeTables",
             "name": "[parameters('routeTables_xglanrt_name')]",
             "apiVersion": "2016-03-30",
-            "location": "westus",
+            "location": "[parameters('location')]",
             "properties": {
                 "routes": [
                     {
