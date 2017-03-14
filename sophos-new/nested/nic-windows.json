@@ -83,11 +83,7 @@
                     "dnsServers": []
                 },
                 "enableIPForwarding": false
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_windowspip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name'))]"
-            ]
+            }    
         }
     ]
 }
