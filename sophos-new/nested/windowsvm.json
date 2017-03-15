@@ -41,6 +41,10 @@
             "defaultValue": "windowsvm",
             "type": "string"
         },
+         "WindowsVmSize": {
+            "defaultValue": "Standard_D1_v2",
+            "type": "string"
+        },
         "imagePublisher": {
             "defaultValue": "MicrosoftWindowsServer",
             "type": "string"
@@ -64,7 +68,7 @@
             "type": "securestring"
         },
         "nic_windowsvm_name": {
-            "defaultValue": "windowspassword",
+            "defaultValue": "nic",
             "type": "securestring"
         } 
     },
@@ -77,7 +81,7 @@
             "location": "[parameters('location')]",
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_D1_v2"
+                    "vmSize": "[parameters('windowsVmSize')]"
                 },
                 "storageProfile": {
                     "imageReference": {
