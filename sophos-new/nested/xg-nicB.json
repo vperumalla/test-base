@@ -65,6 +65,7 @@
                     {
                         "name": "ipconfig",
                         "properties": {
+                             "privateIPAddress": "[parameters('Port_PrivateIp')]",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
                                 "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name')), '/subnets/LAN')]"
