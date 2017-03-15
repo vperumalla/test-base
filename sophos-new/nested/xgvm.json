@@ -37,6 +37,12 @@
                 "description": "Deployment Location Hint: Use lowercase for creating ipaddress"
             }
         },
+        "availabilitySetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Availability Set Name"
+            }
+        },
         "sophosvm_Name": {
             "defaultValue": "sophosvm",
             "type": "string"
@@ -149,13 +155,7 @@
                         }
                     ]
                 }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortA_name'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortB_name'))]"
-            ]
-        },
+            }
+        }
     ]
 }
