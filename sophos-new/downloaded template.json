@@ -1,0 +1,467 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_sophosvm_adminPassword": {
+            "defaultValue": null,
+            "type": "SecureString"
+        },
+        "virtualMachines_windowsvm_adminPassword": {
+            "defaultValue": null,
+            "type": "SecureString"
+        },
+        "availabilitySets_AvailabilitySet_name": {
+            "defaultValue": "AvailabilitySet",
+            "type": "String"
+        },
+        "virtualMachines_sophosvm_name": {
+            "defaultValue": "sophosvm",
+            "type": "String"
+        },
+        "virtualMachines_windowsvm_name": {
+            "defaultValue": "windowsvm",
+            "type": "String"
+        },
+        "networkInterfaces_PortA_name": {
+            "defaultValue": "PortA",
+            "type": "String"
+        },
+        "networkInterfaces_PortB_name": {
+            "defaultValue": "PortB",
+            "type": "String"
+        },
+        "networkInterfaces_windowsvm529_name": {
+            "defaultValue": "windowsvm529",
+            "type": "String"
+        },
+        "networkSecurityGroups_windowsbackend_name": {
+            "defaultValue": "windowsbackend",
+            "type": "String"
+        },
+        "networkSecurityGroups_xgfrontend_name": {
+            "defaultValue": "xgfrontend",
+            "type": "String"
+        },
+        "publicIPAddresses_windowspip_name": {
+            "defaultValue": "windowspip",
+            "type": "String"
+        },
+        "publicIPAddresses_xgpipwan_name": {
+            "defaultValue": "xgpipwan",
+            "type": "String"
+        },
+        "routeTables_xglanrt_name": {
+            "defaultValue": "xglanrt",
+            "type": "String"
+        },
+        "virtualNetworks_xgvnet_name": {
+            "defaultValue": "xgvnet",
+            "type": "String"
+        },
+        "storageAccounts_xgsa_name": {
+            "defaultValue": "xgsa",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Compute/availabilitySets/AvailabilitySet'.",
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[parameters('availabilitySets_AvailabilitySet_name')]",
+            "apiVersion": "2015-06-15",
+            "location": "westus",
+            "properties": {
+                "platformUpdateDomainCount": 5,
+                "platformFaultDomainCount": 3
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Compute/virtualMachines/sophosvm'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_sophosvm_name')]",
+            "apiVersion": "2015-06-15",
+            "location": "westus",
+            "plan": {
+                "name": "payg",
+                "product": "sophos-xg",
+                "publisher": "sophos"
+            },
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_AvailabilitySet_name'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "sophos",
+                        "offer": "sophos-xg",
+                        "sku": "payg",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[concat(parameters('virtualMachines_sophosvm_name'),'-osDisk')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('http', '://', parameters('storageAccounts_xgsa_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_sophosvm_name'),'-prim.vhd'))]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[concat(parameters('virtualMachines_sophosvm_name'),'-dataDisk')]",
+                            "createOption": "FromImage",
+                            "vhd": {
+                                "uri": "[concat('http', '://', parameters('storageAccounts_xgsa_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_sophosvm_name'),'-aux.vhd'))]"
+                            },
+                            "caching": "None"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_sophosvm_name')]",
+                    "adminUsername": "azureuser",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('virtualMachines_sophosvm_adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortA_name'))]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortB_name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_AvailabilitySet_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_xgsa_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortA_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PortB_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Compute/virtualMachines/windowsvm'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_windowsvm_name')]",
+            "apiVersion": "2015-06-15",
+            "location": "westus",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[parameters('virtualMachines_windowsvm_name')]",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('https', '://', parameters('storageAccounts_xgsa_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_windowsvm_name'),'20170309181343.vhd'))]"
+                        },
+                        "caching": "ReadWrite"
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_windowsvm_name')]",
+                    "adminUsername": "clientuser",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('virtualMachines_windowsvm_adminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_windowsvm529_name'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_xgsa_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_windowsvm529_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/networkInterfaces/PortA'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_PortA_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "privateIPAddress": "172.18.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_xgpipwan_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name')), '/subnets/WAN')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": true
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_xgpipwan_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/networkInterfaces/PortB'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_PortB_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig",
+                        "properties": {
+                            "privateIPAddress": "172.18.1.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name')), '/subnets/LAN')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": true
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/networkInterfaces/windowsvm529'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_windowsvm529_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAddress": "172.18.1.5",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_windowspip_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name')), '/subnets/LAN')]"
+                            }
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableIPForwarding": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_windowspip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/networkSecurityGroups/windowsbackend'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_windowsbackend_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "deny_any_net",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "Internet",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/networkSecurityGroups/xgfrontend'.",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[parameters('networkSecurityGroups_xgfrontend_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "allow_any_inbound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    },
+                    {
+                        "name": "allow_any_outbound",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Outbound"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/publicIPAddresses/windowspip'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_windowspip_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "wdns"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/publicIPAddresses/xgpipwan'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_xgpipwan_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "xgdns"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/routeTables/xglanrt'.",
+            "type": "Microsoft.Network/routeTables",
+            "name": "[parameters('routeTables_xglanrt_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "routes": [
+                    {
+                        "name": "route_all_xgfirewall",
+                        "properties": {
+                            "addressPrefix": "0.0.0.0/0",
+                            "nextHopType": "VirtualAppliance",
+                            "nextHopIpAddress": "172.18.1.4"
+                        }
+                    }
+                ]
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Network/virtualNetworks/xgvnet'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_xgvnet_name')]",
+            "apiVersion": "2016-03-30",
+            "location": "westus",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "172.18.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "WAN",
+                        "properties": {
+                            "addressPrefix": "172.18.0.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_xgfrontend_name'))]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "LAN",
+                        "properties": {
+                            "addressPrefix": "172.18.1.0/24",
+                            "routeTable": {
+                                "id": "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_xglanrt_name'))]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_xgfrontend_name'))]",
+                "[resourceId('Microsoft.Network/routeTables', parameters('routeTables_xglanrt_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/7eab3893-bd71-4690-84a5-47624df0b0e5/resourceGroups/sophos/providers/Microsoft.Storage/storageAccounts/xgsa'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_xgsa_name')]",
+            "apiVersion": "2016-01-01",
+            "location": "westus",
+            "tags": {},
+            "properties": {},
+            "dependsOn": []
+        }
+    ]
+}
