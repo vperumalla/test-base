@@ -50,7 +50,10 @@
             "defaultValue": "vnet"
         }
     },
-    "variables": {},
+    "variables": {
+        "internalDnsNameLabel":"[concat('nicB',variables('suffix'))]",
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 7)]"
+    },
     "resources": [
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -71,10 +74,16 @@
                     }
                 ],
                 "dnsSettings": {
-                    "dnsServers": []
+                    "internalDnsNameLabel": "[variables('internalDnsNameLabel')]"
                 },
                 "enableIPForwarding": true
             }
         }
-    ]
+    ],
+    "outputs": {
+        "pvtip":{
+            "value": "[reference('Microsoft.Network/networkInterfaces').dnsSettings.fqdn]",
+            "type": "string"
+        }
+    }
 }
