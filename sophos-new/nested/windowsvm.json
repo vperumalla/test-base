@@ -41,7 +41,7 @@
             "defaultValue": "windowsvm",
             "type": "string"
         },
-         "WindowsVmSize": {
+         "windowsVmSize": {
             "defaultValue": "Standard_D1_v2",
             "type": "string"
         },
