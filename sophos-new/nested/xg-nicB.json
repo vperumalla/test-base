@@ -51,8 +51,6 @@
         }
     },
     "variables": {
-        "internalDnsNameLabel":"[concat('nicB',variables('suffix'))]",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 7)]"
     },
     "resources": [
         {
@@ -65,8 +63,8 @@
                     {
                         "name": "ipconfig",
                         "properties": {
-                             "privateIPAddress": "[parameters('Port_PrivateIp')]",
-                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('Port_PrivateIp')]",
+                            "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
                                 "id": "[concat(resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_xgvnet_name')), '/subnets/LAN')]"
                             }
@@ -74,16 +72,10 @@
                     }
                 ],
                 "dnsSettings": {
-                    "internalDnsNameLabel": "[variables('internalDnsNameLabel')]"
+                      "dnsServers": []
                 },
                 "enableIPForwarding": true
             }
         }
-    ],
-    "outputs": {
-        "pvtip":{
-            "value": "[reference('Microsoft.Network/networkInterfaces').dnsSettings.fqdn]",
-            "type": "string"
-        }
-    }
+    ]
 }
