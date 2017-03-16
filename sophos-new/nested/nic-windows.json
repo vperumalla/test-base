@@ -69,7 +69,7 @@
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAddress": "[parameters('Port_PrivateIp')]",
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_windowspip_name'))]"
                             },
