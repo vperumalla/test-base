@@ -19,11 +19,14 @@
         "sophosVmUrl": "[concat(variables('baseUrl'),'/nested/xgvm.json')]",
         "windowsVmUrl":"[concat(variables('baseUrl'),'/nested/windowsvm.json')]",
         "storageAccount_xg_name":"[concat(uniquestring(resourceGroup().id), 'xgsa')]", 
+         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageType": "Standard_LRS",
         "windowspip_name": "windowspip",
         "windowsDnsPrefix": "wdns",
+        "windowsDnsName": "[concat(variables('windowsDnsPrefix'),variables('suffix'))]",
         "xgpipwan_name": "xgpipwan",
         "xgDnsPrefix": "xgdns",
+        "xgDnsName": "[concat(variables('xgDnsPrefix'),variables('suffix'))]",
         "nsg_xgfrontend_name": "xgfrontend",
         "nsg_windowsbackend_name": "windowsbackend",
         "routeTable_name": "xglanrt",
@@ -116,7 +119,7 @@
                         "value": "[variables('windowspip_name')]"
                     },
                     "publicIPdnsPrefix": {
-                        "value": "[variables('windowsDnsPrefix')]"
+                        "value": "[variables('windowsDnsName')]"
                     },
                     "location": {
                         "value": "[variables('location')]"
@@ -139,7 +142,7 @@
                         "value": "[variables('xgpipwan_name')]"
                     },
                     "publicIPdnsPrefix": {
-                        "value": "[variables('xgDnsPrefix')]"
+                        "value": "[variables('xgDnsName')]"
                     },
                     "location": {
                         "value": "[variables('location')]"
