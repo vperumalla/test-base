@@ -67,7 +67,7 @@
                         "name": "ipconfig",
                         "properties": {
                             "privateIPAddress": "[parameters('Port_PrivateIp')]",
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddress_xgpipwan_name'))]"
                             },
