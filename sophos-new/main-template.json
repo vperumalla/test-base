@@ -58,7 +58,9 @@
         "windows_ImagePublisher": "MicrosoftWindowsServer",
         "windows_ImageOffer": "WindowsServer",
         "windows_ImageSKU": "2012-R2-Datacenter",
-        "windowsvm_Password":"Clientpassword@123"
+        "windowsvm_Password":"Clientpassword@123",
+         "windowsUserName":"clientuser"
+           
     },
     "resources": [
         {
@@ -473,6 +475,9 @@
                    "nic_windowsvm_name": {
                         "value": "[variables('nic_windows')]"
                     },
+                     "windowsUserName":{
+                         "value": "[variables('windowsUserName')]"
+                     },
                     "location": {
                         "value": "[variables('location')]"
                     }
@@ -484,6 +489,18 @@
         "xgvm_access_url": {
             "type": "string",
             "value": "[concat('https://',reference('xgPipSetup').outputs.fqdn.value,':4444')]"
+        },
+        "windowsUserName":{
+            "type": "string",
+            "value": "[variables('windowsUserName')]"
+        }, 
+        "windowsvm_Password":{
+            "type": "string",
+            "value": "[variables('windowsvm_Password')]"
+        },
+        "mailserverIPv4address":{
+            "type": "string",
+            "value": "[variables('nic_windowsPrivateIp')]"
         }
     }
 }
