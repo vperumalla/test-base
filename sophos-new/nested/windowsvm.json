@@ -70,7 +70,11 @@
         "nic_windowsvm_name": {
             "defaultValue": "nic",
             "type": "securestring"
-        } 
+        } ,
+        "windowsUserName":{
+            "defaultValue": "clientuser",
+            "type": "string"
+        }
     },
     "variables": {},
     "resources": [
@@ -102,7 +106,7 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('windowsvm_name')]",
-                    "adminUsername": "clientuser",
+                    "adminUsername": "[parameters('windowsUserName')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true
