@@ -17,9 +17,9 @@
         "nicBUrl": "[concat(variables('baseUrl'),'/nested/xg-nicB.json')]",
         "windowsNicUrl": "[concat(variables('baseUrl'),'/nested/nic-windows.json')]",
         "sophosVmUrl": "[concat(variables('baseUrl'),'/nested/xgvm.json')]",
-        "windowsVmUrl":"[concat(variables('baseUrl'),'/nested/windowsvm.json')]",
-        "storageAccount_xg_name":"[concat(uniquestring(resourceGroup().id), 'xgsa')]", 
-         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+        "windowsVmUrl": "[concat(variables('baseUrl'),'/nested/windowsvm.json')]",
+        "storageAccount_xg_name": "[concat(uniquestring(resourceGroup().id), 'xgsa')]",
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
         "storageType": "Standard_LRS",
         "windowspip_name": "windowspip",
         "windowsDnsPrefix": "wdns",
@@ -53,14 +53,13 @@
         "imagePublisher": "sophos",
         "imageOffer": "sophos-xg",
         "imageSKU": "payg",
-        "windowsVmName":"clientVm",
+        "windowsVmName": "clientVm",
         "windowsVmSize": "Standard_D1_v2",
         "windows_ImagePublisher": "MicrosoftWindowsServer",
         "windows_ImageOffer": "WindowsServer",
         "windows_ImageSKU": "2012-R2-Datacenter",
-        "windowsvm_Password":"Clientpassword@123",
-         "windowsUserName":"clientuser"
-           
+        "windowsvm_Password": "Clientpassword@123",
+        "windowsUserName": "clientuser"
     },
     "resources": [
         {
@@ -430,7 +429,7 @@
                     "availabilitySetName": {
                         "value": "[variables('availabilitySetName')]"
                     },
-                     "location": {
+                    "location": {
                         "value": "[variables('location')]"
                     }
                 }
@@ -441,8 +440,8 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "[variables('apiVersion')]",
             "dependsOn": [
-               "windowsNic",
-               "storageSetUp"
+                "windowsNic",
+                "storageSetUp"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -469,15 +468,15 @@
                     "storageAccountName": {
                         "value": "[variables('storageAccount_xg_name')]"
                     },
-                   "windowsvm_Password": {
+                    "windowsvm_Password": {
                         "value": "[variables('windowsvm_Password')]"
                     },
-                   "nic_windowsvm_name": {
+                    "nic_windowsvm_name": {
                         "value": "[variables('nic_windows')]"
                     },
-                     "windowsUserName":{
-                         "value": "[variables('windowsUserName')]"
-                     },
+                    "windowsUserName": {
+                        "value": "[variables('windowsUserName')]"
+                    },
                     "location": {
                         "value": "[variables('location')]"
                     }
@@ -490,15 +489,19 @@
             "type": "string",
             "value": "[concat('https://',reference('xgPipSetup').outputs.fqdn.value,':4444')]"
         },
-        "windowsUserName":{
+        "sophos_Access_Password": {
+            "type": "string",
+            "value": "[variables('sophosVmPassword')]"
+        },
+        "windowsUserName": {
             "type": "string",
             "value": "[variables('windowsUserName')]"
-        }, 
-        "windowsvm_Password":{
+        },
+        "windowsvm_Password": {
             "type": "string",
             "value": "[variables('windowsvm_Password')]"
         },
-        "mailserverIPv4address":{
+        "windowsserverIPv4address": {
             "type": "string",
             "value": "[variables('nic_windowsPrivateIp')]"
         }
