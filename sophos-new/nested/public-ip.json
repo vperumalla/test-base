@@ -97,10 +97,6 @@
         "fqdn": {
             "value": "[reference(parameters('publicIPAddressName')).dnsSettings.fqdn]",
             "type": "string"
-        },
-        "ipaddress": {
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))).ipAddress]",
-            "type": "string"
         }
     }
 }
