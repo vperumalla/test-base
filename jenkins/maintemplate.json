@@ -30,7 +30,7 @@
         },
         "_artifactsLocation": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/ooha-m/azure-quickstart-templates/master/devopstools-jenkins-chefhabitat-terraform",
+            "defaultValue": "https://raw.githubusercontent.com/ooha-m/test-base/master/jenkins/",
             "metadata": {
                 "description": "The base uri where artifacts required by this template are located. when the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
             }
@@ -74,9 +74,7 @@
             "_artifactsLocationSasToken":"[parameters('_artifactsLocationSasToken')]",
             "installJenkinsScriptUrl": "[concat(parameters('_artifactsLocation'),'/scripts/install_jenkins.sh', parameters('_artifactsLocationSasToken'))]"
         },
-       
-        "resourceGroupName": "[resourceGroup().name]",
-      
+       "resourceGroupName": "[resourceGroup().name]",
         "publicIpAddressType": "Dynamic",
         "location": "[resourceGroup().location]",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
