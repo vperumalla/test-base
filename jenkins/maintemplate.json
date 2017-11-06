@@ -30,7 +30,7 @@
         },
         "_artifactsLocation": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/ooha-m/test-base/master/jenkins",
+            "defaultValue": "https://raw.githubusercontent.com/ooha-m/test-base/jenkins/jenkins",
             "metadata": {
                 "description": "The base uri where artifacts required by this template are located. when the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
             }
