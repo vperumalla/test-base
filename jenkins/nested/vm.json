@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "outputs": {
+    "identity": {
+      "type": "object",
+      "value": "[reference(concat(resourceId('Microsoft.Compute/virtualMachines', parameters('jenkinsSettings').vmName), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW')]"
+    }
+  },
+  "parameters": {
+    "jenkinsSettings": {
+      "type": "secureobject"
+  }
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-03-30",
+      "dependsOn": [],
+      "location": "[parameters('jenkinsSettings').location]",
+      "identity": {        
+        "Type": "SystemAssigned"        
+      },
+      "name": "[parameters('jenkinsSettings').vmName]",
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('jenkinsSettings').vmSize]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[parameters('jenkinsSettings').networkInterfaceId]"
+            }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "[parameters('jenkinsSettings').adminUserName]",
+          "computerName": "[parameters('jenkinsSettings').vmName]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": "true",
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "[parameters('jenkinsSettings').adminSSHPublicKey]",
+                  "path": "[concat('/home/',parameters('jenkinsSettings').adminUsername,'/.ssh/authorized_keys')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "offer": "UbuntuServer",
+            "publisher": "Canonical",
+            "sku": "[parameters('jenkinsSettings').ubuntuSku]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "name": "osDisk",
+            "managedDisk":{
+              "storageAccountType": "[parameters('jenkinsSettings').storageAccountType]"
+            }
+          }
+        }
+      },
+      "resources": [],
+      "tags": {
+        "displayName": "[parameters('jenkinsSettings').vmName]"
+      },
+      "type": "Microsoft.Compute/virtualMachines"
+    }
+  ],
+  "variables": {}
+}
