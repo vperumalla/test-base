@@ -1,71 +1,55 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "outputs": {
-    "identity": {
-      "type": "object",
-      "value": "[reference(concat(resourceId('Microsoft.Compute/virtualMachines', parameters('vmName')), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW')]"
-    }
-  },
+  
   "parameters": {
-    "adminPassword": {
-      "type": "securestring"
-    },
-    "adminSSHPublicKey": {
-      "type": "securestring"
-    },
-    "adminUserName": {
-      "type": "string"
-    },
-    "networkInterfaceId": {
-      "type": "string"
-    },
-    "storageAccountType": {
-      "type": "string"
-    },
-    "ubuntuSku": {
-      "type": "string"
-    },
-    "vmLocation": {
-      "type": "string"
-    },
-    "vmName": {
-      "type": "string"
-    },
-    "vmSize": {
-      "type": "string"
+    "jenkinsSettings": {
+        "type": "secureobject"
     }
   },
+  "variables": {},
   "resources": [
     {
       "apiVersion": "2017-03-30",
       "dependsOn": [],
-      "location": "[parameters('vmLocation')]",
-      "name": "[parameters('vmName')]",
+      "location": "[parameters('jenkinsSettings').location]",
+      "name": "[parameters('jenkinsSettings').vmName]",
+      "type": "Microsoft.Compute/virtualMachines",
       "identity": {        
         "Type": "SystemAssigned"        
       },
       "properties": {
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "[parameters('jenkinsSettings').vmSize]"
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[parameters('networkInterfaceId')]"
+              "id": "[parameters('jenkinsSettings').networkInterfaceId]"
             }
           ]
         },
         "osProfile": {
-          "adminPassword": "[parameters('adminPassword')]",
-          "adminUsername": "[parameters('adminUserName')]",
-          "computerName": "[parameters('vmName')]"
+          "adminPassword": "[parameters('jenkinsSettings').adminPassword]",
+          "adminUsername": "[parameters('jenkinsSettings').adminUserName]",
+          "computerName": "[parameters('jenkinsSettings').vmName]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": "true",
+            "ssh": {
+              "publicKeys": [
+                {
+                  "keyData": "[parameters('jenkinsSettings').adminSSHPublicKey]",
+                  "path": "[concat('/home/',parameters('jenkinsSettings').adminUsername,'/.ssh/authorized_keys')]"
+                }
+              ]
+            }
+          }
         },
         "storageProfile": {
           "imageReference": {
             "offer": "UbuntuServer",
             "publisher": "Canonical",
-            "sku": "[parameters('ubuntuSku')]",
+            "sku": "[parameters('jenkinsSettings').ubuntuSku]",
             "version": "latest"
           },
           "osDisk": {
@@ -73,17 +57,22 @@
             "createOption": "FromImage",
             "name": "osDisk",
             "managedDisk":{
-              "storageAccountType": "[parameters('storageAccountType')]"
+              "storageAccountType": "[parameters('jenkinsSettings').storageAccountType]"
             }
           }
         }
       },
       "resources": [],
       "tags": {
-        "displayName": "[parameters('vmName')]"
-      },
-      "type": "Microsoft.Compute/virtualMachines"
+        "displayName": "[parameters('jenkinsSettings').vmName]"
+      }
+     
     }
   ],
-  "variables": {}
+  "outputs": {
+    "identity": {
+      "type": "object",
+      "value": "[reference(concat(resourceId('Microsoft.Compute/virtualMachines', parameters('jenkinsSettings').vmName), '/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW')]"
+    }
+  }
 }
