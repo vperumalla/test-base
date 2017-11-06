@@ -36,9 +36,8 @@ function run_util_script() {
 }
 
 #defaults
-#artifacts_location="https://raw.githubusercontent.com/Azure/azure-devops-utils/master/"
-artifacts_location="https://raw.githubusercontent.com/ooha-m/test-base/master/jenkins"
-jenkins_version_location="https://raw.githubusercontent.com/ooha-m/test-base/master/jenkins/scripts/jenkins-verified-ver"
+artifacts_location="https://raw.githubusercontent.com/Azure/azure-devops-utils/master/"
+jenkins_version_location="https://raw.githubusercontent.com/Azure/azure-devops-utils/master/jenkins/jenkins-verified-ver"
 azure_web_page_location="/usr/share/nginx/azure"
 jenkins_release_type="LTS"
 
@@ -222,9 +221,9 @@ else
 fi
 
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
-plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs)
+plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents)
 for plugin in "${plugins[@]}"; do
-  run_util_script "/scripts/run-cli-command.sh" -c "install-plugin $plugin -deploy"
+  run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy"
 done
 
 #allow anonymous read access
@@ -254,7 +253,7 @@ echo "${nginx_reverse_proxy_conf}" | sudo tee /etc/nginx/sites-enabled/default >
 sudo sed -i "s|.*server_tokens.*|server_tokens off;|" /etc/nginx/nginx.conf
 
 #install jenkins-on-azure web page
-run_util_script "/scripts/install-web-page.sh" -u "${jenkins_fqdn}"  -l "${azure_web_page_location}" -al "${artifacts_location}" -st "${artifacts_location_sas_token}"
+run_util_script "jenkins/jenkins-on-azure/install-web-page.sh" -u "${jenkins_fqdn}"  -l "${azure_web_page_location}" -al "${artifacts_location}" -st "${artifacts_location_sas_token}"
 
 #restart nginx
 sudo service nginx restart
