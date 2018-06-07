@@ -50,6 +50,7 @@
     ## Creating Database
     $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
     $ScriptURL="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-db-azure.sql"
+    start-Sleep -s 20
     $ScriptFromGit = Invoke-WebRequest -Uri $ScriptURL -UseBasicParsing
     start-Sleep -s 20
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "master" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit.Content
