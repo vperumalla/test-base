@@ -44,7 +44,7 @@
     $azurePassword = ConvertTo-SecureString $azurePassword  -AsplainText -force
     $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
     start-Sleep -s 20
-    Login-AzureRmAccount -TenantId $tentantId -SubscriptionID $subscriptionId -Credential $psCred
+    Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred
     start-Sleep -s 20
         
     ## Creating Database
