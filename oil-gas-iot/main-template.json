@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0",
+    "contentVersion": "1.0.0.0",
     "parameters": {
         "sqlAdministratorLogin": {
             "type": "string",
@@ -32,7 +32,7 @@
         {
             "type": "Microsoft.Resources/deployments",
             "name": "sqlServer",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2014-04-01",
             "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
