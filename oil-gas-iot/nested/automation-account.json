@@ -46,7 +46,7 @@
                 },
                 {
                     "name": "[concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').moduleName)]",
-                    "type": "Microsoft.Automation/automationAccounts/modules",
+                    "type": "modules",
                     "apiVersion": "2015-10-31",
                     "scale": null,
                     "properties": {
@@ -59,7 +59,7 @@
                 },
                 {
                     "name": "[concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').sessionId)]",
-                    "type": "Microsoft.Automation/automationAccounts/jobs",
+                    "type": "jobs",
                     "apiVersion": "2015-10-31",
                     "location": "[parameters('automationSettings').automationLocation]",
                     "properties": {
