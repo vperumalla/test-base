@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0",
+    "parameters": {
+        "sqlAdministratorLogin": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "provide the user name for the sql server, please make a note of Username this will be used further"
+            }
+        },
+        "sqlAdministratorLoginPassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "provide the password for the sql server, make a note of the Password this will be used further"
+            }
+        }
+    },
+    "variables": {
+      "sqlServer":{
+          "serverName":"[concat('oilgasserver',variables('suffix'))]",
+          "location": "[variables('location')]",
+          "sqlAdministratorLogin":"[parameters('sqlAdministratorLogin')]",
+          "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]"
+      },
+      "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+      "location": "[resourceGroup().location]",
+      "baseUrl":""
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "sqlServer",
+            "apiVersion": "2015-05-01-preview",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'azure-sqlserver.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "sqlServer":{
+                        "value": "[variables('sqlServer')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "serverName":{
+            "type": "string",
+            "value": "[reference('sqlServer').outputs.serverName.value]"
+        }
+    }
+}
