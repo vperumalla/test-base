@@ -2,53 +2,53 @@
     param(
          [Parameter(Mandatory=$true)]
          [string]
-         $azurelogin,
+         $azureLogin,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $azurepassword,
+         $azurePassword,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $TenantId,
+         $tenantId,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $SubscriptionId,
+         $subscriptionId,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $serverusername,
+         $serverLogin,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $serverpassword,
+         $serverPassword,
 
          [Parameter(Mandatory=$true)]
          [string]
-         $SQLServerName
+         $sqlServerName
          
         )
     InlineScript{
         
-    $serverusername=$Using:serverusername
-    $serverpassword=$Using:serverpassword
-    $azurelogin=$Using:azurelogin
-    $azurepassword=$Using:azurepassword
-    $TenantId=$Using:TenantId
-    $SubscriptionId=$Using:SubscriptionId
-    $SQLServerName=$Using:SQLServerName
+    $serverLogin=$Using:serverLogin
+    $serverPassword=$Using:serverPassword
+    $azureLogin=$Using:azureLogin
+    $azurePassword=$Using:azurePassword
+    $tenantId=$Using:tenantId
+    $subscriptionId=$Using:subscriptionId
+    $sqlServerName=$Using:sqlServerName
 
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned  -Force
-    $azureAccountName = $azurelogin
-    $azurePassword = ConvertTo-SecureString $azurepassword  -AsplainText -force
+    $azureAccountName = $azureLogin
+    $azurePassword = ConvertTo-SecureString $azurePassword  -AsplainText -force
     $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
     start-Sleep -s 20
-    Login-AzureRmAccount -TenantId $TenantId -SubscriptionID $SubscriptionId -Credential $psCred
+    Login-AzureRmAccount -TenantId $tentantId -SubscriptionID $subscriptionId -Credential $psCred
     start-Sleep -s 20
         
     ## Creating Database
-    $AzureSQLServerName = $SQLServerName + ".database.windows.net,1433"
+    $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
     $ScriptURL="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-db-azure.sql"
     $ScriptFromGit = Invoke-WebRequest -Uri $ScriptURL -UseBasicParsing
     start-Sleep -s 20
@@ -62,5 +62,3 @@
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "db4cards" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit2.Content 
     }
 }
-  
- 
