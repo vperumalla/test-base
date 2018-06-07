@@ -51,7 +51,7 @@
                     "scale": null,
                     "properties": {
                         "contentLink": { 
-                            "uri": "https://github.com/komalio/komali-test/raw/master/sqlserver.zip"
+                            "uri": "https://github.com/sysgain/Oil-Gas/raw/Dev/scripts/sqlserver.zip"
                         }
                     },
                     "dependsOn": [
