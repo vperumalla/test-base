@@ -50,7 +50,9 @@
                     "apiVersion": "2015-10-31",
                     "scale": null,
                     "properties": {
-                        "contentLink": "https://github.com/komalio/komali-test/raw/master/sqlserver.zip"
+                        "contentLink": { 
+                            "uri": "https://github.com/komalio/komali-test/raw/master/sqlserver.zip"
+                        }
                     },
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('automationSettings').automationAccountName)]",
