@@ -26,7 +26,7 @@
       },
       "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
       "location": "[resourceGroup().location]",
-      "baseUrl":""
+      "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/oil-gas-iot/nested/"
     },
     "resources": [
         {
@@ -37,7 +37,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'azure-sqlserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'sqlserver.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
