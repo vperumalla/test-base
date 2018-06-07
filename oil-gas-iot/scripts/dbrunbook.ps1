@@ -45,7 +45,7 @@
     $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
     start-Sleep -s 20
     Login-AzureRmAccount -TenantId $teantId -SubscriptionID $subscriptionId -Credential $psCred
-    start-Sleep -s 40
+    start-Sleep -s 20
         
     ## Creating Database
     $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
