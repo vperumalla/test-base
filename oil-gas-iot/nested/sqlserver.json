@@ -20,7 +20,20 @@
               "version": "12.0"
               
             }
-          }
+          },
+          {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "location": "[parameters('sqlServer').location]",
+            "name": "[concat(parameters('sqlServer').serverName,'/','allowall')]",
+            "apiVersion": "2014-04-01",
+            "dependsOn": [
+                "[concat('Microsoft.Sql/servers/', parameters('sqlServer').serverName)]"
+            ],
+            "properties": {
+                "endIpAddress": "0.0.0.0",
+                "startIpAddress": "0.0.0.0"
+            }
+        }
     ],
     "outputs": {
         "serverName":{
