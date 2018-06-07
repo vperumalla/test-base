@@ -45,7 +45,7 @@
                     }
                 },
                 {
-                    "name": "[concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').moduleName)]",
+                    "name": "[concat(parameters('automationSettings').automationAccountName, '/SqlServer')]",
                     "type": "modules",
                     "apiVersion": "2015-10-31",
                     "scale": null,
