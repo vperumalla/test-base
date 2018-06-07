@@ -79,7 +79,7 @@
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('automationSettings').automationAccountName)]",
                         "[resourceId('Microsoft.Automation/automationAccounts/runbooks', parameters('automationSettings').automationAccountName, parameters('automationSettings').runbookName)]",
-                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').moduleName))]"
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules', parameters('automationSettings').automationAccountName, parameters('automationSettings').moduleName)]"
                     ]
                 }
             ]
