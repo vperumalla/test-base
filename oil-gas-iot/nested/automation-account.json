@@ -28,7 +28,7 @@
                 {
                     "name": "[parameters('automationSettings').runbookName]",
                     "type": "runbooks",
-                    "apiVersion": "2015-01-01",
+                    "apiVersion": "2015-10-31",
                     "location": "[parameters('automationSettings').automationLocation]",
                     "dependsOn": [
                         "[concat('Microsoft.Automation/automationAccounts/', parameters('automationSettings').automationAccountName)]"
@@ -47,7 +47,7 @@
                 {
                     "name": "[concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').moduleName)]",
                     "type": "Microsoft.Automation/automationAccounts/modules",
-                    "apiVersion": "2015-01-01",
+                    "apiVersion": "2015-10-31",
                     "scale": null,
                     "properties": {
                         "contentLink": {}
@@ -60,7 +60,7 @@
                 {
                     "name": "[concat(parameters('automationSettings').automationAccountName, '/', parameters('automationSettings').sessionId)]",
                     "type": "Microsoft.Automation/automationAccounts/jobs",
-                    "apiVersion": "2015-01-01",
+                    "apiVersion": "2015-10-31",
                     "location": "[parameters('automationSettings').automationLocation]",
                     "properties": {
                         "runbook": {
