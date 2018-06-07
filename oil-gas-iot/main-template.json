@@ -15,6 +15,42 @@
             "metadata": {
                 "description": "provide the password for the sql server, make a note of the Password this will be used further"
             }
+        },
+        "sessionId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "type": "sessionid",
+                "description": "Provide the guid prefix for the runbook job to be created. Please refer Documentation Section GUID Generator to generate session id."
+            }
+        },
+        "azureLogin": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "provide the user name to Login to Azure environment"
+            }
+        },
+        "azurePassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "provide the password to Login to Azure environment"
+            }
+        },
+        "tenantId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Tenant Id for the subscription"
+            }
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Subscription ID of Azure environment"
+            }
         }
     },
     "variables": {
@@ -24,9 +60,24 @@
           "sqlAdministratorLogin":"[parameters('sqlAdministratorLogin')]",
           "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]"
       },
-      "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+      "automationSettings": {
+          "automationAccountName":"[concat('db', variables('suffix'))]",
+          "automationLocation":"[variables('location')]",
+          "automationSku":"Free",
+          "runbookName": "db_schema",
+          "runbookUri": "[concat(variables('baseUrl'),'scripts/dbrunbook.ps1')]",
+          "sessionId": "[parameters('sessionId')]",
+          "moduleName":"SqlServer"
+      },
+      "azureSettings":{
+          "azureLogin":"[parameters('azureLogin')]",
+          "azurePassword":"[parameters('azurePassword')]",
+          "tenantId":"[parameters('tenantId')]",
+          "subscriptionId":"[parameters('subscriptionId')]"
+      },
+            "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
       "location": "[resourceGroup().location]",
-      "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/oil-gas-iot/nested/"
+      "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/oil-gas-iot/"
     },
     "resources": [
         {
@@ -37,12 +88,38 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'sqlserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
                     "sqlServer":{
                         "value": "[variables('sqlServer')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "azureAutomation",
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
+                "sqlServer"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "automationSettings": {
+                        "value": "[variables('automationSettings')]"
+                    },
+                    "sqlServer": {
+                        "value": "[variables('sqlServer')]"
+                    },
+                    "azureSettings":{
+                        "value": "[variables('azureSettings')]"
                     }
                 }
             }
