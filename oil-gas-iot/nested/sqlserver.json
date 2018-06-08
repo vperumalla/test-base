@@ -2,26 +2,41 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sqlServer":{
-            "type":"object"
+        "sqlServer": {
+            "type": "object"
         }
     },
-    "variables": {
-    },
+    "variables": {},
     "resources": [
         {
             "name": "[parameters('sqlServer').serverName]",
             "type": "Microsoft.Sql/servers",
             "apiVersion": "2014-04-01",
-            "location":  "[parameters('sqlServer').location]",
+            "location": "[parameters('sqlServer').location]",
             "properties": {
-              "administratorLogin": "[parameters('sqlServer').sqlAdministratorLogin]",
-              "administratorLoginPassword": "[parameters('sqlServer').sqlAdministratorLoginPassword]",
-              "version": "12.0"
-              
-            }
-          },
-          {
+                "administratorLogin": "[parameters('sqlServer').sqlAdministratorLogin]",
+                "administratorLoginPassword": "[parameters('sqlServer').sqlAdministratorLoginPassword]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "name": "[parameters('sqlServer').databaseName]",
+                    "apiVersion": "2014-04-01",
+                    "type": "databases",
+                    "location": "[parameters('sqlServer').location]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServer').serverName)]"
+                    ],
+                    "properties": {
+                        "collation": "[parameters('sqlServer').collation]",
+                        "edition": "[parameters('sqlServer').edition]",
+                        "maxSizeBytes": "[parameters('sqlServer').maxSizeBytes]",
+                        "requestedServiceObjectiveName": "[parameters('sqlServer').requestedServiceObjectiveName]"
+                    }
+                }
+            ]
+        },
+        {
             "type": "Microsoft.Sql/servers/firewallRules",
             "location": "[parameters('sqlServer').location]",
             "name": "[concat(parameters('sqlServer').serverName,'/','allowall')]",
@@ -36,8 +51,8 @@
         }
     ],
     "outputs": {
-        "serverName":{
-            "type":"string",
+        "serverName": {
+            "type": "string",
             "value": "[parameters('sqlServer').serverName]"
         }
     }
