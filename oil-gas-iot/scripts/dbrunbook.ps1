@@ -50,7 +50,7 @@ workflow db_schema{
     $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
     $ScriptURL="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-db-azure.sql"
     $ScriptFromGit = Invoke-WebRequest -Uri $ScriptURL -UseBasicParsing
-    start-Sleep -s40
+    start-Sleep -s 40
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "master" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit.Content
     start-Sleep -s 40
 
