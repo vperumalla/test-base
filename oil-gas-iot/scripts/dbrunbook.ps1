@@ -44,20 +44,20 @@ workflow db_schema{
     $azurePassword = ConvertTo-SecureString $azurePassword  -AsplainText -force
     $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
     start-Sleep -s 20
-    Login-AzureRmAccount -TenantId $tenfantId -SubscriptionID $subscriptionId -Credential $psCred
+    Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred
         
     ## Creating Database
     $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
     $ScriptURL="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-db-azure.sql"
     $ScriptFromGit = Invoke-WebRequest -Uri $ScriptURL -UseBasicParsing
-    start-Sleep -s 80
+    start-Sleep -s40
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "master" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit.Content
     start-Sleep -s 40
 
     ## Creating Schema
     $ScriptURL2="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-schema.sql" 
     $ScriptFromGit2 = Invoke-WebRequest -Uri $ScriptURL2 -UseBasicParsing
-    start-Sleep -s 40
+    start-Sleep -s 80
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "db4cards" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit2.Content 
     }
 }
