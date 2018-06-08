@@ -17,6 +17,7 @@
                 "administratorLogin": "[parameters('sqlServer').sqlAdministratorLogin]",
                 "administratorLoginPassword": "[parameters('sqlServer').sqlAdministratorLoginPassword]",
                 "version": "12.0"
+            }
             },
         {
             "type": "Microsoft.Sql/servers/firewallRules",
