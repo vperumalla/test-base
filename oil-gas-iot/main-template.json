@@ -58,12 +58,7 @@
           "serverName":"[concat('oilgasserver',variables('suffix'))]",
           "location": "[variables('location')]",
           "sqlAdministratorLogin":"[parameters('sqlAdministratorLogin')]",
-          "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]",
-          "edition": "Standard",
-          "requestedServiceObjectiveName": "S0",
-          "collation": "SQL_Latin1_General_CP1_CI_AS",
-          "databaseName": "sqldb",
-          "maxSizeBytes": "32212254720"
+          "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]"
       },
       "automationSettings": {
           "automationAccountName":"[concat('db', variables('suffix'))]",
