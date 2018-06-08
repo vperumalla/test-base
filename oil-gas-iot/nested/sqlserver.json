@@ -18,24 +18,6 @@
                 "administratorLoginPassword": "[parameters('sqlServer').sqlAdministratorLoginPassword]",
                 "version": "12.0"
             },
-            "resources": [
-                {
-                    "name": "[parameters('sqlServer').databaseName]",
-                    "apiVersion": "2014-04-01",
-                    "type": "databases",
-                    "location": "[parameters('sqlServer').location]",
-                    "dependsOn": [
-                        "[concat('Microsoft.Sql/servers/', parameters('sqlServer').serverName)]"
-                    ],
-                    "properties": {
-                        "collation": "[parameters('sqlServer').collation]",
-                        "edition": "[parameters('sqlServer').edition]",
-                        "maxSizeBytes": "[parameters('sqlServer').maxSizeBytes]",
-                        "requestedServiceObjectiveName": "[parameters('sqlServer').requestedServiceObjectiveName]"
-                    }
-                }
-            ]
-        },
         {
             "type": "Microsoft.Sql/servers/firewallRules",
             "location": "[parameters('sqlServer').location]",
