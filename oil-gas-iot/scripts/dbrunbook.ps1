@@ -1,4 +1,4 @@
-  workflow db_schema{
+workflow db_schema{
     param(
          [Parameter(Mandatory=$true)]
          [string]
@@ -44,7 +44,7 @@
     $azurePassword = ConvertTo-SecureString $azurePassword  -AsplainText -force
     $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $azurePassword)
     start-Sleep -s 20
-    Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred
+    Login-AzureRmAccount -TenantId $tenfantId -SubscriptionID $subscriptionId -Credential $psCred
         
     ## Creating Database
     $AzureSQLServerName = $sqlServerName + ".database.windows.net,1433"
@@ -61,5 +61,3 @@
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "db4cards" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit2.Content 
     }
 }
-  
- 
