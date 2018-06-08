@@ -70,7 +70,7 @@
           "automationLocation":"eastus2",
           "automationSku":"Free",
           "runbookName": "db_schema",
-          "runbookUri": "[concat(variables('baseUrl'),'scripts/dbrunbook.ps1?token=AT3nZh2CAxYOuLwEV6PCtTL2FN4al9llks5bIlXEwA%3D%3D')]",
+          "runbookUri": "[concat(variables('baseUrl'),'scripts/dbrunbook.ps1')]",
           "sessionId": "[parameters('sessionId')]",
           "moduleName":"SqlServer"
       },
@@ -82,7 +82,7 @@
       },
       "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
       "location": "[resourceGroup().location]",
-      "baseUrl":"https://raw.githubusercontent.com/sysgain/Oil-Gas/Dev/"
+      "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/oil-gas-iot/"
     },
     "resources": [
         {
@@ -93,7 +93,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json?token=AT3nZiOkHHPTU3e_ar-gyWFCvROmlFKuks5bIlWjwA%3D%3D')]",
+                    "uri": "[concat(variables('baseUrl'), 'sqlserver.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -113,7 +113,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json?token=AT3nZg7kVxP-ca6qfjhEXiU0C50Z2WHxks5bIlWKwA%3D%3D')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
