@@ -58,14 +58,19 @@
           "serverName":"[concat('oilgasserver',variables('suffix'))]",
           "location": "[variables('location')]",
           "sqlAdministratorLogin":"[parameters('sqlAdministratorLogin')]",
-          "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]"
+          "sqlAdministratorLoginPassword":"[parameters('sqlAdministratorLoginPassword')]",
+          "edition": "Standard",
+          "requestedServiceObjectiveName": "S0",
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "databaseName": "sqldb",
+          "maxSizeBytes": "32212254720"
       },
       "automationSettings": {
           "automationAccountName":"[concat('db', variables('suffix'))]",
-          "automationLocation":"[variables('location')]",
+          "automationLocation":"eastus2",
           "automationSku":"Free",
           "runbookName": "db_schema",
-          "runbookUri": "[concat(variables('baseUrl'),'scripts/dbrunbook.ps1')]",
+          "runbookUri": "[concat(variables('baseUrl'),'scripts/dbrunbook.ps1?token=AT3nZh2CAxYOuLwEV6PCtTL2FN4al9llks5bIlXEwA%3D%3D')]",
           "sessionId": "[parameters('sessionId')]",
           "moduleName":"SqlServer"
       },
@@ -75,9 +80,9 @@
           "tenantId":"[parameters('tenantId')]",
           "subscriptionId":"[parameters('subscriptionId')]"
       },
-            "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
+      "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
       "location": "[resourceGroup().location]",
-      "baseUrl":"https://raw.githubusercontent.com/ooha-m/test-base/master/oil-gas-iot/"
+      "baseUrl":"https://raw.githubusercontent.com/sysgain/Oil-Gas/Dev/"
     },
     "resources": [
         {
@@ -88,7 +93,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/sqlserver.json?token=AT3nZiOkHHPTU3e_ar-gyWFCvROmlFKuks5bIlWjwA%3D%3D')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -108,7 +113,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json')]",
+                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json?token=AT3nZg7kVxP-ca6qfjhEXiU0C50Z2WHxks5bIlWKwA%3D%3D')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
