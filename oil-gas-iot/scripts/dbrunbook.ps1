@@ -57,7 +57,7 @@ workflow db_schema{
     ## Creating Schema
     $ScriptURL2="https://raw.githubusercontent.com/BlueMetal/iot-edge-dynocard/master/code/containers/mssql_db/create-dynocard-schema.sql" 
     $ScriptFromGit2 = Invoke-WebRequest -Uri $ScriptURL2 -UseBasicParsing
-    start-Sleep -s 80
+    start-Sleep -s 120
     Invoke-Sqlcmd -ServerInstance $AzureSQLServerName -Database "db4cards" -Username "sqladmin" -Password "Password@1234" -Query $ScriptFromGit2.Content 
     }
 }
