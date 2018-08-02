@@ -28,7 +28,6 @@
             "DocDBSensorCollection": "SensorData",
             "DocDBOfferThroughput": "2500",
             "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1'))]",
-            "documentDBAccountKey": "[listkeys(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1')), '2015-04-08').primaryMasterKey]",
             "TargetURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/target-config/db-throughput.json"
         },
         "DocDBAccountName1": "[concat('docdb',variables('suffix'))]",
