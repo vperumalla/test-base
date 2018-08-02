@@ -23,15 +23,28 @@
                         "failoverPriority": 0,
                         "id": "[concat(parameters('documentDB').DocDBAccountName, '-', parameters('documentDB').location)]"
                     }
+                ],
+                "destructiveFlags": [
+                    "database",
+                    "collection"
+                ],
+                "databases": [
+                    {
+                        "name": "simple-db",
+                        "collections": [
+                            {
+                                "name": "partitioned-with-sproc",
+                                "partitionKey": "/dept",
+                                "requestUnits": 1200
+                            }
+                        ]
+                    }
                 ]
-            },
-            "tags": {
-                "defaultExperience": "DocumentDB"
             }
         }
     ],
     "outputs": {
-        "documentDBEndpoint":{
+        "documentDBEndpoint": {
             "type": "string",
             "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('documentDB').DocDBAccountName)).documentEndpoint]"
         }
