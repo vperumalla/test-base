@@ -16,46 +16,24 @@
             "metadata": {
                 "description": "Location where all the resources deploy"
             }
-        },
-        "Demo Target Config File": {
-      "defaultValue": "eastus",
-      "metadata": {
-        "description": "This points to different target config file"
-      },
-      "type": "string",
-      "allowedValues": [
-        "Single Unpartitioned Collection",
-        "Single Partitioned Collection",
-        "DB Throughput",
-        "Complete Sample"
-      ]
-    }
+        }
     },
     "variables": {
-        "Demo Map": {
-      "Single Unpartitioned Collection": "single-unpartitioned-collection.json",
-      "Single Partitioned Collection": "single-partitioned-collection.json",
-      "DB Throughput": "db-throughput.json",
-      "Complete Sample": "complete.json"
-    },
         "documentDB": {
             "location": "[parameters('location')]",
-            "DocDBAccountName": "[variables('DocDBAccountName')]",
+            "DocDBAccountName": "[variables('DocDBAccountName1')]",
             "offerType": "Standard",
             "DocDBName": "AssetTrackingDB",
             "DocDBGroupGpsCollection": "GroupGpsData",
             "DocDBSensorCollection": "SensorData",
             "DocDBOfferThroughput": "2500",
-            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName'))]"
-        },       
-        "DocDBAccountName": "[concat(toLower(variables('databaseAccountNamePrefix')),variables('suffix'))]",
+            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1'))]",
+            "documentDBAccountKey": "[listkeys(resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1')), '2015-04-08').primaryMasterKey]",
+            "TargetURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/target-config/db-throughput.json"
+        },
+        "DocDBAccountName1": "[concat('docdb',variables('suffix'))]",
         "deploymentApiVersion": "2016-02-01",
-         "databaseAccountNamePrefix": "docdb",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
-        "TargetURLPrefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
-    "TargetURL": "[concat(variables('Target URL Prefix'), variables('Demo Map')[parameters('Demo Target Config File')])]",
-    "AccountName": "[concat('cosmos-test-account-', uniqueString(concat(subscription().id, resourceGroup().id, 'cosmos')))]",
-    "AccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('Account Name'))]"
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
     "resources": [
         {
