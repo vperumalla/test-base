@@ -44,7 +44,7 @@
                       },
                       {
                         "name": "ACCOUNT_KEY",
-                        "value": "[parameters('documentDB').documentDBAccountKey]"
+                        "value": "[listKeys(parameters('documentDB').documentDBAuthKey, '2015-04-08').primaryMasterKey]"
                       },
                       {
                         "name": "TARGET_URL",
