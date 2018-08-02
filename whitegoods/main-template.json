@@ -30,8 +30,7 @@
             "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName'))]"
         },       
         "DocDBAccountName": "[concat(toLower(variables('databaseAccountNamePrefix')),variables('suffix'))]",
-        "deploymentApiVersion": "2016-02-01",
-        "baseUrl": "https://raw.githubusercontent.com/sysgain/ams-iot/Hardening/"
+        "deploymentApiVersion": "2016-02-01"
     },
     "resources": [
         {
@@ -42,7 +41,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('baseUrl'), 'nested/doc-db.json?token=AT3nZsyJeLz3zldF8bVysShT5pCtM7lxks5bFPA8wA%3D%3D')]",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/cosmosdb.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
