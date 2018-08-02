@@ -30,7 +30,9 @@
             "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName'))]"
         },       
         "DocDBAccountName": "[concat(toLower(variables('databaseAccountNamePrefix')),variables('suffix'))]",
-        "deploymentApiVersion": "2016-02-01"
+        "deploymentApiVersion": "2016-02-01",
+         "databaseAccountNamePrefix": "docdb",
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
     "resources": [
         {
