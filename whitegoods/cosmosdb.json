@@ -36,7 +36,7 @@
                 {
                   "name": "cosmos-target",
                   "properties": {
-                    "image": "vplauzon/cosmos-db-target-config",
+                    "image": "ooha-m/test-base",
                     "environmentVariables": [
                       {
                         "name": "ACCOUNT_ENDPOINT",
