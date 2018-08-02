@@ -16,14 +16,7 @@
             "location": "[parameters('documentDB').location]",
             "properties": {
                 "name": "[parameters('documentDB').DocDBAccountName]",
-                "databaseAccountOfferType": "[parameters('documentDB').offerType]",
-                "locations": [
-                    {
-                        "locationName": "[parameters('documentDB').location]",
-                        "failoverPriority": 0,
-                        "id": "[concat(parameters('documentDB').DocDBAccountName, '-', parameters('documentDB').location)]"
-                    }
-                ]
+                "databaseAccountOfferType": "[parameters('documentDB').offerType]"
             },
             "tags": {
                 "defaultExperience": "DocumentDB"
@@ -38,35 +31,37 @@
                 "[parameters('documentDB').DocDBAccountName]"
             ],
             "properties": {
-                "restartPolicy": "Never",
-                "containers": [
-                    {
-                        "name": "cosmos-target",
-                        "properties": {
-                            "image": "ooha-m/test-base",
-                            "environmentVariables": [
-                                {
-                                    "name": "TARGET_URL",
-                                    "value": "[parameters('documentDB').TargetURL]"
-                                }
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "cpu": 1,
-                                    "memoryInGb": 0.2
-                                }
-                            }
-                        }
+              "restartPolicy": "Never",
+              "containers": [
+                {
+                  "name": "cosmos-target",
+                  "properties": {
+                    "image": "vplauzon/cosmos-db-target-config",
+                    "environmentVariables": [
+                      {
+                        "name": "ACCOUNT_ENDPOINT",
+                        "value": "[parameters('documentDB').documentDBAuthKey]"
+                      },
+                      {
+                        "name": "ACCOUNT_KEY",
+                        "value": "[parameters('documentDB').documentDBAccountKey]"
+                      },
+                      {
+                        "name": "TARGET_URL",
+                        "value": "[parameters('documentDB').TargetURL]"
+                      }
+                    ],
+                    "resources": {
+                      "requests": {
+                        "cpu": 1,
+                        "memoryInGb": 0.2
+                      }
                     }
-                ],
-                "osType": "Linux"
+                  }
+                }
+              ],
+              "osType": "Linux"
             }
-        }
-    ],
-    "outputs": {
-        "Target Config URL": {
-            "type": "string",
-            "value":  "[parameters('documentDB').TargetURL]"
-        }
-    }
+          }
+        ]
 }
