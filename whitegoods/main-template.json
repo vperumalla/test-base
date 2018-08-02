@@ -1,0 +1,56 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "eastus",
+            "allowedValues": [
+                "eastus",
+                "northeurope",
+                "southcentralus",
+                "southeastasia",
+                "westeurope",
+                "westus2"
+            ],
+            "metadata": {
+                "description": "Location where all the resources deploy"
+            }
+        }          
+    },
+    "variables": {
+        "documentDB": {
+            "location": "[parameters('location')]",
+            "DocDBAccountName": "[variables('DocDBAccountName')]",
+            "offerType": "Standard",
+            "DocDBName": "AssetTrackingDB",
+            "DocDBGroupGpsCollection": "GroupGpsData",
+            "DocDBSensorCollection": "SensorData",
+            "DocDBOfferThroughput": "2500",
+            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName'))]"
+        },       
+        "DocDBAccountName": "[concat(toLower(variables('databaseAccountNamePrefix')),variables('suffix'))]",
+        "deploymentApiVersion": "2016-02-01",
+        "baseUrl": "https://raw.githubusercontent.com/sysgain/ams-iot/Hardening/"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "DocumentDB",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/doc-db.json?token=AT3nZsyJeLz3zldF8bVysShT5pCtM7lxks5bFPA8wA%3D%3D')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "documentDB": {
+                        "value": "[variables('documentDB')]"
+                    }
+                }
+            }
+        }
+    ]
+}
