@@ -23,30 +23,50 @@
                         "failoverPriority": 0,
                         "id": "[concat(parameters('documentDB').DocDBAccountName, '-', parameters('documentDB').location)]"
                     }
-                ],
-                "destructiveFlags": [
-                    "database",
-                    "collection"
-                ],
-                "databases": [
-                    {
-                        "name": "simple-db",
-                        "collections": [
-                            {
-                                "name": "partitioned-with-sproc",
-                                "partitionKey": "/dept",
-                                "requestUnits": 1200
-                            }
-                        ]
-                    }
                 ]
+            },
+            "tags": {
+                "defaultExperience": "DocumentDB"
+            }
+        },
+        {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-04-01",
+            "name": "container-group",
+            "location": "East US",
+            "dependsOn": [
+                "[parameters('documentDB').DocDBAccountName]"
+            ],
+            "properties": {
+                "restartPolicy": "Never",
+                "containers": [
+                    {
+                        "name": "cosmos-target",
+                        "properties": {
+                            "image": "ooha-m/test-base",
+                            "environmentVariables": [
+                                {
+                                    "name": "TARGET_URL",
+                                    "value": "[parameters('documentDB').TargetURL]"
+                                }
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "cpu": 1,
+                                    "memoryInGb": 0.2
+                                }
+                            }
+                        }
+                    }
+                ],
+                "osType": "Linux"
             }
         }
     ],
     "outputs": {
-        "documentDBEndpoint": {
+        "Target Config URL": {
             "type": "string",
-            "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('documentDB').DocDBAccountName)).documentEndpoint]"
+            "value":  "[parameters('documentDB').TargetURL]"
         }
     }
 }
