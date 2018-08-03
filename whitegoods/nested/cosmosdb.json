@@ -35,6 +35,7 @@
               "containers": [
                 {
                   "name": "cosmos-target",
+                  "image": "ooha-m/test-base/whitegoods",
                   "properties": {
                     "environmentVariables": [
                       {
