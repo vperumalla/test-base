@@ -21,47 +21,6 @@
             "tags": {
                 "defaultExperience": "DocumentDB"
             }
-        },
-        {
-            "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2018-04-01",
-            "name": "container-group",
-            "location": "East US",
-            "dependsOn": [
-                "[parameters('documentDB').DocDBAccountName]"
-            ],
-            "properties": {
-              "restartPolicy": "Never",
-              "containers": [
-                {
-                  "name": "cosmos-target",
-                  "image": "ooha-m/test-base/whitegoods",
-                  "properties": {
-                    "environmentVariables": [
-                      {
-                        "name": "ACCOUNT_ENDPOINT",
-                        "value": "[parameters('documentDB').documentDBAuthKey]"
-                      },
-                      {
-                        "name": "ACCOUNT_KEY",
-                        "value": "[listKeys(parameters('documentDB').documentDBAuthKey, '2015-04-08').primaryMasterKey]"
-                      },
-                      {
-                        "name": "TARGET_URL",
-                        "value": "[parameters('documentDB').TargetURL]"
-                      }
-                    ],
-                    "resources": {
-                      "requests": {
-                        "cpu": 1,
-                        "memoryInGb": 0.2
-                      }
-                    }
-                  }
-                }
-              ],
-              "osType": "Linux"
-            }
-          }
-        ]
+        }
+       ]
 }
