@@ -36,7 +36,6 @@
                 {
                   "name": "cosmos-target",
                   "properties": {
-                    "image": "ooha-m/test-base",
                     "environmentVariables": [
                       {
                         "name": "ACCOUNT_ENDPOINT",
