@@ -1,92 +1,26 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "DemoTargetConfigFile": {
-      "defaultValue": "eastus",
-      "metadata": {
-        "description": "This points to different target config file"
-      },
-      "type": "string",
-      "allowedValues": [
-        "Single Unpartitioned Collection",
-        "Single Partitioned Collection",
-        "DB Throughput",
-        "Complete Sample"
-      ]
-    }
-  },
-  "variables": {
-    "Demo Map": {
-      "Single Unpartitioned Collection": "single-unpartitioned-collection.json",
-      "Single Partitioned Collection": "single-partitioned-collection.json",
-      "DB Throughput": "db-throughput.json",
-      "Complete Sample": "complete.json"
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "documentDB": {
+            "type": "object"
+        }
     },
-    "TargetURLPrefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
-    "TargetURL": "[concat(variables('TargetURLPrefix'), variables('Demo Map')[parameters('DemoTargetConfigFile')])]",
-    "AccountName": "[concat('cosmos-test-account-', uniqueString(concat(subscription().id, resourceGroup().id, 'cosmos')))]",
-    "AccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('AccountName'))]"
-  },
-  "resources": [
-    {
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2015-04-08",
-      "name": "[variables('AccountName')]",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "kind": "GlobalDocumentDB",
-      "properties": {
-        "databaseAccountOfferType": "Standard",
-        "capabilities": []
-      }
-    },
-    {
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2018-04-01",
-      "name": "container-group",
-      "location": "East US",
-      "dependsOn": [
-        "[variables('AccountId')]"
-      ],
-      "properties": {
-        "restartPolicy": "Never",
-        "containers": [
-          {
-            "name": "cosmos-target",
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2015-04-08",
+            "kind": "GlobalDocumentDB",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "name": "[parameters('documentDB').DocDBAccountName]",
+            "location": "[parameters('documentDB').location]",
             "properties": {
-              "image": "vplauzon/cosmos-db-target-config",
-              "environmentVariables": [
-                {
-                  "name": "ACCOUNT_ENDPOINT",
-                  "value": "[reference(variables('AccountId')).documentEndpoint]"
-                },
-                {
-                  "name": "ACCOUNT_KEY",
-                  "value": "[listKeys(variables('AccountId'), '2015-04-08').primaryMasterKey]"
-                },
-                {
-                  "name": "TARGET_URL",
-                  "value": "[variables('TargetURL')]"
-                }
-              ],
-              "resources": {
-                "requests": {
-                  "cpu": 1,
-                  "memoryInGb": 0.2
-                }
-              }
+                "name": "[parameters('documentDB').DocDBAccountName]",
+                "databaseAccountOfferType": "[parameters('documentDB').offerType]"
+            },
+            "tags": {
+                "defaultExperience": "DocumentDB"
             }
-          }
-        ],
-        "osType": "Linux"
-      }
-    }
-  ],
-  "outputs": {
-    "TargetConfigURL": {
-      "type": "string",
-      "value": "[variables('TargetURL')]"
-    }
-  }
+        }
+       ]
 }
