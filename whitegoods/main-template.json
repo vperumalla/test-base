@@ -1,57 +1,92 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "type": "string",
-            "defaultValue": "eastus",
-            "allowedValues": [
-                "eastus",
-                "northeurope",
-                "southcentralus",
-                "southeastasia",
-                "westeurope",
-                "westus2"
-            ],
-            "metadata": {
-                "description": "Location where all the resources deploy"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "DemoTargetConfigFile": {
+      "defaultValue": "eastus",
+      "metadata": {
+        "description": "This points to different target config file"
+      },
+      "type": "string",
+      "allowedValues": [
+        "Single Unpartitioned Collection",
+        "Single Partitioned Collection",
+        "DB Throughput",
+        "Complete Sample"
+      ]
+    }
+  },
+  "variables": {
+    "Demo Map": {
+      "Single Unpartitioned Collection": "single-unpartitioned-collection.json",
+      "Single Partitioned Collection": "single-partitioned-collection.json",
+      "DB Throughput": "db-throughput.json",
+      "Complete Sample": "complete.json"
     },
-    "variables": {
-        "documentDB": {
-            "location": "[parameters('location')]",
-            "DocDBAccountName": "[variables('DocDBAccountName1')]",
-            "offerType": "Standard",
-            "DocDBName": "AssetTrackingDB",
-            "DocDBGroupGpsCollection": "GroupGpsData",
-            "DocDBSensorCollection": "SensorData",
-            "DocDBOfferThroughput": "2500",
-            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1'))]",
-            "TargetURL": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/target-config/db-throughput.json"
-        },
-        "DocDBAccountName1": "[concat('docdb',variables('suffix'))]",
-        "deploymentApiVersion": "2016-02-01",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
+    "TargetURLPrefix": "https://raw.githubusercontent.com/vplauzon/cosmos-db-target-config/master/Deployment/target-config/",
+    "TargetURL": "[concat(variables('TargetURLPrefix'), variables('Demo Map')[parameters('DemoTargetConfigFile')])]",
+    "AccountName": "[concat('cosmos-test-account-', uniqueString(concat(subscription().id, resourceGroup().id, 'cosmos')))]",
+    "AccountId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('AccountName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2015-04-08",
+      "name": "[variables('AccountName')]",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "kind": "GlobalDocumentDB",
+      "properties": {
+        "databaseAccountOfferType": "Standard",
+        "capabilities": []
+      }
     },
-    "resources": [
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "DocumentDB",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [],
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2018-04-01",
+      "name": "container-group",
+      "location": "East US",
+      "dependsOn": [
+        "[variables('AccountId')]"
+      ],
+      "properties": {
+        "restartPolicy": "Never",
+        "containers": [
+          {
+            "name": "cosmos-target",
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/cosmosdb.json",
-                    "contentVersion": "1.0.0.0"
+              "image": "vplauzon/cosmos-db-target-config",
+              "environmentVariables": [
+                {
+                  "name": "ACCOUNT_ENDPOINT",
+                  "value": "[reference(variables('AccountId')).documentEndpoint]"
                 },
-                "parameters": {
-                    "documentDB": {
-                        "value": "[variables('documentDB')]"
-                    }
+                {
+                  "name": "ACCOUNT_KEY",
+                  "value": "[listKeys(variables('AccountId'), '2015-04-08').primaryMasterKey]"
+                },
+                {
+                  "name": "TARGET_URL",
+                  "value": "[variables('TargetURL')]"
                 }
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGb": 0.2
+                }
+              }
             }
-        }
-    ]
+          }
+        ],
+        "osType": "Linux"
+      }
+    }
+  ],
+  "outputs": {
+    "TargetConfigURL": {
+      "type": "string",
+      "value": "[variables('TargetURL')]"
+    }
+  }
 }
