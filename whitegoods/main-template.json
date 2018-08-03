@@ -2,25 +2,55 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "documentDB": {
-            "type": "object"
-        }
-    },
-    "variables": {},
-    "resources": [
-        {
-            "apiVersion": "2015-04-08",
-            "kind": "GlobalDocumentDB",
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "name": "[parameters('documentDB').DocDBAccountName]",
-            "location": "[parameters('documentDB').location]",
-            "properties": {
-                "name": "[parameters('documentDB').DocDBAccountName]",
-                "databaseAccountOfferType": "[parameters('documentDB').offerType]"
-            },
-            "tags": {
-                "defaultExperience": "DocumentDB"
+        "location": {
+            "type": "string",
+            "defaultValue": "eastus",
+            "allowedValues": [
+                "eastus",
+                "northeurope",
+                "southcentralus",
+                "southeastasia",
+                "westeurope",
+                "westus2"
+            ],
+            "metadata": {
+                "description": "Location where all the resources deploy"
             }
         }
-       ]
+    },
+    "variables": {
+        "documentDB": {
+            "location": "[parameters('location')]",
+            "DocDBAccountName": "[variables('DocDBAccountName1')]",
+            "offerType": "Standard",
+            "DocDBName": "AssetTrackingDB",
+            "DocDBGroupGpsCollection": "GroupGpsData",
+            "DocDBSensorCollection": "SensorData",
+            "DocDBOfferThroughput": "2500",
+            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1'))]"
+        },
+        "DocDBAccountName1": "[concat('docdb',variables('suffix'))]",
+        "deploymentApiVersion": "2016-02-01",
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "DocumentDB",
+            "apiVersion": "[variables('deploymentApiVersion')]",
+            "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/nested/cosmosdb.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "documentDB": {
+                        "value": "[variables('documentDB')]"
+                    }
+                }
+            }
+        }
+    ]
 }
