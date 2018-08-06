@@ -17,6 +17,42 @@
                 "description": "Location where all the resources deploy"
             }
         },
+          "readRegionLocation": {
+            "type": "string",
+            "defaultValue": "southcentralus",
+            "metadata": {
+                "description": "The location of the read region of the cosmos database account.If you select core-with-monitoring-hardening specify the disaster recovery region for CosmosDB,Choose location for DR resources and make sure that it should be different from resource group region .For Azure Gov, China, and Germany, the allowed values are different."
+            },
+            "allowedValues": [
+                "notapplicable",
+                "eastasia",
+                "southeastasia",
+                "centralus",
+                "eastus",
+                "eastus2",
+                "westus",
+                "northcentralus",
+                "southcentralus",
+                "northeurope",
+                "westeurope",
+                "japanwest",
+                "japaneast",
+                "brazilsouth",
+                "australiaeast",
+                "australiasoutheast",
+                "southindia",
+                "centralindia",
+                "westindia",
+                "canadacentral",
+                "canadaeast",
+                "uksouth",
+                "ukwest",
+                "westcentralus",
+                "westus2",
+                "koreacentral",
+                "koreasouth"
+            ]
+        },
          "tenantId": {
             "type": "string",
             "metadata": {
@@ -71,7 +107,7 @@
         }
     },
     "variables": {
-        "documentDB": {
+        "documentDbSettings": {
              "location": "[parameters('location')]",
             "cosmosDbAccountName": "[concat('cosmosdb',variables('suffix'))]",
             "cosmosDbName": "MSIoT",
@@ -138,6 +174,9 @@
                 "parameters": {
                     "automationSettings": {
                         "value": "[variables('automationSettings')]"
+                    },
+                    "documentDbSettings": {
+                        "value": "[variables('documentDbSettings')]"
                     }
                 }
             }
