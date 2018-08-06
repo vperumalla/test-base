@@ -99,7 +99,6 @@
              "subscriptionId": "[parameters('subscriptionId')]"
             
         },
-        "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
     "resources": [
