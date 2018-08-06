@@ -5,8 +5,8 @@
         "automationSettings": {
             "type": "object"
         },
-        "deviceManagementUri": {
-            "type": "string"
+        "documentDbSettings": {
+            "type": "object"
         }
     },
     "variables": {},
@@ -69,13 +69,12 @@
                             "tenantId": "[parameters('automationSettings').tenantId]",
                             "clientId": "[parameters('automationSettings').clientId]",
                             "clientSecret": "[parameters('automationSettings').clientSecret]",
-                            "deviceManagementUri": "[parameters('deviceManagementUri')]",
                             "azureAccountName": "[parameters('automationSettings').azureAccountName]",
                             "azurePassword": "[parameters('automationSettings').azurePassword]",
-                            "objectId": "[parameters('automationSettings').objectId]"
-                            "SubscriptionId": "[parameters('automationSettings').SubscriptionId]"
-                            "cosmosDbAccountName": "[parameters('automationSettings').cosmosDbAccountName]"
-                            "cosmosDbName": "[parameters('automationSettings').cosmosDbName]"
+                            "objectId": "[parameters('automationSettings').objectId]",
+                            "subscriptionId": "[parameters('automationSettings').subscriptionId]",
+                            "cosmosDbAccountName": "[parameters('documentDbSettings').cosmosDbAccountName]",
+                            "cosmosDbName": "[parameters('documentDbSettings').cosmosDbName]"
                         }
                     },
                     "dependsOn": [
