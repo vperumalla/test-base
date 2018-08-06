@@ -73,6 +73,9 @@
                             "azureAccountName": "[parameters('automationSettings').azureAccountName]",
                             "azurePassword": "[parameters('automationSettings').azurePassword]",
                             "objectId": "[parameters('automationSettings').objectId]"
+                            "SubscriptionId": "[parameters('automationSettings').SubscriptionId]"
+                            "cosmosDbAccountName": "[parameters('automationSettings').cosmosDbAccountName]"
+                            "cosmosDbName": "[parameters('automationSettings').cosmosDbName]"
                         }
                     },
                     "dependsOn": [
