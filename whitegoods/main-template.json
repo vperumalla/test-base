@@ -16,38 +16,129 @@
             "metadata": {
                 "description": "Location where all the resources deploy"
             }
+        },
+         "tenantId": {
+            "type": "string",
+            "metadata": {
+                "description": "TenantId of the created Azure active directory application. For instructions, see  https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-howto-tenant in the Microsoft documentation"
+            }
+        },
+        "clientId": {
+            "type": "string",
+            "metadata": {
+                "description": "ApplicationID of the created Azure active directory application. For information, see https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-integrating-applications in the Microsoft documentation."
+            }
+        },
+        "objectId": {
+            "type": "string",
+            "metadata": {
+                "description": "ObjectId of the created Azure active directory application."
+            }
+        },
+        "clientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "clientSecret of the created Azure active directory application.For instructions, see https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal#get-application-id-and-authentication-key in the Microsoft documentation."
+            }
+        },
+        "azureAccountName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "azure portal login username"
+            }
+        },
+        "azurePassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "azure portal login password"
+            }
+        },
+        "sessionId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Provide the guid prefix for the runbook job to be created. Generate using https://www.guidgenerator.com/online-guid-generator.aspx"
+            }
+        },
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Provide the guid prefix for the runbook job to be created. Generate using https://www.guidgenerator.com/online-guid-generator.aspx"
+            }
         }
     },
     "variables": {
         "documentDB": {
-            "location": "[parameters('location')]",
-            "DocDBAccountName": "[variables('DocDBAccountName1')]",
-            "offerType": "Standard",
-            "DocDBName": "AssetTrackingDB",
-            "DocDBGroupGpsCollection": "GroupGpsData",
-            "DocDBSensorCollection": "SensorData",
-            "DocDBOfferThroughput": "2500",
-            "documentDBAuthKey": "[resourceId('Microsoft.DocumentDb/databaseAccounts', variables('DocDBAccountName1'))]"
+             "location": "[parameters('location')]",
+            "cosmosDbAccountName": "[concat('cosmosdb',variables('suffix'))]",
+            "cosmosDbName": "MSIoT",
+            "databaseAccountOfferType": "Standard",
+            "readRegionLocation": "[variables('readRegionLocation')]",
+            "cosmosDbColTemplateName": "Templates",
+            "cosmosDbColMessagesName": "Messages",
+            "cosmosDbColGroupsName": "Groups"
         },
-        "DocDBAccountName1": "[concat('docdb',variables('suffix'))]",
+        "automationSettings": {
+            "automationAccountName": "[concat('AutomationAcc', variables('suffix'))]",
+            "automationLocation": "eastus2",
+            "automationSku": "Free",
+            "runbookName": "container",
+            "moduleName": "AzureADPreview",
+            "azureAdPreviewModuleUri": "https://projectiot.blob.core.windows.net/whitegoods/AzureADPreview.zip",
+            "runbookUri": "[concat(variables('baseUrl'),'scripts/initializecosmosdb-wmha.ps1?token=AT3nZnlGNgG2AxshIlgqYoysfKzLlSyjks5bcBFSwA%3D%3D')]",
+            "sessionId": "[parameters('sessionId')]",
+            "tenantId": "[parameters('tenantId')]",
+            "clientId": "[parameters('clientId')]",
+            "clientSecret": "[parameters('clientSecret')]",
+            "objectId": "[parameters('objectId')]",
+            "azureAccountName": "[parameters('azureAccountName')]",
+            "azurePassword": "[parameters('azurePassword')]",            
+             "subscriptionId": "[parameters('subscriptionId')]"
+            
+        },
         "deploymentApiVersion": "2016-02-01",
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
     },
     "resources": [
         {
+            "name": "DocumentDBBasic",
             "type": "Microsoft.Resources/deployments",
-            "name": "DocumentDB",
-            "apiVersion": "[variables('deploymentApiVersion')]",
-            "dependsOn": [],
+            "apiVersion": "2016-02-01",
+            "dependsOn": [
+                "OMSWorkSpace"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/nested/cosmosdb.json",
+                    "uri": "[concat(variables('baseUrl'), 'nested/documentdb-basic.json?token=AT3nZh64cTQZQnyxNbUeDFXheAI_r7uZks5bcA3xwA%3D%3D')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "documentDB": {
-                        "value": "[variables('documentDB')]"
+                    "documentDbSettings": {
+                        "value": "[variables('documentDbSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "AutomationAccountBasic",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2016-02-01",
+            "dependsOn": [
+                "DocumentDB"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('baseUrl'), 'nested/automation-account.json?token=AT3nZhTb68btcOQyy0gMNdCRDBT99Dmgks5bb_T7wA%3D%3D')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "automationSettings": {
+                        "value": "[variables('automationSettings')]"
                     }
                 }
             }
