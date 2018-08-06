@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "documentDB": {
+        "documentDbSettings": {
             "type": "object"
         }
     },
@@ -11,16 +11,19 @@
         {
             "apiVersion": "2015-04-08",
             "kind": "GlobalDocumentDB",
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "name": "[parameters('documentDB').DocDBAccountName]",
-            "location": "[parameters('documentDB').location]",
+            "type": "Microsoft.DocumentDb/databaseAccounts",
+            "name": "[parameters('documentDbSettings').cosmosDbAccountName]",
+            "location": "[parameters('documentDbSettings').location]",
             "properties": {
-                "name": "[parameters('documentDB').DocDBAccountName]",
-                "databaseAccountOfferType": "[parameters('documentDB').offerType]"
-            },
-            "tags": {
-                "defaultExperience": "DocumentDB"
+                "databaseAccountOfferType": "[parameters('documentDbSettings').databaseAccountOfferType]",
+                "locations": [
+                    {
+                        "id": "[concat(parameters('documentDbSettings').cosmosDbAccountName, '-', parameters('documentDbSettings').location)]",
+                        "locationName": "[parameters('documentDbSettings').location]",
+                        "failoverPriority": 0
+                    }
+                ]
             }
-        }
-       ]
+        }   
+    ]
 }
