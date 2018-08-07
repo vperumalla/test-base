@@ -17,64 +17,10 @@
                 "description": "Location where all the resources deploy"
             }
         },
-          "readRegionLocation": {
-            "type": "string",
-            "defaultValue": "southcentralus",
-            "metadata": {
-                "description": "The location of the read region of the cosmos database account.If you select core-with-monitoring-hardening specify the disaster recovery region for CosmosDB,Choose location for DR resources and make sure that it should be different from resource group region .For Azure Gov, China, and Germany, the allowed values are different."
-            },
-            "allowedValues": [
-                "notapplicable",
-                "eastasia",
-                "southeastasia",
-                "centralus",
-                "eastus",
-                "eastus2",
-                "westus",
-                "northcentralus",
-                "southcentralus",
-                "northeurope",
-                "westeurope",
-                "japanwest",
-                "japaneast",
-                "brazilsouth",
-                "australiaeast",
-                "australiasoutheast",
-                "southindia",
-                "centralindia",
-                "westindia",
-                "canadacentral",
-                "canadaeast",
-                "uksouth",
-                "ukwest",
-                "westcentralus",
-                "westus2",
-                "koreacentral",
-                "koreasouth"
-            ]
-        },
          "tenantId": {
             "type": "string",
             "metadata": {
                 "description": "TenantId of the created Azure active directory application. For instructions, see  https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-howto-tenant in the Microsoft documentation"
-            }
-        },
-        "clientId": {
-            "type": "string",
-            "metadata": {
-                "description": "ApplicationID of the created Azure active directory application. For information, see https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-integrating-applications in the Microsoft documentation."
-            }
-        },
-        "objectId": {
-            "type": "string",
-            "metadata": {
-                "description": "ObjectId of the created Azure active directory application."
-            }
-        },
-        "clientSecret": {
-            "type": "securestring",
-            "metadata": {
-                "description": "clientSecret of the created Azure active directory application.For instructions, see https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal#get-application-id-and-authentication-key in the Microsoft documentation."
             }
         },
         "azureAccountName": {
@@ -91,14 +37,14 @@
                 "description": "azure portal login password"
             }
         },
-        "sessionId": {
+        "subscriptionId": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
                 "description": "Provide the guid prefix for the runbook job to be created. Generate using https://www.guidgenerator.com/online-guid-generator.aspx"
             }
         },
-        "subscriptionId": {
+        "sessionId": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
@@ -112,7 +58,6 @@
             "cosmosDbAccountName": "[concat('cosmosdb',variables('suffix'))]",
             "cosmosDbName": "MSIoT",
             "databaseAccountOfferType": "Standard",
-            "readRegionLocation": "[parameters('readRegionLocation')]",
             "cosmosDbColTemplateName": "Templates",
             "cosmosDbColMessagesName": "Messages",
             "cosmosDbColGroupsName": "Groups"
@@ -122,17 +67,14 @@
             "automationLocation": "eastus2",
             "automationSku": "Free",
             "runbookName": "container",
-            "moduleName": "AzureADPreview",
-            "azureAdPreviewModuleUri": "https://projectiot.blob.core.windows.net/whitegoods/AzureADPreview.zip",
+            "moduleName": "CosmosDB",
+            "azureAdPreviewModuleUri": "https://projectiot.blob.core.windows.net/whitegoods/cosmos.zip",
             "runbookUri": "https://raw.githubusercontent.com/ooha-m/test-base/master/whitegoods/scripts/initializecosmosdb.ps1",
-            "sessionId": "[parameters('sessionId')]",
             "tenantId": "[parameters('tenantId')]",
-            "clientId": "[parameters('clientId')]",
-            "clientSecret": "[parameters('clientSecret')]",
-            "objectId": "[parameters('objectId')]",
             "azureAccountName": "[parameters('azureAccountName')]",
             "azurePassword": "[parameters('azurePassword')]",            
-             "subscriptionId": "[parameters('subscriptionId')]"
+             "subscriptionId": "[parameters('subscriptionId')]",
+             "sessionId": "[parameters('sessionId')]"
             
         },
         "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]",
@@ -143,9 +85,7 @@
             "name": "DocumentDBBasic",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-02-01",
-            "dependsOn": [
-                "OMSWorkSpace"
-            ],
+            "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -164,7 +104,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-02-01",
             "dependsOn": [
-                "DocumentDB"
+                "DocumentDBBasic"
             ],
             "properties": {
                 "mode": "Incremental",
