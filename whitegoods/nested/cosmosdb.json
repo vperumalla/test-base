@@ -24,6 +24,13 @@
                     }
                 ]
             }
-        }   
-    ]
+        }
+    ],
+    "outputs": {
+        "cosmosDBAccountKey": {
+            "type": "string",
+            "value": "[listkeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('documentDbSettings').cosmosDbAccountName), '2015-04-08').primaryMasterKey]"
+        }
+    }
+
 }
