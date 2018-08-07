@@ -36,6 +36,7 @@ workflow  container{
         $azureAccountName = $Using:azureAccountName
         $azurePassword = $Using:azurePassword
         $subscriptionId = $Using:subscriptionId
+        $cosmosDBAccountKey = $Using:cosmosDBAccountKey
         $cosmosDbAccountName = $Using:cosmosDbAccountName
         $cosmosDbName = $Using:cosmosDbName
 
