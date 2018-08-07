@@ -4,18 +4,6 @@ workflow  container{
         [Parameter(Mandatory=$true)]
         [string]
         $tenantId,
-
-        [Parameter(Mandatory=$true)]
-        [string]
-        $clientId,
-
-        [Parameter(Mandatory=$true)]
-        [string]
-        $clientSecret,
-
-        [Parameter(Mandatory=$true)]
-        [string]
-        $deviceManagementUri,
         
         [Parameter(Mandatory=$true)]
         [string]
@@ -27,11 +15,11 @@ workflow  container{
 
         [Parameter(Mandatory=$true)]
         [string]
-        $objectId,
+        $subscriptionId,
 
         [Parameter(Mandatory=$true)]
         [string]
-        $subscriptionId,
+        $cosmosDBAccountKey,
 
         [Parameter(Mandatory=$true)]
         [string]
@@ -45,12 +33,8 @@ workflow  container{
     InlineScript{
     
         $tenantId = $Using:tenantId
-        $clientId = $Using:clientId
-        $clientSecret = $Using:clientSecret
-        $deviceManagementUri = $Using:deviceManagementUri
         $azureAccountName = $Using:azureAccountName
         $azurePassword = $Using:azurePassword
-        $objectId = $Using:objectId
         $subscriptionId = $Using:subscriptionId
         $cosmosDbAccountName = $Using:cosmosDbAccountName
         $cosmosDbName = $Using:cosmosDbName
@@ -62,13 +46,21 @@ workflow  container{
         Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred 
         start-Sleep -s 20
 
-        $cosmosDbContext = New-CosmosDbContext -Account $cosmosDbAccountName -Database $cosmosDbName
+        Install-Module -Name CosmosDB
+        start-Sleep -s 60
+
+        $primaryKey = ConvertTo-SecureString -String $cosmosDBAccountKey  -AsPlainText -Force
+        $cosmosDbContext = New-CosmosDbContext -Account $cosmosDbAccountName -Database $cosmosDbName -Key $primaryKey
+        start-Sleep -s 20
 
         New-CosmosDbDatabase -Context $cosmosDbContext -Id $cosmosDbName
+        start-Sleep -s 30
 
         
         New-CosmosDbCollection -Context $cosmosDbContext -Id 'Messages'  -OfferThroughput 400
+        start-Sleep -s 20
         New-CosmosDbCollection -Context $cosmosDbContext -Id 'Templates' -OfferThroughput 400
+        start-Sleep -s 20
         New-CosmosDbCollection -Context $cosmosDbContext -Id 'Groups' -OfferThroughput 400
     }
 }
