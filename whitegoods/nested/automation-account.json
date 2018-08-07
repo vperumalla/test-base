@@ -7,9 +7,6 @@
         },
         "documentDbSettings": {
             "type": "object"
-        },
-        "cosmosDBPrimaryKey":{
-            "type": "string"
         }
     },
     "variables": {},
@@ -75,7 +72,7 @@
                             "subscriptionId": "[parameters('automationSettings').subscriptionId]",
                             "cosmosDbAccountName": "[parameters('documentDbSettings').cosmosDbAccountName]",
                             "cosmosDbName": "[parameters('documentDbSettings').cosmosDbName]",
-                            "cosmosDBAccountKey": "[parameters('cosmosDBPrimaryKey')]"
+                            "cosmosDBAccountKey": "[listkeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('documentDbSettings').cosmosDbAccountName), '2015-04-08').primaryMasterKey]"
                         }
                     },
                     "dependsOn": [
