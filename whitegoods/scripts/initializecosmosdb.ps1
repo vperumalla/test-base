@@ -47,7 +47,7 @@ workflow  container{
         Login-AzureRmAccount -TenantId $tenantId -Credential $psCred 
         start-Sleep -s 20
 
-        $primaryKey = ConvertTo-SecureString -String $cosmosDBAccountKey  -AsPlainText -Force
+        $primaryKey = ConvertTo-SecureString -String $cosmosDBAccountKey -AsPlainText -Force
         $cosmosDbContext = New-CosmosDbContext -Account $cosmosDbAccountName -Database $cosmosDbName -Key $primaryKey
         start-Sleep -s 20
 
