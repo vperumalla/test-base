@@ -7,6 +7,9 @@
         },
         "documentDbSettings": {
             "type": "object"
+        },
+        "cosmosDBPrimaryKey":{
+            "type": "string"
         }
     },
     "variables": {},
@@ -71,7 +74,8 @@
                             "azurePassword": "[parameters('automationSettings').azurePassword]",
                             "subscriptionId": "[parameters('automationSettings').subscriptionId]",
                             "cosmosDbAccountName": "[parameters('documentDbSettings').cosmosDbAccountName]",
-                            "cosmosDbName": "[parameters('documentDbSettings').cosmosDbName]"
+                            "cosmosDbName": "[parameters('documentDbSettings').cosmosDbName]",
+                            "cosmosDBAccountKey": "[parameters('cosmosDBPrimaryKey')]"
                         }
                     },
                     "dependsOn": [
