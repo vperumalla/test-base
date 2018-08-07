@@ -47,9 +47,6 @@ workflow  container{
         Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred 
         start-Sleep -s 20
 
-        Install-Module -Name CosmosDB
-        start-Sleep -s 60
-
         $primaryKey = ConvertTo-SecureString -String $cosmosDBAccountKey  -AsPlainText -Force
         $cosmosDbContext = New-CosmosDbContext -Account $cosmosDbAccountName -Database $cosmosDbName -Key $primaryKey
         start-Sleep -s 20
