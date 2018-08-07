@@ -44,7 +44,7 @@ workflow  container{
         $password = ConvertTo-SecureString $azurePassword -AsPlainText -Force
         $psCred = New-Object System.Management.Automation.PSCredential($azureAccountName, $password)
         start-Sleep -s 20
-        Login-AzureRmAccount -TenantId $tenantId -SubscriptionID $subscriptionId -Credential $psCred 
+        Login-AzureRmAccount -TenantId $tenantId -Credential $psCred 
         start-Sleep -s 20
 
         $primaryKey = ConvertTo-SecureString -String $cosmosDBAccountKey  -AsPlainText -Force
