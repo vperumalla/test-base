@@ -118,9 +118,7 @@
             "name": "OmsWorkSpace",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-02-01",
-           "dependsOn": [
-                "kubernetes"
-            ],
+           "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
