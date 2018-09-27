@@ -54,6 +54,20 @@
             "metadata": {
                 "description": "Choose location for OMS Log Analytics to deploy. For more information, see https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-overview"
             }
+        },
+        "enableHttpApplicationRouting": {
+            "defaultValue": true,
+            "type": "Bool",
+            "metadata": {
+                "description": "boolean flag to turn on and off of http application routing"
+            }
+        },
+        "enableRBAC": {
+            "defaultValue": true,
+            "type": "Bool",
+            "metadata": {
+                "description": "boolean flag to turn on and off of RBAC"
+            }
         }
     },
     "variables": {
@@ -67,7 +81,9 @@
             "servicename": "[concat('kubernetes', variables('suffix'))]",
             "kubernetesVersion": "1.11.2",
             "location": "[parameters('location')]",
+            "enableRBAC": "[parameters('enableRBAC')]",
             "dnsPrefix": "[concat('kube', variables('suffix'))]",
+            "enableHttpApplicationRouting": "[parameters('enableHttpApplicationRouting')]",
             "osType": "Linux",
             "agentVMSize": "Standard_D2_v2",
             "agentCount": "[parameters('agentCount')]",
