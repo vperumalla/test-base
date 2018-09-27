@@ -9,8 +9,8 @@
             }
         },
         "osDiskSizeGB": {
-            "defaultValue": 0,
-            "minValue": 0,
+            "defaultValue": 10,
+            "minValue": 10,
             "maxValue": 1023,
             "type": "int",
             "metadata": {
@@ -57,14 +57,14 @@
         },
         "enableHttpApplicationRouting": {
             "defaultValue": true,
-            "type": "Bool",
+            "type": "bool",
             "metadata": {
                 "description": "boolean flag to turn on and off of http application routing"
             }
         },
         "enableRBAC": {
             "defaultValue": true,
-            "type": "Bool",
+            "type": "bool",
             "metadata": {
                 "description": "boolean flag to turn on and off of RBAC"
             }
@@ -74,18 +74,17 @@
         "omsSettings": {
             "omsWorkspaceName": "[concat('omsworkspace', variables('suffix'))]",
             "omsWorkspaceRegion": "[parameters('omsWorkspaceRegion')]",
-            "omsLogAnalyticsSku": "standalone",
-            "dataRetention": 7
+            "omsLogAnalyticsSku": "standalone"
         },
         "kubernetesSettings": {
             "servicename": "[concat('kubernetes', variables('suffix'))]",
             "kubernetesVersion": "1.11.2",
             "location": "[parameters('location')]",
             "enableRBAC": "[parameters('enableRBAC')]",
-            "dnsPrefix": "[concat('kube', variables('suffix'))]",
+            "dnsPrefix": "kubecluster",
             "enableHttpApplicationRouting": "[parameters('enableHttpApplicationRouting')]",
             "osType": "Linux",
-            "agentVMSize": "Standard_D2_v2",
+            "agentVMSize": "Standard_D2_v3",
             "agentCount": "[parameters('agentCount')]",
             "servicePrincipalClientId": "[parameters('servicePrincipalClientId')]",
             "servicePrincipalClientSecret": "[parameters('servicePrincipalClientSecret')]",
@@ -138,7 +137,7 @@
     ],
     "outputs": {
         "controlPlaneFQDN": {
-            "type": "String",
+            "type": "string",
             "value": "[reference('kubernetes').outputs.controlPlaneFQDN.value]"
         }
     }
