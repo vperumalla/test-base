@@ -18,11 +18,11 @@
             "tags": {},
             "properties": {
                 "kubernetesVersion": "[parameters('kubernetesSettings').kubernetesVersion]",
-                "enableRBAC": "true",
+                "enableRBAC": "[parameters('kubernetesSettings').enableRBAC]",
                 "dnsPrefix": "[parameters('kubernetesSettings').dnsPrefix]",
                 "addonProfiles": {
                     "httpApplicationRouting": {
-                        "enabled":  "true"
+                        "enabled":  "[parameters('kubernetesSettings').enableHttpApplicationRouting]"
                     }
                 },
                 "agentPoolProfiles": [
