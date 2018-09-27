@@ -53,7 +53,7 @@
                     "type": "providers/diagnosticSettings",
                     "apiVersion": "2015-07-01",
                     "dependsOn": [
-                        "[concat('Microsoft.ContainerService/managedClusters/', parameters('kubernetesSettings').cluster)]"
+                        "[concat('Microsoft.ContainerService/managedClusters/', parameters('kubernetesSettings').servicename)]"
                     ],
                     "properties": {
                         "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsSettings').omsWorkspaceName)]",
