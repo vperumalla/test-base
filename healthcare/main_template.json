@@ -82,13 +82,13 @@
     },
     "resources": [
         {
-            "name": "IotHubBasic",
+            "name": "kubernetes",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-03-31",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/kubernetes.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -108,7 +108,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/kubernetes.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
