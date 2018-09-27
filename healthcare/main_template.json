@@ -105,10 +105,13 @@
             "name": "OmsWorkSpace",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2016-02-01",
+           "dependsOn": [
+                "kubernetes"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/kubernetes.json",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/oms-workspace.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
