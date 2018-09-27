@@ -51,5 +51,19 @@
                 "publisher": "Microsoft"
             }
         }
-    ]
+    ],
+    "outputs": {
+        "workspaceCustomerId": {
+            "value": "[reference(concat('Microsoft.OperationalInsights/workspaces/', parameters('omsSettings').omsWorkspaceName), '2015-11-01-preview').customerId]",
+            "type": "string"
+        },
+        "workspacePrimarySharedKey": {
+            "value": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('omsSettings').omsWorkspaceName), '2015-11-01-preview').primarySharedKey]",
+            "type": "string"
+        },
+        "workspaceSecondarySharedKey": {
+            "value": "[listKeys(parameters('omsSettings').omsWorkspaceName, '2015-11-01-preview').secondarySharedKey]",
+            "type": "securestring"
+        }
+    }
 }
