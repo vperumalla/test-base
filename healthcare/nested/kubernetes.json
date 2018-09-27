@@ -110,7 +110,7 @@
     ],
     "outputs": {
         "controlPlaneFQDN": {
-            "type": "String",
+            "type": "string",
             "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('kubernetesSettings').servicename)).fqdn]"
         }
     }
