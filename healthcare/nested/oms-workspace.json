@@ -10,8 +10,8 @@
         "batch1": {
             "solutions": [
                 {
-                    "name": "[concat('ContainerMonitoringSolution', '(', parameters('omsSettings').omsWorkspaceName, ')')]",
-                    "marketplaceName": "Containers"
+                    "name": "[concat('cms', '(', parameters('omsSettings').omsWorkspaceName, ')')]",
+                    "galleryName": "Containers"
                 }
             ]
         }
@@ -46,7 +46,7 @@
             },
             "plan": {
                 "name": "[variables('batch1').solutions[copyIndex()].name]",
-                "product": "[concat('OMSGallery/', variables('batch1').solutions[copyIndex()].marketplaceName)]",
+                "product": "[concat('OMSGallery/', variables('batch1').solutions[copyIndex()].galleryName)]",
                 "promotionCode": "",
                 "publisher": "Microsoft"
             }
