@@ -12,7 +12,7 @@
       "logAnalyticsSolutions": "2015-11-01-preview"
     },
     "container": {
-      "name": "[concat('Containers', '(', parameters('workspaceName'), ')')]",
+      "name": "[concat('Containers', '(', parameters('omsSettings').omsWorkspaceName, ')')]",
       "galleryName": "Containers"
     }
   },
