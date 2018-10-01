@@ -102,7 +102,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://github.com/ooha-m/test-base/blob/master/healthcare/nested/kubernetes.json",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/kubernetes.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -123,7 +123,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/vperumalla/test-base_O/master/NestedTemplates/oms-workspace.json",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/healthcare/nested/oms-workspace.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
