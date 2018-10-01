@@ -9,8 +9,8 @@
             }
         },
         "osDiskSizeGB": {
-            "defaultValue": 20,
-            "minValue": 20,
+            "defaultValue": 30,
+            "minValue": 30,
             "maxValue": 1023,
             "type": "int",
             "metadata": {
@@ -102,7 +102,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/vperumalla/test-base_O/master/NestedTemplates/kubernetes.json",
+                    "uri": "https://raw.githubusercontent.com/ooha-m/test-base/master/projectedision/nested/kubernetes.json",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
