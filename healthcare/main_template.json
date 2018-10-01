@@ -9,8 +9,8 @@
             }
         },
         "osDiskSizeGB": {
-            "defaultValue": 10,
-            "minValue": 10,
+            "defaultValue": 20,
+            "minValue": 20,
             "maxValue": 1023,
             "type": "int",
             "metadata": {
@@ -40,7 +40,7 @@
         },
         "omsWorkspaceRegion": {
             "type": "string",
-            "defaultValue": "canadacentral",
+            "defaultValue": "southeastasia",
             "allowedValues": [
                 "australiasoutheast",
                 "canadacentral",
@@ -74,17 +74,18 @@
         "omsSettings": {
             "omsWorkspaceName": "[concat('omsworkspace', variables('suffix'))]",
             "omsWorkspaceRegion": "[parameters('omsWorkspaceRegion')]",
-            "omsLogAnalyticsSku": "standalone"
+            "omsLogAnalyticsSku": "standalone",
+            "dataRetention": 7
         },
         "kubernetesSettings": {
             "servicename": "[concat('kubernetes', variables('suffix'))]",
             "kubernetesVersion": "1.11.2",
             "location": "[parameters('location')]",
             "enableRBAC": "[parameters('enableRBAC')]",
-            "dnsPrefix": "kubecluster",
+            "dnsPrefix":  "clusterdns",
             "enableHttpApplicationRouting": "[parameters('enableHttpApplicationRouting')]",
             "osType": "Linux",
-            "agentVMSize": "Standard_D2_v3",
+            "agentVMSize": "Standard_D2_v2",
             "agentCount": "[parameters('agentCount')]",
             "servicePrincipalClientId": "[parameters('servicePrincipalClientId')]",
             "servicePrincipalClientSecret": "[parameters('servicePrincipalClientSecret')]",
@@ -95,7 +96,7 @@
     },
     "resources": [
         {
-            "name": "kubernetes",
+            "name": "Kubernetes",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2018-06-01",
             "properties": {
