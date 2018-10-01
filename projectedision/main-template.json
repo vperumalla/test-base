@@ -1,0 +1,143 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "osDiskSizeGB": {
+            "defaultValue": 20,
+            "minValue": 20,
+            "maxValue": 1023,
+            "type": "int",
+            "metadata": {
+                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            }
+        },
+        "agentCount": {
+            "defaultValue": 1,
+            "minValue": 1,
+            "maxValue": 50,
+            "type": "int",
+            "metadata": {
+                "description": "The number of agent nodes for the cluster."
+            }
+        },
+        "servicePrincipalClientId": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Client ID (used by cloudprovider)"
+            }
+        },
+        "servicePrincipalClientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The Service Principal Client Secret."
+            }
+        },
+        "omsWorkspaceRegion": {
+            "type": "string",
+            "defaultValue": "southeastasia",
+            "allowedValues": [
+                "australiasoutheast",
+                "canadacentral",
+                "centralindia",
+                "eastus",
+                "japaneast",
+                "southeastasia",
+                "uksouth",
+                "westeurope"
+            ],
+            "metadata": {
+                "description": "Choose location for OMS Log Analytics to deploy. For more information, see https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-overview"
+            }
+        },
+        "enableHttpApplicationRouting": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "boolean flag to turn on and off of http application routing"
+            }
+        },
+        "enableRBAC": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "boolean flag to turn on and off of RBAC"
+            }
+        }
+    },
+    "variables": {
+        "omsSettings": {
+            "omsWorkspaceName": "[concat('omsworkspace', variables('suffix'))]",
+            "omsWorkspaceRegion": "[parameters('omsWorkspaceRegion')]",
+            "omsLogAnalyticsSku": "standalone",
+            "dataRetention": 7
+        },
+        "kubernetesSettings": {
+            "servicename": "[concat('kubernetes', variables('suffix'))]",
+            "kubernetesVersion": "1.11.2",
+            "location": "[parameters('location')]",
+            "enableRBAC": "[parameters('enableRBAC')]",
+            "dnsPrefix":  "clusterdns",
+            "enableHttpApplicationRouting": "[parameters('enableHttpApplicationRouting')]",
+            "osType": "Linux",
+            "agentVMSize": "Standard_D2_v2",
+            "agentCount": "[parameters('agentCount')]",
+            "servicePrincipalClientId": "[parameters('servicePrincipalClientId')]",
+            "servicePrincipalClientSecret": "[parameters('servicePrincipalClientSecret')]",
+            "networkPlugin": "kubenet",
+            "osDiskSizeGB": "[parameters('osDiskSizeGB')]"
+        },
+        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 4)]"
+    },
+    "resources": [
+        {
+            "name": "Kubernetes",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/vperumalla/test-base_O/master/NestedTemplates/kubernetes.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "omsSettings": {
+                        "value": "[variables('omsSettings')]"
+                    },
+                    "kubernetesSettings": {
+                        "value": "[variables('kubernetesSettings')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "OmsWorkSpace",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2015-01-01",
+           "dependsOn": [],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/vperumalla/test-base_O/master/NestedTemplates/oms-workspace.json",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "omsSettings": {
+                        "value": "[variables('omsSettings')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "controlPlaneFQDN": {
+            "type": "string",
+            "value": "[reference('kubernetes').outputs.controlPlaneFQDN.value]"
+        }
+    }
+}
