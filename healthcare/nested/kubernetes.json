@@ -14,22 +14,22 @@
             "type": "Microsoft.ContainerService/managedClusters",
             "name": "[parameters('kubernetesSettings').servicename]",
             "apiVersion": "2018-03-31",
-            "location": "[parameters('kubernetesSettings').location]",
+           "location": "[parameters('kubernetesSettings').location]",
             "tags": {},
             "properties": {
                 "kubernetesVersion": "[parameters('kubernetesSettings').kubernetesVersion]",
-                "enableRBAC": "[parameters('kubernetesSettings').enableRBAC]",
+               "enableRBAC": "[parameters('kubernetesSettings').enableRBAC]",
                 "dnsPrefix": "[parameters('kubernetesSettings').dnsPrefix]",
                 "addonProfiles": {
                     "httpApplicationRouting": {
-                        "enabled":  "[parameters('kubernetesSettings').enableHttpApplicationRouting]"
+                       "enabled":  "[parameters('kubernetesSettings').enableHttpApplicationRouting]"
                     }
                 },
                 "agentPoolProfiles": [
                     {
                         "name": "agentpool",
                         "osDiskSizeGB": "[parameters('kubernetesSettings').osDiskSizeGB]",
-                        "count": "[parameters('kubernetesSettings').agentCount]",
+                       "count": "[parameters('kubernetesSettings').agentCount]",
                         "vmSize": "[parameters('kubernetesSettings').agentVMSize]",
                         "osType": "[parameters('kubernetesSettings').osType]",
                         "storageProfile": "ManagedDisks"
@@ -53,7 +53,7 @@
                     "type": "providers/diagnosticSettings",
                     "apiVersion": "2015-07-01",
                     "dependsOn": [
-                        "[concat('Microsoft.ContainerService/managedClusters/', parameters('kubernetesSettings').servicename)]"
+                       "[concat('Microsoft.ContainerService/managedClusters/', parameters('kubernetesSettings').servicename)]"
                     ],
                     "properties": {
                         "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('omsSettings').omsWorkspaceName)]",
