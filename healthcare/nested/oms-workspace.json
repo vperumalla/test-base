@@ -10,8 +10,8 @@
         "batch1": {
             "solutions": [
                 {
-                    "name": "[concat('ContainerMonitoringSolution', '(', parameters('omsSettings').omsWorkspaceName, ')')]",
-                    "marketplaceName": "ContainerMonitoringSolution"
+                    "name": "[concat('cms', '(', parameters('omsSettings').omsWorkspaceName, ')')]",
+                    "marketplaceName": "Containers"
                 }
             ]
         }
