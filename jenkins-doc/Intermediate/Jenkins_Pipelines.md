@@ -90,7 +90,7 @@ Before using Jenkins Pipeline we need following requirements.
 ### 1.1 Declarative Pipeline with Classic UI
 steps to create sample pipeline in classic UI
 1. Click **New Item** in the top left corner on the dashboard.  
-![new_item](/Intermediate/img/new_item.png?token=AJU3VUWRXBECK5O6APPDX6246UFXA)  
+![new_item](/Intermediate/img/new_item.png?)  
 2. Enter the name of your project in the **Enter an item name** field, and select **Pipeline** project , and click **OK** button .
 e.g: pipeline_project_1
 ![pipeline_name](/Intermediate/img/entername.png?token=AJU3VUXI5YTZ4TFNFMFDCXC43ZNA6)
