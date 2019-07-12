@@ -42,7 +42,7 @@
         {
             "name": "[parameters('jenkinsSettings').jenkinsfrontEndNSGName]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "[parameters('jenkinsSettings').networkApiVersion]",
+            "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('jenkinsSettings').location]",
             "properties": {
                 "securityRules": [
