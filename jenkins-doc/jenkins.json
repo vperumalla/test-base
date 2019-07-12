@@ -21,10 +21,6 @@
             "type": "string"
         }
     },
-
-
-
-
     "variables": {
         "sasToken": "",
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
