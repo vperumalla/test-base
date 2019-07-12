@@ -21,11 +21,14 @@
             "type": "string"
         }
     },
+
+
+
+
     "variables": {
         "sasToken": "",
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]",
-        "sshKeyPath": "[concat('/home/',parameters('jenkinsSettings').adminUsername,'/.ssh/authorized_keys')]",
         "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -148,8 +151,8 @@
             "apiVersion": "[parameters('apiVersions').networkApiVersion]",
             "location": "[parameters('jenkinsSettings').location]",
             "dependsOn": [
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('jenkinsSettings').jenkinsPipName)]"
-
+                "[concat('Microsoft.Network/publicIpAddresses/', parameters('jenkinsSettings').jenkinsPipName)]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('networkSettings').virtualNetworkName)]"
             ],
             "properties": {
                 "ipConfigurations": [
