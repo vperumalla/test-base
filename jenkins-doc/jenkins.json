@@ -26,22 +26,17 @@
         "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', parameters('networkSettings').virtualNetworkName)]",
         "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('networkSettings').subnet1Name)]",
         "sshKeyPath": "[concat('/home/',parameters('jenkinsSettings').adminUsername,'/.ssh/authorized_keys')]",
-        "osProfilesshPublicKey": {
-            "computerName": "[parameters('jenkinsSettings').jenkinsVmName]",
-            "adminUsername": "[parameters('jenkinsSettings').adminUsername]",
-            "linuxConfiguration": {
-                "disablePasswordAuthentication": true,
-                "ssh": {
-                    "publicKeys": [
-                        {
-                            "path": "[concat('/home/', parameters('jenkinsSettings').adminUsername, '/.ssh/authorized_keys')]",
-                            "keyData": "[parameters('jenkinsSettings').adminPasswordOrKey]"
-                        }
-                    ]
+        "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[concat('/home/', parameters('jenkinsSettings').adminUsername, '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('jenkinsSettings').adminPasswordOrKey]"
                 }
+              ]
             }
-        },
-        "osProfileReference": "[variables(concat('osProfile', parameters('jenkinsSettings').authenticationType))]"
+        }
     },
     "resources": [
         {
@@ -129,7 +124,12 @@
                 "[concat('Microsoft.Network/networkInterfaces/', parameters('jenkinsSettings').jenkinsNicName)]"
             ],
             "properties": {
-                "osProfile": "[variables('osProfileReference')]",
+                "osProfile": {
+                    "computerName": "[parameters('jenkinsSettings').jenkinsVmName]",
+                    "adminUsername": "[parameters('jenkinsSettings').adminUsername]",
+                    "adminPassword": "[parameters('jenkinsSettings').adminPasswordOrKey]",
+                    "linuxConfiguration": "[if(equals(parameters('jenkinsSettings').authenticationType, 'password'), json('null'), variables('linuxConfiguration'))]"
+                  },
                 "hardwareProfile": {
                     "vmSize": "[parameters('jenkinsSettings').jenkinsVmSize]"
                 },
