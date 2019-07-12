@@ -259,5 +259,5 @@ run_util_script "install-web-page.sh" -u "${jenkins_fqdn}"  -l "${azure_web_page
 sudo service nginx restart
 
 #install common tools
-sudo apt-get install git --yes
+sudo apt-get install git-core --yes
 sudo apt-get install azure-cli --yes
