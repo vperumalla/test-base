@@ -10,9 +10,6 @@
     },
     "publicIPName": {
       "type": "string"
-    },
-    "publicIPResourceGroup": {
-      "type": "string"
     }
   },
   "variables": {},
