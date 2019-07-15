@@ -7,19 +7,26 @@ Command
   $0
 Arguments
   --jenkins_fqdn|-jf       [Required] : Jenkins FQDN
-  --vm_private_ip|-pi                 : The VM private ip used to configure Jenkins URL. If missing, jenkins_fqdn will be used instead
   --jenkins_release_type|-jrt         : The Jenkins release type (LTS or weekly or verified). By default it's set to LTS
+  --jdk_type|-jt                      : The type of installed JDK.
   --jenkins_version_location|-jvl     : Url used to specify the version of Jenkins.
-  --service_principal_type|-sp        : The type of service principal: MSI or manual.
+  --service_principal_type|-sp        : The type of service principal: managed-identities-for-azure-resources or manual.
   --service_principal_id|-sid         : The service principal ID.
   --service_principal_secret|-ss      : The service principal secret.
   --subscription_id|-subid            : The subscription ID of the SP.
   --tenant_id|-tid                    : The tenant id of the SP.
+  --azure_env|-ae                     : The Azure environment. Default is 'Azure'.
   --artifacts_location|-al            : Url used to reference other scripts/artifacts.
   --sas_token|-st                     : A sas token needed if the artifacts location is private.
   --cloud_agents|-ca                  : The type of the cloud agents: aci, vm or no.
   --resource_group|-rg                : the resource group name.
   --location|-lo                      : the resource group location.
+  --artifact_manager_enabled|-ame     : Whether default enable Azure artifact manager.
+  --storage_account|-sa               : The storage account name for artifact manager.
+  --storage_key|-sk                   : The storage key for artifact manager.
+  --storage_endpoint|-se              : The storage blob endpoint for artifact manager.
+  --artifact_container|-ac            : The container name for artifact manger.
+  --artifact_prefix|-ap               : The prefix value for artifact manager.
 EOF
 }
 
@@ -39,7 +46,7 @@ function run_util_script() {
   curl --silent "${artifacts_location}${script_path}${artifacts_location_sas_token}" | sudo bash -s -- "$@"
   local return_value=$?
   if [ $return_value -ne 0 ]; then
-    >&2 echo "Failed while executing script '$script_path'."
+    >&2 echo "Failed while executing script '$script_path' with parameters '$@'."
     exit $return_value
   fi
 }
@@ -59,10 +66,13 @@ function retry_until_successful {
 }
 
 #defaults
-artifacts_location="https://raw.githubusercontent.com/Azure/azure-devops-utils/master/"
-jenkins_version_location="https://raw.githubusercontent.com/Azure/azure-devops-utils/master/jenkins/jenkins-verified-ver"
+artifacts_location="https://raw.githubusercontent.com/Azure/jenkins/master/solution_template"
+jenkins_version_location="https://raw.githubusercontent.com/Azure/jenkins/master/jenkins-verified-ver"
+jenkins_fallback_version="2.73.3"
 azure_web_page_location="/usr/share/nginx/azure"
 jenkins_release_type="LTS"
+jdk_type="zulu"
+azure_env="Azure"
 
 while [[ $# > 0 ]]
 do
@@ -73,12 +83,12 @@ do
       jenkins_fqdn="$1"
       shift
       ;;
-    --vm_private_ip|-pi)
-      vm_private_ip="$1"
-      shift
-      ;;
     --jenkins_release_type|-jrt)
       jenkins_release_type="$1"
+      shift
+      ;;
+    --jdk_type|-jt)
+      jdk_type="$1"
       shift
       ;;
     --jenkins_version_location|-jvl)
@@ -105,6 +115,10 @@ do
       tenant_id="$1"
       shift
       ;;
+    --azure_env|-ae)
+      azure_env="$1"
+      shift
+      ;;
     --artifacts_location|-al)
       artifacts_location="$1"
       shift
@@ -125,6 +139,30 @@ do
       location="$1"
       shift
       ;;
+    --artifact_manager_enabled|-ame)
+      artifact_manager_enabled="$1"
+      shift
+      ;;
+    --storage_account|-sa)
+      storage_account="$1"
+      shift
+      ;;
+    --storage_key|-sk)
+      storage_key="$1"
+      shift
+      ;;
+    --storage_endpoint|-se)
+      storage_endpoint="$1"
+      shift
+      ;;
+    --artifact_container|-ac)
+      artifact_container="$1"
+      shift
+      ;;
+    --artifact_prefix|-ap)
+      artifact_prefix="$1"
+      shift
+      ;;
     --help|-help|-h)
       print_usage
       exit 13
@@ -141,14 +179,13 @@ if [[ "$jenkins_release_type" != "LTS" ]] && [[ "$jenkins_release_type" != "week
   echo "Parameter jenkins_release_type can only be 'LTS' or 'weekly' or 'verified'! Current value is '$jenkins_release_type'"
   exit 1
 fi
-
-if [ -z "$vm_private_ip" ]; then
-    #use port 80 for public fqdn
-    jenkins_url="http://${jenkins_fqdn}/"
-else
-    #use port 8080 for internal
-    jenkins_url="http://${vm_private_ip}:8080/"
+throw_if_empty --jdk_type $jdk_type
+if [[ "$jdk_type" != "zulu" ]] && [[ "$jdk_type" != "openjdk" ]]; then
+  echo "Parameter jdk_type can only be 'zulu' or 'openjdk'! Current value is '$jdk_type'"
+  exit 1
 fi
+
+jenkins_url="http://${jenkins_fqdn}/"
 
 jenkins_auth_matrix_conf=$(cat <<EOF
 <authorizationStrategy class="hudson.security.ProjectMatrixAuthorizationStrategy">
@@ -250,19 +287,31 @@ else
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 fi
 
-sudo add-apt-repository ppa:openjdk-r/ppa --yes
+if [ "$jdk_type" == "zulu" ]; then
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+  sudo add-apt-repository "deb http://repos.azul.com/azure-only/zulu/apt stable main" --yes
+else
+  sudo add-apt-repository ppa:openjdk-r/ppa --yes
+fi
 
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
 wget -q -O - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 sudo apt-get install apt-transport-https
 sudo apt-get update --yes
 
-#install openjdk8
-sudo apt-get install openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk --yes
+#install jdk8
+if [ "$jdk_type" == "zulu" ]; then
+  sudo apt-get install zulu-8-azure-jdk --yes
+else
+  sudo apt-get install openjdk-8-jdk --yes
+fi
 
 #install jenkins
 if [[ ${jenkins_release_type} == 'verified' ]]; then
   jenkins_version=$(curl --silent "${jenkins_version_location}")
+  if [ -z "$jenkins_version" ]; then
+    jenkins_version=${jenkins_fallback_version}
+  fi
   deb_file=jenkins_${jenkins_version}_all.deb
   wget -q "https://pkg.jenkins.io/debian-stable/binary/${deb_file}"
   if [[ -f ${deb_file} ]]; then
@@ -277,13 +326,14 @@ else
   sudo apt-get install jenkins --yes # sometime the first apt-get install jenkins command fails, so we try it twice
 fi
 
+# wait until Jenkins is started and running
 retry_until_successful sudo test -f /var/lib/jenkins/secrets/initialAdminPassword
-retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
+retry_until_successful run_util_script "scripts/run-cli-command.sh" -c "version"
 
 #We need to install workflow-aggregator so all the options in the auth matrix are valid
-plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents)
+plugins=(azure-vm-agents windows-azure-storage matrix-auth workflow-aggregator azure-app-service tfs azure-acs azure-container-agents azure-function azure-ad azure-vmss service-fabric kubernetes-cd azure-container-registry-tasks azure-artifact-manager)
 for plugin in "${plugins[@]}"; do
-  run_util_script "jenkins/run-cli-command.sh" -c "install-plugin $plugin -deploy"
+  run_util_script "scripts/run-cli-command.sh" -c "install-plugin $plugin -deploy"
 done
 
 #allow anonymous read access
@@ -309,13 +359,12 @@ echo "${final_jenkins_config}" | sudo tee /var/lib/jenkins/config.xml > /dev/nul
 sudo service jenkins restart
 
 #install the service principal
-msi_cred=$(cat <<EOF
-<com.microsoft.azure.util.AzureMsiCredentials>
+imds_cred=$(cat <<EOF
+<com.microsoft.azure.util.AzureImdsCredentials>
   <scope>GLOBAL</scope>
   <id>azure_service_principal</id>
-  <description>Local MSI</description>
-  <msiPort>50342</msiPort>
-</com.microsoft.azure.util.AzureMsiCredentials>
+  <description>Local Managed Identities for Azure Resources</description>
+</com.microsoft.azure.util.AzureImdsCredentials>
 EOF
 )
 sp_cred=$(cat <<EOF
@@ -327,28 +376,85 @@ sp_cred=$(cat <<EOF
     <subscriptionId>${subscription_id}</subscriptionId>
     <clientId>${service_principal_id}</clientId>
     <clientSecret>${service_principal_secret}</clientSecret>
-    <oauth2TokenEndpoint>https://login.windows.net/${tenant_id}</oauth2TokenEndpoint>
-    <serviceManagementURL>https://management.core.windows.net/</serviceManagementURL>
     <tenant>${tenant_id}</tenant>
-    <authenticationEndpoint>https://login.microsoftonline.com/</authenticationEndpoint>
-    <resourceManagerEndpoint>https://management.azure.com/</resourceManagerEndpoint>
-    <graphEndpoint>https://graph.windows.net/</graphEndpoint>
+    <azureEnvironmentName>${azure_env}</azureEnvironmentName>
   </data>
 </com.microsoft.azure.util.AzureCredentials>
 EOF
 )
-
-retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
-
-if [ "${service_principal_type}" == 'msi' ]; then
-  echo "${msi_cred}" > msi_cred.xml
-  run_util_script "jenkins/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif msi_cred.xml
-  rm msi_cred.xml
-else
+if [ "${service_principal_type}" == 'managed-identities-for-azure-resources' ]; then
+  echo "${imds_cred}" > imds_cred.xml
+  run_util_script "scripts/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif imds_cred.xml
+  rm imds_cred.xml
+elif [ "${service_principal_type}" == 'manual' ]; then
   echo "${sp_cred}" > sp_cred.xml
-  run_util_script "jenkins/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif sp_cred.xml
+  run_util_script "scripts/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif sp_cred.xml
   rm sp_cred.xml
+elif [ "${service_principal_type}" == 'off' ]; then
+  cloud_agents="no"
 fi
+
+#generate storage credential
+storage_cred=$(cat <<EOF
+<com.microsoftopentechnologies.windowsazurestorage.helper.AzureCredentials plugin="windows-azure-storage">
+  <scope>GLOBAL</scope>
+  <id>artifact_storage</id>
+  <description>The storage credential for artifact manager</description>
+  <storageData>
+    <storageAccountName>${storage_account}</storageAccountName>
+    <storageAccountKey>${storage_key}</storageAccountKey>
+    <blobEndpointURL>${storage_endpoint}</blobEndpointURL>
+  </storageData>
+</com.microsoftopentechnologies.windowsazurestorage.helper.AzureCredentials>
+EOF
+)
+
+#generate artifact manager configuration
+azure_artifact=$(cat <<EOF
+<?xml version='1.1' encoding='UTF-8'?>
+<jenkins.model.ArtifactManagerConfiguration>
+  <artifactManagerFactories>
+    <com.microsoft.jenkins.artifactmanager.AzureArtifactManagerFactory plugin="azure-artifact-manager">
+      <config>
+        <storageCredentialId>artifact_storage</storageCredentialId>
+        <container>${artifact_container}</container>
+        <prefix>${artifact_prefix}</prefix>
+      </config>
+    </com.microsoft.jenkins.artifactmanager.AzureArtifactManagerFactory>
+  </artifactManagerFactories>
+</jenkins.model.ArtifactManagerConfiguration>
+EOF
+)
+
+if [ "${artifact_manager_enabled}" == 'yes' ]; then
+  echo "${storage_cred}" > storage_cred.xml
+  run_util_script "scripts/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif storage_cred.xml
+  rm storage_cred.xml
+
+  echo "${azure_artifact}" | sudo tee /var/lib/jenkins/jenkins.model.ArtifactManagerConfiguration.xml > /dev/null
+fi
+
+#generate ssh key
+ssh-keygen -t rsa -b 4096 -N '' -f /tmp/jenkins_ssh_key
+ssh_public_key=$(cat /tmp/jenkins_ssh_key.pub)
+ssh_private_key=$(cat /tmp/jenkins_ssh_key)
+rm /tmp/jenkins_ssh_key{,.pub}
+
+ssh_key_cred=$(cat <<EOF
+<com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey>
+          <scope>GLOBAL</scope>
+          <id>slave_ssh_key</id>
+          <description></description>
+          <username>jenkins</username>
+          <privateKeySource class="com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey\$DirectEntryPrivateKeySource">
+            <privateKey>${ssh_private_key}</privateKey>
+          </privateKeySource>
+</com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey>
+EOF
+)
+echo "${ssh_key_cred}" > ssh_key_cred.xml
+run_util_script "scripts/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif ssh_key_cred.xml
+rm ssh_key_cred.xml
 
 #add cloud agents
 vm_agent_conf=conf=$(cat <<EOF
@@ -410,14 +516,30 @@ aci_agent_conf=$(cat <<EOF
     <templates>
       <com.microsoft.jenkins.containeragents.aci.AciContainerTemplate>
         <name>aciagents</name>
-        <image>jenkinsci/jnlp-slave</image>
+        <label>linux</label>
+        <image>jenkinsci/ssh-slave</image>
         <osType>Linux</osType>
-        <command>jenkins-slave -url \${rootUrl} \${secret} \${nodeName}</command>
+        <command>setup-sshd</command>
         <rootFs>/home/jenkins</rootFs>
         <timeout>10</timeout>
+        <ports/>
         <cpu>1</cpu>
         <memory>1.5</memory>
-        <retentionStrategy class="com.microsoft.jenkins.containeragents.strategy.ContainerOnceRetentionStrategy" />
+        <retentionStrategy class="com.microsoft.jenkins.containeragents.strategy.ContainerOnceRetentionStrategy">
+          <idleMinutes>10</idleMinutes>
+        </retentionStrategy>
+        <envVars>
+          <com.microsoft.jenkins.containeragents.PodEnvVar>
+            <key>JENKINS_SLAVE_SSH_PUBKEY</key>
+            <value>${ssh_public_key}</value>
+          </com.microsoft.jenkins.containeragents.PodEnvVar>
+        </envVars>
+        <privateRegistryCredentials/>
+        <volumes/>
+        <launchMethodType>ssh</launchMethodType>
+        <sshCredentialsId>slave_ssh_key</sshCredentialsId>
+        <sshPort>22</sshPort>
+        <isAvailable>true</isAvailable>
       </com.microsoft.jenkins.containeragents.aci.AciContainerTemplate>
     </templates>
   </com.microsoft.jenkins.containeragents.aci.AciCloud>
@@ -439,7 +561,7 @@ EOF
 
 if [ "${cloud_agents}" == 'vm' ]; then
   echo "${agent_admin_cred}" > agent_admin_cred.xml
-  run_util_script "jenkins/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif agent_admin_cred.xml
+  run_util_script "scripts/run-cli-command.sh" -c "create-credentials-by-xml system::system::jenkins _" -cif agent_admin_cred.xml
   rm agent_admin_cred.xml
   inter_jenkins_config=$(sed -zr -e"s|<clouds/>|{clouds}|" /var/lib/jenkins/config.xml)
   final_jenkins_config=${inter_jenkins_config//'{clouds}'/${vm_agent_conf}}
@@ -460,7 +582,7 @@ echo "${nginx_reverse_proxy_conf}" | sudo tee /etc/nginx/sites-enabled/default >
 sudo sed -i "s|.*server_tokens.*|server_tokens off;|" /etc/nginx/nginx.conf
 
 #install jenkins-on-azure web page
-run_util_script "jenkins/jenkins-on-azure/install-web-page.sh" -u "${jenkins_fqdn}"  -l "${azure_web_page_location}" -al "${artifacts_location}" -st "${artifacts_location_sas_token}"
+run_util_script "scripts/install-web-page.sh" -u "${jenkins_fqdn}"  -l "${azure_web_page_location}" -al "${artifacts_location}" -st "${artifacts_location_sas_token}"
 
 #restart nginx
 sudo service nginx restart
@@ -474,7 +596,7 @@ sudo service nginx restart
 # A restart will do the full reloading.
 sudo service jenkins restart
 # Wait until Jenkins is fully startup and functioning.
-retry_until_successful run_util_script "jenkins/run-cli-command.sh" -c "version"
+retry_until_successful run_util_script "scripts/run-cli-command.sh" -c "version"
 
 #install common tools
 sudo apt-get install git --yes
