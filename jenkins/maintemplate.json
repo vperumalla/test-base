@@ -1,91 +1,213 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "adminUsername": {
-            "type": "string",
+        "_artifactsLocation": {
             "metadata": {
-                "description": "username for the virtual machines."
-            }
+                "description": "Artifacts location"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/ooha-m/test-base/master/jenkins/",
+            "type": "string"
+        },
+        "adminPassword": {
+            "metadata": {
+                "description": "Password for the Virtual Machine. Will be used only if authenticationType is 'password'"
+            },
+            "defaultValue": "",
+            "type": "securestring"
+        },
+        "adminUserName": {
+            "metadata": {
+                "description": "User name for the Virtual Machine"
+            },
+            "type": "string"
         },
         "authenticationType": {
-            "type": "string",
-            "defaultValue": "sshPublicKey",
             "metadata": {
-                "description": "authentication type for the virtual machines."
-            }
+                "description": "Authentication type (can be 'password' or 'sshPublicKey')"
+            },
+            "type": "string"
         },
-        "sshPublicKey": {
-            "type": "string",
+        "dnsPrefix": {
             "metadata": {
-                "description": "generate ssh public key"
-            }
+                "description": "Unique DNS Name for the Public IP used to access the Jenkins Virtual Machine."
+            },
+            "type": "string"
         },
-        "jenkinsVmSize": {
+        "jenkinsReleaseType": {
+            "metadata": {
+                "description": "Jenkins release type (LTS or weekly or verified)"
+            },
             "type": "string",
-            "defaultValue": "Standard_DS2_v2",
-            "metadata": {
-                "description": "vm size"
-            }
+            "defaultValue": "LTS"
         },
-        "_artifactsLocation": {
+        "location": {
+            "metadata": {
+                "description": "Azure location where to deploy the resources"
+            },
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/ooha-m/test-base/jenkins/jenkins",
-            "metadata": {
-                "description": "The base uri where artifacts required by this template are located. when the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-            }
+            "defaultValue": "[resourceGroup().location]"
         },
-        "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "defaultValue": "",
+        "publicIPName": {
             "metadata": {
-                "description": "The sastoken required to access _artifactslocation.  when the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-            }
+                "description": "Public IP name"
+            },
+            "type": "string",
+            "defaultValue": "jenkins-pip"
+        },
+        "publicIPNewOrExisting": {
+            "metadata": {
+                "description": "Should be 'new' if the public IP has to be created"
+            },
+            "type": "string",
+            "defaultValue": "new"
+        },
+        "publicIPResourceGroup": {
+            "metadata": {
+                "description": "The Public IP Resource Group"
+            },
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]"
+        },
+        "storageAccountType": {
+            "defaultValue": "Standard_LRS",
+            "metadata": {
+                "description": "Storage Account Type"
+            },
+            "type": "string"
+        },
+        "vmName": {
+            "metadata": {
+                "description": "Virtual Machine Name (also used as a prefix for other resources)"
+            },
+            "type": "string",
+            "defaultValue": "jenkins"
+        },
+        "vmSize": {
+            "metadata": {
+                "description": "Virtual Machine Size"
+            },
+            "type": "string",
+            "defaultValue": "Standard_DS1_v2"
+        },
+        "vnetResourceGroup": {
+            "metadata": {
+                "description": "Name of resource group of the VNET"
+            },
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]"
+        },
+        "vnetName": {
+            "metadata": {
+                "description": "Name of the Virtual Network (VNET)"
+            },
+            "type": "string",
+            "defaultValue": "jenkins-vnet"
+        },
+        "vnetAddressPrefix": {
+            "metadata": {
+                "description": "Virtual network address CIDR"
+            },
+            "type": "string",
+            "defaultValue": "172.16.0.0/16"
+        },
+        "subnetName": {
+            "metadata": {
+                "description": "Name of the subnet"
+            },
+            "type": "string",
+            "defaultValue": "jenkins"
+        },
+        "subnetAddressPrefix": {
+            "metadata": {
+                "description": "subnet CIDR"
+            },
+            "type": "string",
+            "defaultValue": "172.16.0.0/24"
+        },
+        "storageAccountName": {
+            "metadata": {
+                "description": "Storage account name for artifact manager"
+            },
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "variables": {
-        "networkSettings": {
-            "location": "[variables('location')]",
-            "networkApiVersion": "2016-03-30",
-            "virtualNetworkName": "OSS",
-            "addressPrefix": "10.0.0.0/16",
-            "subnet1Name": "Jenkins",
-            "subnet1Prefix": "10.0.0.0/24"
-        },
-        "jenkinsSettings": {
-            "location": "[variables('location')]",
-            "jenkinsDiagnosticsStorageAccountName": "[concat('jenkinsstrg',variables('suffix'))]",
-            "jenkinsPipName": "jenkins-pip",
-            "publicIpAddressType": "[variables('publicIpAddressType')]",
-            "jenkinsDnsLabelPrefix": "[concat('jenkinsserver',variables('suffix'))]",
-            "jenkinsfrontEndNSGName": "jenkins-nsg",
-            "jenkinsNicName": "jenkins-nic",
-            "jenkinsVmPrivateIP": "10.0.0.5",
-            "jenkinsVmName": "jenkinsserver",
-            "adminUsername": "[parameters('adminUsername')]",
-            "authenticationType": "[parameters('authenticationType')]",
-            "sshPublicKey": "[parameters('sshPublicKey')]",
-            "jenkinsVmSize": "[parameters('jenkinsVmSize')]",
-            "ubuntuSku": "16.04-LTS",
-            "storageAccountType": "Standard_LRS",
-            "installJenkinsScriptName": "install_jenkins.sh",
-            "jenkinsReleaseType": "LTS",
-            "_artifactsLocation": "[parameters('_artifactsLocation')]",
-            "_artifactsLocationSasToken":"[parameters('_artifactsLocationSasToken')]",
-            "installJenkinsScriptUrl": "[concat(parameters('_artifactsLocation'),'/scripts/install_jenkins.sh', parameters('_artifactsLocationSasToken'))]"
-        },
-       "resourceGroupName": "[resourceGroup().name]",
-        "publicIpAddressType": "Dynamic",
-        "location": "[resourceGroup().location]",
-        "suffix": "[substring(uniqueString(resourceGroup().id), 0, 5)]"
+        "_extensionScript": "install_jenkins.sh",
+        "frontEndNSGName": "[concat(parameters('vmName'), '-nsg')]",
+        "nicName": "[concat(parameters('vmName'), '-nic')]",
+        "publicIPDeploymentName": "[concat(parameters('vmName'), '-pip-deploy')]",
+        "templateUrlIP": "[concat(parameters('_artifactsLocation'),'nested/publicIP.json')]",
+        "templateUrlVnet": "[concat(parameters('_artifactsLocation'),'nested/vnet.json')]",
+        "templateUrlVM": "[concat(parameters('_artifactsLocation'),'nested/VM-',parameters('authenticationType'),'.json')]",
+        "ubuntuSku": "16.04-LTS",
+        "vmDeploymentName": "[concat(parameters('vmName'), '-vm-deploy')]",
+        "vnetDeployName": "[concat(parameters('vmName'), '-vnet-deploy')]"
     },
     "resources": [
+
         {
-            "comments": "This network security group is used for jenkins server.",
-            "name": "[variables('jenkinsSettings').jenkinsfrontEndNSGName]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2017-04-01",
-            "location": "[variables('jenkinsSettings').location]",
+            "apiVersion": "2016-09-01",
+            "dependsOn": [],
+            "name": "[variables('publicIPDeploymentName')]",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "publicIPName": {
+                        "value": "[parameters('publicIPName')]"
+                    },
+                    "publicIPLocation": {
+                        "value": "[parameters('location')]"
+                    },
+                    "dnsPrefix": {
+                        "value": "[parameters('dnsPrefix')]"
+                    },
+                    "publicIPResourceGroup": {
+                        "value": "[parameters('publicIPResourceGroup')]"
+                    }
+                },
+                "templateLink": {
+                    "contentVersion": "1.0.0.0",
+                    "uri": "[variables('templateUrlIP')]"
+                }
+            },
+            "type": "Microsoft.Resources/deployments"
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "dependsOn": [],
+            "name": "[variables('vnetDeployName')]",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    },
+                    "vnetAddressPrefix": {
+                        "value": "[parameters('vnetAddressPrefix')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "subnetAddressPrefix": {
+                        "value": "[parameters('subnetAddressPrefix')]"
+                    }
+                },
+                "templateLink": {
+                    "contentVersion": "1.0.0.0",
+                    "uri": "[variables('templateUrlVnet')]"
+                }
+            },
+            "type": "Microsoft.Resources/deployments"
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "location": "[parameters('location')]",
+            "name": "[variables('frontEndNSGName')]",
             "properties": {
                 "securityRules": [
                     {
@@ -117,85 +239,133 @@
                         }
                     },
                     {
-                        "name": "Port_8080",
+                        "name": "jnlp-rule",
                         "properties": {
                             "access": "Allow",
-                            "description": "Allow",
+                            "description": "Allow JNLP",
                             "destinationAddressPrefix": "*",
                             "destinationPortRange": "8080",
                             "direction": "Inbound",
-                            "priority": 102,
+                            "priority": 110,
                             "protocol": "Tcp",
                             "sourceAddressPrefix": "Internet",
                             "sourcePortRange": "*"
                         }
                     }
                 ]
-            }
+            },
+            "tags": {
+                "displayName": "NSG - Front End"
+            },
+            "type": "Microsoft.Network/networkSecurityGroups"
         },
         {
-            "comments": "This virtual network is used for the entire solution.",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('networkSettings').virtualNetworkName]",
-            "apiVersion": "2017-04-01",
-            "location": "[variables('networkSettings').location]",
+            "apiVersion": "2016-03-30",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('jenkinsSettings').jenkinsfrontEndNSGName)]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]",
+                "[resourceId('Microsoft.Resources/deployments', variables('vnetDeployName'))]",
+                "[resourceId('Microsoft.Resources/deployments', variables('publicIPDeploymentName'))]"
             ],
+            "location": "[parameters('location')]",
+            "name": "[variables('nicName')]",
             "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[variables('networkSettings').addressPrefix]"
-                    ]
-                },
-                "subnets": [
+                "ipConfigurations": [
                     {
-                        "name": "[variables('networkSettings').subnet1Name]",
+                        "name": "ipconfig1",
                         "properties": {
-                            "addressPrefix": "[variables('networkSettings').subnet1Prefix]",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('jenkinsSettings').jenkinsfrontEndNSGName)]"
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId(parameters('publicIPResourceGroup'),'Microsoft.Network/publicIPAddresses', parameters('publicIPName'))]"
+                            },
+                            "subnet": {
+                                "id": "[concat(resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName')),'/subnets/',parameters('subnetName'))]"
                             }
                         }
                     }
-                                        ]
-            }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('frontEndNSGName'))]"
+                }
+            },
+            "tags": {
+                "displayName": "[variables('nicName')]"
+            },
+            "type": "Microsoft.Network/networkInterfaces"
         },
         {
-            "comments": "This is the deployment of jenkins related nested resources",
-            "type": "Microsoft.Resources/deployments",
-            "name": "Jenkins",
-            "apiVersion": "2016-02-01",
+            "apiVersion": "2016-09-01",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', variables('jenkinsSettings').jenkinsfrontEndNSGName)]",
-                "[concat('Microsoft.Network/virtualNetworks/',variables('networkSettings').virtualNetworkName)]"
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                "[resourceId('Microsoft.Resources/deployments', variables('publicIPDeploymentName'))]"
             ],
+            "name": "[variables('vmDeploymentName')]",
             "properties": {
                 "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(parameters('_artifactsLocation'),'/nested/jenkins.json', parameters('_artifactsLocationSasToken'))]",
-                    "contentVersion": "1.0.0.0"
-                },
                 "parameters": {
-                    "jenkinsSettings": {
-                        "value": "[variables('jenkinsSettings')]"
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
                     },
-                    "networkSettings": {
-                        "value": "[variables('networkSettings')]"
-                    }                             
+                    "adminUserName": {
+                        "value": "[parameters('adminUserName')]"
+                    },
+                    "networkInterfaceId": {
+                        "value": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                    },
+                    "storageAccountType": {
+                        "value": "[parameters('storageAccountType')]"
+                    },
+                    "ubuntuSku": {
+                        "value": "[variables('ubuntuSku')]"
+                    },
+                    "vmLocation": {
+                        "value": "[parameters('location')]"
+                    },
+                    "vmName": {
+                        "value": "[parameters('vmName')]"
+                    },
+                    "vmSize": {
+                        "value": "[parameters('vmSize')]"
+                    }
+                },
+                "templateLink": {
+                    "contentVersion": "1.0.0.0",
+                    "uri": "[variables('templateUrlVM')]"
                 }
-            }
+            },
+            "type": "Microsoft.Resources/deployments"
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', variables('vmDeploymentName'))]"
+            ],
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('vmName'), '/Init')]",
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Extensions",
+                "protectedSettings": {
+                    "commandToExecute": "sh install_jenkins.sh"
+                  },
+                "settings": {
+                    "fileUris": [
+                        "[concat(parameters('_artifactsLocation'),'scripts/', variables('_extensionScript'))]"
+                    ]
+                },
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0"
+            },
+            "type": "Microsoft.Compute/virtualMachines/extensions"
         }
     ],
-    "outputs": {        
-        "JenkinsFQDN": {
+    "outputs": {
+        "jenkinsURL": {
             "type": "string",
-            "value": "[reference('Jenkins').outputs.jenkinsDNS.value]"
+            "value": "[concat('http://', reference(variables('publicIPDeploymentName')).outputs.fqdn.value)]"
         },
-        "JenkinsWebUIURL": {
+        "ssh": {
             "type": "string",
-            "value": "[concat(reference('Jenkins').outputs.jenkinsDNS.value,':8080')]"
+            "value": "[concat('ssh -L 8080:localhost:8080 ', parameters('adminUsername'), '@', reference(variables('publicIPDeploymentName')).outputs.fqdn.value)]"
         }
-      
     }
 }
